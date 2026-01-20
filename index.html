@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Müşteri Hizmetleri Paneli</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #2b2d42;
+            --text-light: #8d99ae;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            padding-bottom: 50px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.04);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fcfcfc 100%);
+            border-left: 5px solid var(--primary-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.08);
+            margin-bottom: 2rem;
+        }
+        .form-header {
+            padding: 15px 24px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .form-body {
+            padding: 24px;
+        }
+
+        /* Stats & Charts */
+        .stat-card {
+            background: var(--card-bg);
+            border: none;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .stat-card:hover { transform: translateY(-3px); }
+        .stat-icon {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 15px;
+        }
+        .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--text-main); line-height: 1.2; }
+        .stat-label { color: var(--text-light); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            margin-bottom: 24px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-title { 
+            font-weight: 600; 
+            margin-bottom: 15px; 
+            color: var(--text-main); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .chart-canvas-wrapper {
+            position: relative;
+            height: 260px;
+            width: 100%;
+            flex-grow: 1;
+        }
+
+        /* Filters moved above table */
+        .filter-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px; /* Azaltıldı çünkü tablo ile birleşik gibi dursun */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            border-bottom: 3px solid #e9ecef;
+        }
+
+        /* Table */
+        .table-custom thead th {
+            background-color: #f8f9fa;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            padding: 12px 16px;
+            border: none;
+        }
+        .table-custom tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f3f5;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+        
+        .badge { font-weight: 500; padding: 6px 10px; }
+        .badge-status-ok { background-color: #d1fae5; color: #065f46; } 
+        .badge-status-wait { background-color: #fef3c7; color: #92400e; } 
+        .badge-status-fail { background-color: #fee2e2; color: #991b1b; } 
+        
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.9); z-index: 9999;
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+        }
+
+        /* Pagination Style */
+        .pagination {
+            margin-bottom: 0;
+            justify-content: flex-end;
+        }
+        .page-link {
+            color: var(--primary-color);
+            border: none;
+            margin: 0 2px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .page-link:hover {
+            background-color: #eef2ff;
+            color: var(--secondary-color);
+        }
+        .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        .page-item.disabled .page-link {
+            color: #ccc;
+            background-color: transparent;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Yükleme Ekranı -->
+    <div id="loader" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Yükleniyor...</span>
+        </div>
+        <p class="mt-3 text-muted fw-bold">Veriler İşleniyor...</p>
+    </div>
+
+    <!-- Üst Menü -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fa-solid fa-headset me-2"></i> Hedef AVM Müşteri Hizmetleri Paneli
+            </a>
+            <div class="d-flex gap-2">
+                 <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#entryFormCollapse">
+                    <i class="fa-solid fa-plus me-1"></i> Yeni Kayıt Ekle
+                 </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- 1. BÖLÜM: YENİ MÜŞTERİ EKLEME FORMU -->
+        <div class="collapse show" id="entryFormCollapse">
+            <div class="form-card">
+                <div class="form-header" data-bs-toggle="collapse" data-bs-target="#entryFormCollapse">
+                    <h5 class="m-0 text-primary"><i class="fa-solid fa-pen-to-square me-2"></i>Yeni Çağrı Kaydı Oluştur</h5>
+                    <i class="fa-solid fa-chevron-up text-muted"></i>
+                </div>
+                <div class="form-body">
+                    <form id="callForm" onsubmit="handleFormSubmit(event)">
+                        <div class="row g-3">
+                            <!-- Satır 1 -->
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted">Tarih</label>
+                                <input type="date" class="form-control" id="inpDate" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted">Müşteri Ad Soyad</label>
+                                <input type="text" class="form-control" id="inpName" placeholder="Ad Soyad Giriniz" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted">Telefon No</label>
+                                <input type="text" class="form-control" id="inpPhone" placeholder="05XX..." required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted">Bölge (Şehir)</label>
+                                <select class="form-select" id="inpRegion">
+                                    <option value="İstanbul" selected>İstanbul</option>
+                                    <option value="Kocaeli">Kocaeli</option>
+                                </select>
+                            </div>
+
+                            <!-- Satır 2 -->
+                            <div class="col-md-4">
+                                <label class="form-label small text-muted">Arama Nedeni</label>
+                                <select class="form-select" id="inpReason" required>
+                                    <option value="" disabled selected>Seçiniz...</option>
+                                    <option>ÜRÜN TESLİMATI</option>
+                                    <option>ÜRÜN ARIZASI</option>
+                                    <option>TAKSİT İŞLEMLERİ / BORÇ BİLGİSİ</option>
+                                    <option>SERVİS NUMARASI</option>
+                                    <option>ÜRÜN İPTALİ DEĞİŞİMİ</option>
+                                    <option>ÜRÜN BİLGİSİ</option>
+                                    <option>AVUKATLIK MÜŞTERİ</option>
+                                    <option>EKSİK / HATALI ÜRÜN</option>
+                                    <option>FATURA İŞLEMLERİ</option>
+                                    <option>SENET İŞLEMLERİ</option>
+                                    <option>KAMP.BİLGİSİ</option>
+                                    <option>MEMNUNİYET ARAMASI</option>
+                                    <option>THH MÜŞTERİSİ</option>
+                                    <option>SÜREÇLE ALAKALI BİLGİ VERİLDİ</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small text-muted">Müşteri Durumu / Sonuç</label>
+                                <select class="form-select" id="inpStatus" required>
+                                    <option value="" disabled selected>Seçiniz...</option>
+                                    <option>ÇÖZÜMLENDİ</option>
+                                    <option>ÇÖZÜLENMEDİ</option>
+                                    <option>TEKRAR GÖRÜŞÜLECEK</option>
+                                    <option>SÜREÇLE ALAKALI BİLGİ VERİLDİ.</option>
+                                    <option>YETKİLİ SERVİSE YÖNLENDİRİLDİ</option>
+                                    <option>ŞUBEYE AKTARILDI</option>
+                                    <option>GECİKME BİRİMİNE AKTARILDI</option>
+                                    <option>İSTANBUL SEVK. PLAN. AKTARILDI</option>
+                                    <option>İBAN PAYLAŞILDI</option>
+                                    <option>MÜŞTERİ MEMNUN</option>
+                                    <option>ARIZA KAYDI AÇILDI</option>
+                                    <option>İSTANBUL MÜŞ. HİZ. AKTARILDI</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small text-muted">Görüşme Sağlayan</label>
+                                <select class="form-select" id="inpAgent" required>
+                                    <option value="" disabled selected>Seçiniz...</option>
+                                    <option>BURCU KÖSALI</option>
+                                    <option>ELVAN ATAK</option>
+                                    <option>SEVAL TEKOĞUL</option>
+                                    <option>FEYZA NUR DİLEK</option>
+                                    <option>MELİKE KARAPINAR</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Satır 3: Not Alanı -->
+                            <div class="col-md-12">
+                                <label class="form-label small text-muted">Not / Açıklama</label>
+                                <textarea class="form-control" id="inpNote" rows="2" placeholder="Varsa ek notlar..."></textarea>
+                            </div>
+
+                            <div class="col-12 text-end mt-3">
+                                <button type="reset" class="btn btn-light border me-2">Temizle</button>
+                                <button type="submit" class="btn btn-success px-4"><i class="fa-solid fa-save me-2"></i>Kaydet</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. BÖLÜM: İSTATİSTİKLER (DASHBOARD) -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="fa-solid fa-phone-volume"></i>
+                    </div>
+                    <div class="stat-value" id="statTotal">0</div>
+                    <div class="stat-label">Listelenen Çağrı</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon bg-success bg-opacity-10 text-success">
+                        <i class="fa-solid fa-check-circle"></i>
+                    </div>
+                    <div class="stat-value" id="statResolved">0</div>
+                    <div class="stat-label">Çözümlenen / Olumlu</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                        <i class="fa-solid fa-user-clock"></i>
+                    </div>
+                    <div class="stat-value" id="statPending">0</div>
+                    <div class="stat-label">Tekrar Görüşülecek</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. BÖLÜM: GRAFİKLER -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <span><i class="fa-solid fa-chart-pie me-2 text-primary"></i>Arama Nedenleri</span>
+                    </div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="topicChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <span><i class="fa-solid fa-map-location-dot me-2 text-primary"></i>Bölgesel Yoğunluk</span>
+                    </div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="regionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. BÖLÜM: FİLTRELEME & TABLO -->
+        
+        <!-- Filtreleme Alanı (Tablonun Hemen Üzerinde) -->
+        <div class="filter-container">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-12 mb-1">
+                    <h6 class="text-secondary fw-bold"><i class="fa-solid fa-filter me-2"></i>Kayıtları Filtrele</h6>
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="small text-muted mb-1">Genel Arama (Ad/Tel)</label>
+                    <input type="text" class="form-control form-control-sm" id="filterSearch" placeholder="İsim veya Tel No..." onkeyup="applyFilters()">
+                </div>
+                
+                <div class="col-md-2">
+                     <label class="small text-muted mb-1">Arama Nedeni</label>
+                     <select class="form-select form-select-sm" id="filterReason" onchange="applyFilters()">
+                         <option value="">Tümü</option>
+                     </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="small text-muted mb-1">Müşteri Durumu</label>
+                    <select class="form-select form-select-sm" id="filterStatus" onchange="applyFilters()">
+                        <option value="">Tümü</option>
+                    </select>
+               </div>
+
+               <div class="col-md-2">
+                    <label class="small text-muted mb-1">Temsilci</label>
+                    <select class="form-select form-select-sm" id="filterAgent" onchange="applyFilters()">
+                        <option value="">Tümü</option>
+                        <option>BURCU KÖSALI</option>
+                        <option>ELVAN ATAK</option>
+                        <option>SEVAL TEKOĞUL</option>
+                        <option>FEYZA NUR DİLEK</option>
+                        <option>MELİKE KARAPINAR</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="small text-muted mb-1">Bölge</label>
+                    <select class="form-select form-select-sm" id="filterRegion" onchange="applyFilters()">
+                        <option value="">Tümü</option>
+                        <option value="İstanbul">İstanbul</option>
+                        <option value="Kocaeli">Kocaeli</option>
+                    </select>
+                </div>
+
+                <div class="col-md-1">
+                    <button class="btn btn-outline-secondary btn-sm w-100" onclick="resetFilters()">Sıfırla</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tablo Alanı -->
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <span><i class="fa-solid fa-list me-2 text-primary"></i>Çağrı Kayıtları Listesi</span>
+                        <div class="text-end">
+                             <small class="text-muted fw-normal me-2" id="recordCountLabel">(0 kayıt)</small>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom table-hover" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Müşteri</th>
+                                    <th>Tel</th>
+                                    <th>Arama Nedeni</th>
+                                    <th>Durum</th>
+                                    <th>Temsilci</th>
+                                    <th>Not</th>
+                                    <th>Bölge</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Sayfalama (Pagination) -->
+                    <nav aria-label="Page navigation" class="mt-3 border-top pt-3">
+                        <ul class="pagination" id="paginationControls">
+                            <!-- JS ile doldurulacak -->
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // *** GÜNCELLENEN API URL ***
+        const API_URL = "https://script.google.com/macros/s/AKfycbzmh0TtUPRgqXpX3mZ7OvytgEg--MBKheEA46hXl7gLTjc23wEahTGugctfGopeikjI4g/exec"; 
+
+        // --- GLOBAL DEĞİŞKENLER ---
+        let allData = []; 
+        let currentFilteredData = []; // Filtrelenmiş aktif veri
+        let chartInstances = {};
+        
+        // Sayfalama Değişkenleri
+        let currentPage = 1;
+        const rowsPerPage = 10;
+
+        // --- 2. BAŞLANGIÇ ---
+        window.onload = function() {
+            document.getElementById('inpDate').valueAsDate = new Date();
+            populateFilterOptions();
+            
+            if (API_URL === "BURAYA_URL_GELECEK" || API_URL === "") {
+                alert("Lütfen HTML dosyası içindeki API_URL değişkenine Apps Script URL'sini yapıştırın!");
+                document.getElementById('loader').style.display = 'none';
+            } else {
+                loadData();
+            }
+        };
+
+        // --- 3. VERİ ÇEKME & KAYDETME (FETCH API) ---
+
+        function loadData() {
+            document.getElementById('loader').style.display = 'flex';
+            
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    // BOŞ SATIR FİLTRESİ: 
+                    // Müşteri adı veya Telefon numarası olmayan kayıtları listeden çıkarıyoruz.
+                    // Böylece sheets'teki boş satırlar arayüze yansımaz.
+                    allData = data.filter(item => {
+                        const hasName = item.musteri && item.musteri.toString().trim() !== "";
+                        const hasPhone = item.telefon && item.telefon.toString().trim() !== "";
+                        // İsim veya Telefon doluysa geçerli say
+                        return hasName || hasPhone;
+                    });
+
+                    // İlk açılışta filtre uygulanmamış haliyle dashboardu güncelle
+                    applyFilters(); 
+                })
+                .catch(error => {
+                    handleError(error);
+                });
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const formData = {
+                tarih: document.getElementById('inpDate').value,
+                adsoyad: document.getElementById('inpName').value, 
+                tel: document.getElementById('inpPhone').value,
+                neden: document.getElementById('inpReason').value,
+                durum: document.getElementById('inpStatus').value,
+                temsilci: document.getElementById('inpAgent').value,
+                not: document.getElementById('inpNote').value,     
+                bolge: document.getElementById('inpRegion').value
+            };
+
+            document.getElementById('loader').style.display = 'flex';
+
+            fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if(result.success) {
+                    alert(result.message || "İşlem Tamamlandı");
+                    document.getElementById('callForm').reset();
+                    document.getElementById('inpDate').valueAsDate = new Date();
+                    loadData(); // Listeyi yenile
+                } else {
+                    alert("Hata: " + result.message);
+                    document.getElementById('loader').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                handleError(error);
+            });
+        }
+
+        // --- 4. VERİ İŞLEME VE FİLTRELEME ---
+
+        function applyFilters() {
+            const searchVal = document.getElementById('filterSearch').value.toLowerCase();
+            const reasonVal = document.getElementById('filterReason').value;
+            const statusVal = document.getElementById('filterStatus').value;
+            const agentVal = document.getElementById('filterAgent').value;
+            const regionVal = document.getElementById('filterRegion').value;
+
+            // Global filtered data güncellemesi
+            currentFilteredData = allData.filter(item => {
+                const sName = (item.musteri || "").toLowerCase();
+                const sTel = (item.telefon || "").toString();
+                const sReason = (item.konu || "");
+                const sStatus = (item.durum || "");
+                const sAgent = (item.temsilci || "");
+                const sRegion = (item.bolge || "");
+
+                const matchSearch = sName.includes(searchVal) || sTel.includes(searchVal);
+                const matchReason = reasonVal === "" || sReason === reasonVal;
+                const matchStatus = statusVal === "" || sStatus === statusVal;
+                const matchAgent = agentVal === "" || sAgent === agentVal;
+                const matchRegion = regionVal === "" || sRegion === regionVal;
+
+                return matchSearch && matchReason && matchStatus && matchAgent && matchRegion;
+            });
+
+            // Filtre değiştiğinde sayfa 1'e dön
+            currentPage = 1;
+
+            renderDashboard(currentFilteredData);
+        }
+
+        function resetFilters() {
+            document.getElementById('filterSearch').value = "";
+            document.getElementById('filterReason').value = "";
+            document.getElementById('filterStatus').value = "";
+            document.getElementById('filterAgent').value = "";
+            document.getElementById('filterRegion').value = "";
+            applyFilters();
+        }
+
+        // --- 5. GÖRSELLEŞTİRME (RENDER) ---
+
+        function renderDashboard(data) {
+            document.getElementById('loader').style.display = 'none';
+
+            // İstatistikleri Güncelle
+            updateStats(data);
+            
+            // Grafikleri Güncelle
+            updateCharts(data);
+
+            // Tabloyu Güncelle (Sayfalama ile)
+            renderTable(data);
+        }
+
+        function updateStats(data) {
+            const total = data.length;
+            const resolved = data.filter(d => 
+                (d.durum || "").includes("ÇÖZÜMLENDİ") || 
+                (d.durum || "").includes("MEMNUN") || 
+                (d.durum || "").includes("İBAN") 
+            ).length;
+            
+            const pending = data.filter(d => 
+                (d.durum || "").includes("TEKRAR") || 
+                (d.durum || "").includes("AKTARILDI") ||
+                (d.durum || "").includes("YÖNLENDİRİLDİ") ||
+                (d.durum || "").includes("ARIZA KAYDI")
+            ).length;
+
+            animateValue("statTotal", parseInt(document.getElementById("statTotal").innerText), total, 500);
+            animateValue("statResolved", parseInt(document.getElementById("statResolved").innerText), resolved, 500);
+            animateValue("statPending", parseInt(document.getElementById("statPending").innerText), pending, 500);
+            
+            document.getElementById('recordCountLabel').innerText = `(${total} kayıt)`;
+        }
+
+        function updateCharts(data) {
+             const topicCounts = {};
+            data.forEach(r => {
+                const topic = r.konu || "Belirtilmemiş";
+                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+            });
+
+            const regionCounts = { "İstanbul": 0, "Kocaeli": 0, "Diğer": 0 };
+            data.forEach(r => {
+                if(r.bolge === "İstanbul") regionCounts["İstanbul"]++;
+                else if(r.bolge === "Kocaeli") regionCounts["Kocaeli"]++;
+                else regionCounts["Diğer"]++;
+            });
+
+            renderTopicChart(topicCounts);
+            renderRegionChart(regionCounts);
+        }
+
+        // --- TABLO VE SAYFALAMA ---
+
+        function renderTable(data) {
+            const tbody = document.querySelector('#dataTable tbody');
+            tbody.innerHTML = '';
+            
+            // Sayfalama Hesaplamaları
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const pageData = data.slice(startIndex, endIndex);
+
+            pageData.forEach(row => {
+                const tr = document.createElement('tr');
+                
+                let dateStr = row.tarih;
+                try {
+                    const d = new Date(row.tarih);
+                    if(!isNaN(d)) dateStr = d.toLocaleDateString('tr-TR');
+                } catch(e){}
+
+                let statusClass = 'badge bg-secondary';
+                const st = (row.durum || "").toLowerCase();
+                if(st.includes('çözüldü') || st.includes('memnun') || st.includes('iban')) statusClass = 'badge badge-status-ok';
+                else if(st.includes('tekrar') || st.includes('bilgi verildi') || st.includes('aktarıldı')) statusClass = 'badge badge-status-wait';
+                else if(st.includes('iptal') || st.includes('sorun') || st.includes('ariza')) statusClass = 'badge badge-status-fail';
+
+                tr.innerHTML = `
+                    <td class="text-nowrap text-secondary small fw-bold">${dateStr}</td>
+                    <td class="fw-bold text-dark">${row.musteri || '-'}</td>
+                    <td>${row.telefon || '-'}</td>
+                    <td><span class="badge bg-light text-dark border text-wrap" style="font-weight:normal">${row.konu || '-'}</span></td>
+                    <td><span class="${statusClass}">${row.durum || '-'}</span></td>
+                    <td class="small text-muted">${row.temsilci || '-'}</td>
+                    <td class="small text-muted text-truncate" style="max-width: 150px;" title="${row.not || ''}">${row.not || '-'}</td>
+                    <td class="small text-muted">${row.bolge || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderPaginationControls(data.length);
+        }
+
+        function renderPaginationControls(totalItems) {
+            const paginationEl = document.getElementById('paginationControls');
+            paginationEl.innerHTML = '';
+
+            const totalPages = Math.ceil(totalItems / rowsPerPage);
+
+            if (totalPages <= 1) return;
+
+            // Önceki Butonu
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">&laquo;</a>`;
+            paginationEl.appendChild(prevLi);
+
+            // Sayfa Numaraları (Basitçe gösterim, çok sayfa varsa hepsini sığdırmak için mantık eklenebilir)
+            // Şimdilik max 5 sayfa gösterimi veya basit bir döngü yapalım.
+            
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+
+            if (startPage > 1) {
+                const firstLi = document.createElement('li');
+                firstLi.className = 'page-item';
+                firstLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(1); return false;">1</a>`;
+                paginationEl.appendChild(firstLi);
+                if(startPage > 2) {
+                     const dotsLi = document.createElement('li');
+                     dotsLi.className = 'page-item disabled';
+                     dotsLi.innerHTML = `<span class="page-link">...</span>`;
+                     paginationEl.appendChild(dotsLi);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>`;
+                paginationEl.appendChild(li);
+            }
+
+            if (endPage < totalPages) {
+                if(endPage < totalPages - 1) {
+                     const dotsLi = document.createElement('li');
+                     dotsLi.className = 'page-item disabled';
+                     dotsLi.innerHTML = `<span class="page-link">...</span>`;
+                     paginationEl.appendChild(dotsLi);
+                }
+                const lastLi = document.createElement('li');
+                lastLi.className = 'page-item';
+                lastLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${totalPages}); return false;">${totalPages}</a>`;
+                paginationEl.appendChild(lastLi);
+            }
+
+            // Sonraki Butonu
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">&raquo;</a>`;
+            paginationEl.appendChild(nextLi);
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(currentFilteredData.length / rowsPerPage);
+            if (page < 1 || page > totalPages) return;
+            
+            currentPage = page;
+            renderTable(currentFilteredData); // Sadece tabloyu güncelle
+        }
+
+        // --- GRAFİK FONKSİYONLARI ---
+
+        function renderTopicChart(counts) {
+            const ctx = document.getElementById('topicChart').getContext('2d');
+            if(chartInstances.topic) chartInstances.topic.destroy();
+
+            const sortedEntries = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 8);
+            
+            chartInstances.topic = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: sortedEntries.map(e => e[0]),
+                    datasets: [{
+                        data: sortedEntries.map(e => e[1]),
+                        backgroundColor: ['#4361ee', '#3a0ca3', '#7209b7', '#f72585', '#4cc9f0', '#4895ef', '#560bad', '#b5179e'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: {size: 10} } } }
+                }
+            });
+        }
+
+        function renderRegionChart(counts) {
+            const ctx = document.getElementById('regionChart').getContext('2d');
+            if(chartInstances.region) chartInstances.region.destroy();
+
+            chartInstances.region = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['İstanbul', 'Kocaeli', 'Diğer'],
+                    datasets: [{
+                        label: 'Kayıt Sayısı',
+                        data: [counts['İstanbul'], counts['Kocaeli'], counts['Diğer']],
+                        backgroundColor: ['#4361ee', '#10b981', '#cbd5e1'],
+                        borderRadius: 6,
+                        barThickness: 40
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true }, x: { grid: { display: false } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function handleError(error) {
+            alert("Sunucu Hatası: " + error);
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            const range = end - start;
+            let current = start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+            const obj = document.getElementById(id);
+            const timer = setInterval(function() {
+                current += increment;
+                obj.innerHTML = current;
+                if (current == end) clearInterval(timer);
+            }, stepTime > 0 ? stepTime : 10);
+        }
+
+        function populateFilterOptions() {
+            const reasonOptions = document.getElementById('inpReason').innerHTML;
+            document.getElementById('filterReason').innerHTML = '<option value="">Tümü</option>' + reasonOptions.replace('disabled selected>Seçiniz...</option>', '></option>');
+            
+            const statusOptions = document.getElementById('inpStatus').innerHTML;
+            document.getElementById('filterStatus').innerHTML = '<option value="">Tümü</option>' + statusOptions.replace('disabled selected>Seçiniz...</option>', '></option>');
+        }
+    </script>
+</body>
+</html>
