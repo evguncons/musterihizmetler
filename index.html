@@ -3,576 +3,852 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Müşteri Hizmetleri Paneli</title>
+    <title>Hedef AVM Müşteri Hizmetleri Paneli</title>
     
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --bg-color: #f8f9fa;
+            --primary-color: #6366f1; /* Indigo 500 */
+            --primary-hover: #4f46e5; /* Indigo 600 */
+            --bg-color: #f8fafc;      /* Slate 50 */
             --card-bg: #ffffff;
-            --text-main: #2b2d42;
-            --text-light: #8d99ae;
+            --text-main: #1e293b;     /* Slate 800 */
+            --text-muted: #64748b;    /* Slate 500 */
+            --border-color: #e2e8f0;  /* Slate 200 */
+            --radius: 12px;
         }
 
         body {
             background-color: var(--bg-color);
             font-family: 'Inter', sans-serif;
             color: var(--text-main);
-            padding-bottom: 50px;
+            padding-bottom: 80px;
         }
 
-        /* Navbar */
-        .navbar {
+        /* --- Login Screen --- */
+        #login-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #f1f5f9;
+            z-index: 10000; /* En üstte */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
             background: white;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.04);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-icon {
+            width: 64px; height: 64px;
+            background: var(--bg-color);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.75rem;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
             margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
         .navbar-brand {
             font-weight: 700;
-            color: var(--primary-color);
-            font-size: 1.5rem;
+            color: var(--text-main);
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* Form Card */
-        .form-card {
-            background: linear-gradient(135deg, #ffffff 0%, #fcfcfc 100%);
-            border-left: 5px solid var(--primary-color);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.08);
-            margin-bottom: 2rem;
+        /* --- Kartlar (Cards) --- */
+        .panel-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
-        .form-header {
-            padding: 15px 24px;
-            border-bottom: 1px solid #eee;
+        
+        .card-header-custom {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
         }
-        .form-body {
-            padding: 24px;
-        }
-
-        /* Stats & Charts */
-        .stat-card {
-            background: var(--card-bg);
-            border: none;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            transition: transform 0.2s;
-            height: 100%;
+        .card-title-custom {
+            font-weight: 600;
+            color: var(--text-main);
+            margin: 0;
+            font-size: 1rem;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            align-items: center;
+            gap: 8px;
         }
-        .stat-card:hover { transform: translateY(-3px); }
-        .stat-icon {
-            width: 50px; height: 50px;
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; margin-bottom: 15px;
-        }
-        .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--text-main); line-height: 1.2; }
-        .stat-label { color: var(--text-light); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .chart-container {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            margin-bottom: 24px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        .chart-title { 
-            font-weight: 600; 
-            margin-bottom: 15px; 
-            color: var(--text-main); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-
-        .chart-canvas-wrapper {
-            position: relative;
-            height: 260px;
-            width: 100%;
+        .card-body-custom {
+            padding: 1.5rem;
             flex-grow: 1;
         }
 
-        /* Filters moved above table */
-        .filter-container {
+        /* --- İstatistik Kutuları --- */
+        .stat-card {
             background: white;
-            padding: 20px;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            height: 100%;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        
+        .stat-icon {
+            width: 56px; height: 56px;
             border-radius: 12px;
-            margin-bottom: 15px; /* Azaltıldı çünkü tablo ile birleşik gibi dursun */
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            border-bottom: 3px solid #e9ecef;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1.25rem;
+            flex-shrink: 0;
+        }
+        .stat-info h3 { font-size: 1.75rem; font-weight: 700; margin: 0; line-height: 1.2; color: var(--text-main); }
+        .stat-info span { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Renkler */
+        .bg-indigo-light { background: #e0e7ff; color: #4338ca; }
+        .bg-emerald-light { background: #d1fae5; color: #065f46; }
+        .bg-amber-light { background: #fef3c7; color: #92400e; }
+
+        /* --- Grafikler --- */
+        .chart-wrapper {
+            position: relative;
+            height: 320px; /* Grafik yüksekliği artırıldı */
+            width: 100%;
         }
 
-        /* Table */
-        .table-custom thead th {
-            background-color: #f8f9fa;
-            color: var(--text-light);
+        /* --- Form Alanları --- */
+        .form-label {
+            font-size: 0.85rem;
             font-weight: 600;
-            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 0.8rem;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        /* --- Tablo --- */
+        .table-responsive {
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+        .table-custom {
+            margin-bottom: 0;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .table-custom thead th {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            padding: 12px 16px;
-            border: none;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
         }
         .table-custom tbody td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #f1f3f5;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
             vertical-align: middle;
             font-size: 0.9rem;
+            color: var(--text-main);
         }
-        
-        .badge { font-weight: 500; padding: 6px 10px; }
-        .badge-status-ok { background-color: #d1fae5; color: #065f46; } 
-        .badge-status-wait { background-color: #fef3c7; color: #92400e; } 
-        .badge-status-fail { background-color: #fee2e2; color: #991b1b; } 
-        
-        .loading-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.9); z-index: 9999;
-            display: flex; justify-content: center; align-items: center; flex-direction: column;
+        .table-custom tbody tr:hover { background-color: #f1f5f9; }
+
+        /* --- Badges --- */
+        .badge-status {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+        .badge-success { background: #dcfce7; color: #15803d; }
+        .badge-warning { background: #fef9c3; color: #a16207; }
+        .badge-danger { background: #fee2e2; color: #b91c1c; }
+        .badge-neutral { background: #f1f5f9; color: #475569; }
+
+        /* --- Butonlar --- */
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .btn-primary-custom:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        .btn-icon {
+            width: 32px; height: 32px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 6px; border: 1px solid var(--border-color);
+            color: var(--text-muted); background: white;
+            transition: all 0.2s;
+        }
+        .btn-icon:hover {
+            border-color: var(--primary-color); color: var(--primary-color); background: #eef2ff;
         }
 
-        /* Pagination Style */
-        .pagination {
-            margin-bottom: 0;
-            justify-content: flex-end;
+        /* --- Pagination --- */
+        .pagination-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .page-link {
-            color: var(--primary-color);
-            border: none;
-            margin: 0 2px;
-            border-radius: 4px;
-            font-weight: 600;
+        .pagination .page-link {
+            border-radius: 6px;
+            margin: 0 3px;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 0.85rem;
         }
-        .page-link:hover {
-            background-color: #eef2ff;
-            color: var(--secondary-color);
-        }
-        .page-item.active .page-link {
+        .pagination .page-item.active .page-link {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             color: white;
         }
-        .page-item.disabled .page-link {
-            color: #ccc;
-            background-color: transparent;
-        }
 
+        /* Loading */
+        #loader {
+            position: fixed; inset: 0;
+            background: rgba(255,255,255,0.9);
+            z-index: 9999;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Yükleme Ekranı -->
-    <div id="loader" class="loading-overlay">
-        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-            <span class="visually-hidden">Yükleniyor...</span>
+    <!-- LOGIN EKRANI -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="login-icon">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h4 class="mb-2 fw-bold text-dark">Güvenli Giriş</h4>
+            <p class="text-muted small mb-4">Panele erişmek için şifrenizi giriniz.</p>
+            
+            <form onsubmit="checkPassword(event)">
+                <div class="mb-3">
+                    <input type="password" class="form-control text-center" id="passwordInput" placeholder="Şifre" required>
+                </div>
+                <button type="submit" class="btn btn-primary-custom w-100">Giriş Yap</button>
+            </form>
+            <p id="loginError" class="text-danger small mt-2 d-none"><i class="fa-solid fa-circle-exclamation me-1"></i>Hatalı Şifre!</p>
         </div>
-        <p class="mt-3 text-muted fw-bold">Veriler İşleniyor...</p>
     </div>
 
-    <!-- Üst Menü -->
-    <nav class="navbar navbar-expand-lg sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fa-solid fa-headset me-2"></i> Hedef AVM Müşteri Hizmetleri Paneli
-            </a>
-            <div class="d-flex gap-2">
-                 <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#entryFormCollapse">
-                    <i class="fa-solid fa-plus me-1"></i> Yeni Kayıt Ekle
-                 </button>
-            </div>
+    <!-- ANA İÇERİK (Başlangıçta Gizli) -->
+    <div id="main-content" style="display: none;">
+
+        <div id="loader">
+            <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+            <div class="fw-bold text-muted">Veriler İşleniyor...</div>
         </div>
-    </nav>
 
-    <div class="container">
-
-        <!-- 1. BÖLÜM: YENİ MÜŞTERİ EKLEME FORMU -->
-        <div class="collapse show" id="entryFormCollapse">
-            <div class="form-card">
-                <div class="form-header" data-bs-toggle="collapse" data-bs-target="#entryFormCollapse">
-                    <h5 class="m-0 text-primary"><i class="fa-solid fa-pen-to-square me-2"></i>Yeni Çağrı Kaydı Oluştur</h5>
-                    <i class="fa-solid fa-chevron-up text-muted"></i>
+        <!-- Navbar -->
+        <nav class="navbar sticky-top">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <div class="bg-indigo-light p-2 rounded-3 me-2">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    Hedef AVM Müşteri Hizmetleri
+                </a>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-white text-success border px-3 py-2 d-flex align-items-center shadow-sm">
+                        <span class="spinner-grow spinner-grow-sm me-2" role="status"></span>
+                        Canlı (5sn)
+                    </span>
                 </div>
-                <div class="form-body">
-                    <form id="callForm" onsubmit="handleFormSubmit(event)">
+            </div>
+        </nav>
+
+        <div class="container">
+
+            <!-- 1. BÖLÜM: İstatistik Kartları -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-indigo-light">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="statTotal">0</h3>
+                            <span>Toplam Çağrı</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-emerald-light">
+                            <i class="fa-solid fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="statResolved">0</h3>
+                            <span>Çözümlenen</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-amber-light">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="statPending">0</h3>
+                            <span>Bekleyen</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. BÖLÜM: Grafikler -->
+            <div class="row g-4 mb-5">
+                <!-- Arama Nedenleri (GENİŞ) -->
+                <div class="col-lg-8">
+                    <div class="panel-card">
+                        <div class="card-header-custom">
+                            <h6 class="card-title-custom"><i class="fa-solid fa-chart-bar text-muted"></i> En Çok Aranan Konular (Top 5)</h6>
+                        </div>
+                        <div class="card-body-custom d-flex align-items-center">
+                            <div class="chart-wrapper">
+                                <canvas id="topicChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Bölgesel Dağılım (DAR) -->
+                <div class="col-lg-4">
+                    <div class="panel-card">
+                        <div class="card-header-custom">
+                            <h6 class="card-title-custom"><i class="fa-solid fa-map-location-dot text-muted"></i> Bölgesel Dağılım</h6>
+                        </div>
+                        <div class="card-body-custom d-flex align-items-center">
+                            <div class="chart-wrapper">
+                                <canvas id="regionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. BÖLÜM: Yeni Kayıt Formu -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="panel-card border-start border-4 border-primary">
+                        <div class="card-header-custom">
+                            <h6 class="card-title-custom text-primary"><i class="fa-solid fa-plus-circle"></i> Yeni Çağrı Kaydı Oluştur</h6>
+                        </div>
+                        <div class="card-body-custom">
+                            <form id="callForm" onsubmit="handleFormSubmit(event)">
+                                <div class="row g-4">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Tarih</label>
+                                        <input type="date" class="form-control" id="inpDate" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Müşteri Ad Soyad</label>
+                                        <input type="text" class="form-control" id="inpName" placeholder="Ad Soyad" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Telefon No</label>
+                                        <input type="text" class="form-control" id="inpPhone" placeholder="05..." required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Bölge</label>
+                                        <select class="form-select" id="inpRegion">
+                                            <option value="İstanbul" selected>İstanbul</option>
+                                            <option value="Kocaeli">Kocaeli</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label">Arama Nedeni</label>
+                                        <select class="form-select" id="inpReason" required>
+                                            <option value="" disabled selected>Seçiniz...</option>
+                                            <option>ÜRÜN TESLİMATI</option>
+                                            <option>ÜRÜN ARIZASI</option>
+                                            <option>TAKSİT İŞLEMLERİ / BORÇ BİLGİSİ</option>
+                                            <option>SERVİS NUMARASI</option>
+                                            <option>ÜRÜN İPTALİ DEĞİŞİMİ</option>
+                                            <option>ÜRÜN BİLGİSİ</option>
+                                            <option>AVUKATLIK MÜŞTERİ</option>
+                                            <option>EKSİK / HATALI ÜRÜN</option>
+                                            <option>FATURA İŞLEMLERİ</option>
+                                            <option>SENET İŞLEMLERİ</option>
+                                            <option>KAMP.BİLGİSİ</option>
+                                            <option>MEMNUNİYET ARAMASI</option>
+                                            <option>THH MÜŞTERİSİ</option>
+                                            <option>SÜREÇLE ALAKALI BİLGİ VERİLDİ</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Sonuç / Durum</label>
+                                        <select class="form-select" id="inpStatus" required>
+                                            <option value="" disabled selected>Seçiniz...</option>
+                                            <option>ÇÖZÜMLENDİ</option>
+                                            <option>ÇÖZÜLENMEDİ</option>
+                                            <option>TEKRAR GÖRÜŞÜLECEK</option>
+                                            <option>SÜREÇLE ALAKALI BİLGİ VERİLDİ.</option>
+                                            <option>YETKİLİ SERVİSE YÖNLENDİRİLDİ</option>
+                                            <option>ŞUBEYE AKTARILDI</option>
+                                            <option>GECİKME BİRİMİNE AKTARILDI</option>
+                                            <option>İSTANBUL SEVK. PLAN. AKTARILDI</option>
+                                            <option>İBAN PAYLAŞILDI</option>
+                                            <option>MÜŞTERİ MEMNUN</option>
+                                            <option>ARIZA KAYDI AÇILDI</option>
+                                            <option>İSTANBUL MÜŞ. HİZ. AKTARILDI</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Temsilci</label>
+                                        <select class="form-select" id="inpAgent" required>
+                                            <option value="" disabled selected>Seçiniz...</option>
+                                            <option>BURCU KÖSALI</option>
+                                            <option>ELVAN ATAK</option>
+                                            <option>SEVAL TEKOĞUL</option>
+                                            <option>FEYZA NUR DİLEK</option>
+                                            <option>MELİKE KARAPINAR</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label">Görüşme Notu</label>
+                                        <textarea class="form-control" id="inpNote" rows="2" placeholder="Detaylı açıklama..."></textarea>
+                                    </div>
+
+                                    <div class="col-12 text-end">
+                                        <button type="reset" class="btn btn-light border me-2">Temizle</button>
+                                        <button type="submit" class="btn btn-primary-custom px-4"><i class="fa-solid fa-floppy-disk me-2"></i>Kaydet</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. BÖLÜM: Filtreleme ve Tablo -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="panel-card">
+                        <!-- Filtreleme Alanı -->
+                        <div class="card-header-custom bg-light flex-wrap gap-3">
+                            <div class="d-flex align-items-center gap-2 flex-grow-1">
+                                <i class="fa-solid fa-filter text-muted"></i>
+                                <h6 class="card-title-custom mb-0">Kayıtları Filtrele</h6>
+                            </div>
+                            
+                            <div class="d-flex flex-wrap gap-2 align-items-center" style="max-width: 100%;">
+                                <!-- Tarih Filtresi (Tek Tarih) -->
+                                <div style="width: 160px;">
+                                    <input type="date" class="form-control form-control-sm" id="filterDate" onchange="applyFilters()">
+                                </div>
+                                <!-- Arama -->
+                                <div style="width: 220px;">
+                                    <input type="text" class="form-control form-control-sm" id="filterSearch" placeholder="🔍 İsim veya Telefon..." onkeyup="applyFilters()">
+                                </div>
+                                <!-- Selectler -->
+                                <div style="width: 180px;">
+                                    <select class="form-select form-select-sm" id="filterReason" onchange="applyFilters()">
+                                        <option value="">Arama Nedeni</option>
+                                    </select>
+                                </div>
+                                <div style="width: 180px;">
+                                    <select class="form-select form-select-sm" id="filterStatus" onchange="applyFilters()">
+                                        <option value="">Durum</option>
+                                    </select>
+                                </div>
+                                <div style="width: 140px;">
+                                    <select class="form-select form-select-sm" id="filterRegion" onchange="applyFilters()">
+                                        <option value="">Bölge: Tümü</option>
+                                        <option value="İstanbul">İstanbul</option>
+                                        <option value="Kocaeli">Kocaeli</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="resetFilters()" title="Filtreleri Temizle">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tablo -->
+                        <div class="table-responsive">
+                            <table class="table table-custom table-hover" id="dataTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 120px;">Tarih</th>
+                                        <th>Müşteri</th>
+                                        <th>Telefon</th>
+                                        <th>Arama Nedeni</th>
+                                        <th>Durum</th>
+                                        <th>Bölge</th>
+                                        <th class="text-end" style="width: 100px;">İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- JS ile doldurulacak -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination & Footer -->
+                        <div class="pagination-container bg-white">
+                            <small class="text-muted fw-semibold" id="recordCountLabel">0 Kayıt Bulundu</small>
+                            <nav>
+                                <ul class="pagination mb-0" id="paginationControls"></ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Düzenleme Modalı -->
+    <div class="modal fade" id="editModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-white border-bottom py-3">
+                    <h5 class="modal-title fw-bold text-primary"><i class="fa-solid fa-pen-to-square me-2"></i>Kayıt Detayı & Düzenleme</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <form id="editForm">
                         <div class="row g-3">
-                            <!-- Satır 1 -->
-                            <div class="col-md-3">
-                                <label class="form-label small text-muted">Tarih</label>
-                                <input type="date" class="form-control" id="inpDate" required>
+                            <div class="col-md-4">
+                                <label class="form-label">Tarih</label>
+                                <input type="date" class="form-control" id="editDate">
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label small text-muted">Müşteri Ad Soyad</label>
-                                <input type="text" class="form-control" id="inpName" placeholder="Ad Soyad Giriniz" required>
+                            <div class="col-md-4">
+                                <label class="form-label">Ad Soyad</label>
+                                <input type="text" class="form-control" id="editName">
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label small text-muted">Telefon No</label>
-                                <input type="text" class="form-control" id="inpPhone" placeholder="05XX..." required>
+                            <div class="col-md-4">
+                                <label class="form-label">Telefon</label>
+                                <input type="text" class="form-control" id="editPhone">
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label small text-muted">Bölge (Şehir)</label>
-                                <select class="form-select" id="inpRegion">
-                                    <option value="İstanbul" selected>İstanbul</option>
+                            <div class="col-md-4">
+                                <label class="form-label">Bölge</label>
+                                <select class="form-select" id="editRegion">
+                                    <option value="İstanbul">İstanbul</option>
                                     <option value="Kocaeli">Kocaeli</option>
                                 </select>
                             </div>
-
-                            <!-- Satır 2 -->
                             <div class="col-md-4">
-                                <label class="form-label small text-muted">Arama Nedeni</label>
-                                <select class="form-select" id="inpReason" required>
-                                    <option value="" disabled selected>Seçiniz...</option>
-                                    <option>ÜRÜN TESLİMATI</option>
-                                    <option>ÜRÜN ARIZASI</option>
-                                    <option>TAKSİT İŞLEMLERİ / BORÇ BİLGİSİ</option>
-                                    <option>SERVİS NUMARASI</option>
-                                    <option>ÜRÜN İPTALİ DEĞİŞİMİ</option>
-                                    <option>ÜRÜN BİLGİSİ</option>
-                                    <option>AVUKATLIK MÜŞTERİ</option>
-                                    <option>EKSİK / HATALI ÜRÜN</option>
-                                    <option>FATURA İŞLEMLERİ</option>
-                                    <option>SENET İŞLEMLERİ</option>
-                                    <option>KAMP.BİLGİSİ</option>
-                                    <option>MEMNUNİYET ARAMASI</option>
-                                    <option>THH MÜŞTERİSİ</option>
-                                    <option>SÜREÇLE ALAKALI BİLGİ VERİLDİ</option>
-                                </select>
+                                <label class="form-label">Neden</label>
+                                <select class="form-select" id="editReason"></select>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small text-muted">Müşteri Durumu / Sonuç</label>
-                                <select class="form-select" id="inpStatus" required>
-                                    <option value="" disabled selected>Seçiniz...</option>
-                                    <option>ÇÖZÜMLENDİ</option>
-                                    <option>ÇÖZÜLENMEDİ</option>
-                                    <option>TEKRAR GÖRÜŞÜLECEK</option>
-                                    <option>SÜREÇLE ALAKALI BİLGİ VERİLDİ.</option>
-                                    <option>YETKİLİ SERVİSE YÖNLENDİRİLDİ</option>
-                                    <option>ŞUBEYE AKTARILDI</option>
-                                    <option>GECİKME BİRİMİNE AKTARILDI</option>
-                                    <option>İSTANBUL SEVK. PLAN. AKTARILDI</option>
-                                    <option>İBAN PAYLAŞILDI</option>
-                                    <option>MÜŞTERİ MEMNUN</option>
-                                    <option>ARIZA KAYDI AÇILDI</option>
-                                    <option>İSTANBUL MÜŞ. HİZ. AKTARILDI</option>
-                                </select>
+                                <label class="form-label">Durum</label>
+                                <select class="form-select" id="editStatus"></select>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small text-muted">Görüşme Sağlayan</label>
-                                <select class="form-select" id="inpAgent" required>
-                                    <option value="" disabled selected>Seçiniz...</option>
-                                    <option>BURCU KÖSALI</option>
-                                    <option>ELVAN ATAK</option>
-                                    <option>SEVAL TEKOĞUL</option>
-                                    <option>FEYZA NUR DİLEK</option>
-                                    <option>MELİKE KARAPINAR</option>
-                                </select>
+                                <label class="form-label">Temsilci</label>
+                                <select class="form-select" id="editAgent"></select>
                             </div>
-                            
-                            <!-- Satır 3: Not Alanı -->
-                            <div class="col-md-12">
-                                <label class="form-label small text-muted">Not / Açıklama</label>
-                                <textarea class="form-control" id="inpNote" rows="2" placeholder="Varsa ek notlar..."></textarea>
-                            </div>
-
-                            <div class="col-12 text-end mt-3">
-                                <button type="reset" class="btn btn-light border me-2">Temizle</button>
-                                <button type="submit" class="btn btn-success px-4"><i class="fa-solid fa-save me-2"></i>Kaydet</button>
+                            <div class="col-md-8">
+                                <label class="form-label">Not</label>
+                                <textarea class="form-control" id="editNote" rows="2"></textarea>
                             </div>
                         </div>
                     </form>
                 </div>
-            </div>
-        </div>
-
-        <!-- 2. BÖLÜM: İSTATİSTİKLER (DASHBOARD) -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
-                        <i class="fa-solid fa-phone-volume"></i>
-                    </div>
-                    <div class="stat-value" id="statTotal">0</div>
-                    <div class="stat-label">Listelenen Çağrı</div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <div class="stat-icon bg-success bg-opacity-10 text-success">
-                        <i class="fa-solid fa-check-circle"></i>
-                    </div>
-                    <div class="stat-value" id="statResolved">0</div>
-                    <div class="stat-label">Çözümlenen / Olumlu</div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <div class="stat-icon bg-warning bg-opacity-10 text-warning">
-                        <i class="fa-solid fa-user-clock"></i>
-                    </div>
-                    <div class="stat-value" id="statPending">0</div>
-                    <div class="stat-label">Tekrar Görüşülecek</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. BÖLÜM: GRAFİKLER -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <div class="chart-title">
-                        <span><i class="fa-solid fa-chart-pie me-2 text-primary"></i>Arama Nedenleri</span>
-                    </div>
-                    <div class="chart-canvas-wrapper">
-                        <canvas id="topicChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <div class="chart-title">
-                        <span><i class="fa-solid fa-map-location-dot me-2 text-primary"></i>Bölgesel Yoğunluk</span>
-                    </div>
-                    <div class="chart-canvas-wrapper">
-                        <canvas id="regionChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. BÖLÜM: FİLTRELEME & TABLO -->
-        
-        <!-- Filtreleme Alanı (Tablonun Hemen Üzerinde) -->
-        <div class="filter-container">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-12 mb-1">
-                    <h6 class="text-secondary fw-bold"><i class="fa-solid fa-filter me-2"></i>Kayıtları Filtrele</h6>
-                </div>
-                
-                <div class="col-md-3">
-                    <label class="small text-muted mb-1">Genel Arama (Ad/Tel)</label>
-                    <input type="text" class="form-control form-control-sm" id="filterSearch" placeholder="İsim veya Tel No..." onkeyup="applyFilters()">
-                </div>
-                
-                <div class="col-md-2">
-                     <label class="small text-muted mb-1">Arama Nedeni</label>
-                     <select class="form-select form-select-sm" id="filterReason" onchange="applyFilters()">
-                         <option value="">Tümü</option>
-                     </select>
-                </div>
-
-                <div class="col-md-2">
-                    <label class="small text-muted mb-1">Müşteri Durumu</label>
-                    <select class="form-select form-select-sm" id="filterStatus" onchange="applyFilters()">
-                        <option value="">Tümü</option>
-                    </select>
-               </div>
-
-               <div class="col-md-2">
-                    <label class="small text-muted mb-1">Temsilci</label>
-                    <select class="form-select form-select-sm" id="filterAgent" onchange="applyFilters()">
-                        <option value="">Tümü</option>
-                        <option>BURCU KÖSALI</option>
-                        <option>ELVAN ATAK</option>
-                        <option>SEVAL TEKOĞUL</option>
-                        <option>FEYZA NUR DİLEK</option>
-                        <option>MELİKE KARAPINAR</option>
-                    </select>
-                </div>
-                
-                <div class="col-md-2">
-                    <label class="small text-muted mb-1">Bölge</label>
-                    <select class="form-select form-select-sm" id="filterRegion" onchange="applyFilters()">
-                        <option value="">Tümü</option>
-                        <option value="İstanbul">İstanbul</option>
-                        <option value="Kocaeli">Kocaeli</option>
-                    </select>
-                </div>
-
-                <div class="col-md-1">
-                    <button class="btn btn-outline-secondary btn-sm w-100" onclick="resetFilters()">Sıfırla</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tablo Alanı -->
-        <div class="row g-4">
-            <div class="col-12">
-                <div class="chart-container">
-                    <div class="chart-title">
-                        <span><i class="fa-solid fa-list me-2 text-primary"></i>Çağrı Kayıtları Listesi</span>
-                        <div class="text-end">
-                             <small class="text-muted fw-normal me-2" id="recordCountLabel">(0 kayıt)</small>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-custom table-hover" id="dataTable">
-                            <thead>
-                                <tr>
-                                    <th>Tarih</th>
-                                    <th>Müşteri</th>
-                                    <th>Tel</th>
-                                    <th>Arama Nedeni</th>
-                                    <th>Durum</th>
-                                    <th>Temsilci</th>
-                                    <th>Not</th>
-                                    <th>Bölge</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Sayfalama (Pagination) -->
-                    <nav aria-label="Page navigation" class="mt-3 border-top pt-3">
-                        <ul class="pagination" id="paginationControls">
-                            <!-- JS ile doldurulacak -->
-                        </ul>
-                    </nav>
-
+                <div class="modal-footer bg-white">
+                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary-custom px-4" onclick="saveUpdate()">Değişiklikleri Kaydet</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Chart.js Library -->
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // *** GÜNCELLENEN API URL ***
-        const API_URL = "https://script.google.com/macros/s/AKfycbzmh0TtUPRgqXpX3mZ7OvytgEg--MBKheEA46hXl7gLTjc23wEahTGugctfGopeikjI4g/exec"; 
+        // *** API URL ***
+        const API_URL = "https://script.google.com/macros/s/AKfycbzmh0TtUPRgqXpX3mZ7OvytgEg--MBKheEA46hXl7gLTjc23wEahTGugctfGopeikjI4g/exec";
 
-        // --- GLOBAL DEĞİŞKENLER ---
-        let allData = []; 
-        let currentFilteredData = []; // Filtrelenmiş aktif veri
+        let allData = [];
+        let currentFilteredData = [];
         let chartInstances = {};
-        
-        // Sayfalama Değişkenleri
         let currentPage = 1;
         const rowsPerPage = 10;
+        let editModalObj;
+        let originalRowData = null;
+        let refreshInterval;
 
-        // --- 2. BAŞLANGIÇ ---
-        window.onload = function() {
-            document.getElementById('inpDate').valueAsDate = new Date();
-            populateFilterOptions();
+        // Login Fonksiyonu
+        function checkPassword(e) {
+            e.preventDefault();
+            const pass = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('loginError');
             
-            if (API_URL === "BURAYA_URL_GELECEK" || API_URL === "") {
-                alert("Lütfen HTML dosyası içindeki API_URL değişkenine Apps Script URL'sini yapıştırın!");
+            if(pass === "12345") {
+                // Şifre Doğru
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                
+                // Uygulamayı Başlat
+                initializeApp();
+            } else {
+                // Şifre Yanlış
+                errorMsg.classList.remove('d-none');
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        // Uygulama Başlatıcı (Şifre girildikten sonra çalışır)
+        function initializeApp() {
+            editModalObj = new bootstrap.Modal(document.getElementById('editModal'));
+            document.getElementById('inpDate').valueAsDate = new Date();
+            
+            populateFilterOptions();
+            copyOptionsToEditModal();
+
+            if (!API_URL || API_URL.includes("BURAYA")) {
+                alert("Lütfen API URL'nizi kontrol edin.");
                 document.getElementById('loader').style.display = 'none';
             } else {
-                loadData();
+                loadData(true);
+                refreshInterval = setInterval(() => loadData(false), 5000);
             }
+        }
+
+        // window.onload artık sadece şifre inputuna odaklanabilir
+        window.onload = function() {
+            document.getElementById('passwordInput').focus();
         };
 
-        // --- 3. VERİ ÇEKME & KAYDETME (FETCH API) ---
-
-        function loadData() {
-            document.getElementById('loader').style.display = 'flex';
+        function loadData(showLoader) {
+            if(showLoader) document.getElementById('loader').style.display = 'flex';
             
             fetch(API_URL)
-                .then(response => response.json())
+                .then(res => res.json())
                 .then(data => {
-                    // BOŞ SATIR FİLTRESİ: 
-                    // Müşteri adı veya Telefon numarası olmayan kayıtları listeden çıkarıyoruz.
-                    // Böylece sheets'teki boş satırlar arayüze yansımaz.
                     allData = data.filter(item => {
-                        const hasName = item.musteri && item.musteri.toString().trim() !== "";
-                        const hasPhone = item.telefon && item.telefon.toString().trim() !== "";
-                        // İsim veya Telefon doluysa geçerli say
-                        return hasName || hasPhone;
+                        const m = (item.musteri || "").toString().trim();
+                        const t = (item.telefon || "").toString().trim();
+                        return m !== "" || t !== "";
                     });
-
-                    // İlk açılışta filtre uygulanmamış haliyle dashboardu güncelle
-                    applyFilters(); 
+                    
+                    applyFilters(false);
+                    if(showLoader) document.getElementById('loader').style.display = 'none';
                 })
-                .catch(error => {
-                    handleError(error);
+                .catch(err => {
+                    console.error(err);
+                    if(showLoader) {
+                        alert("Veri yükleme hatası!");
+                        document.getElementById('loader').style.display = 'none';
+                    }
                 });
         }
 
+        // --- Form Gönderimi ---
         function handleFormSubmit(e) {
             e.preventDefault();
-            
             const formData = {
                 tarih: document.getElementById('inpDate').value,
-                adsoyad: document.getElementById('inpName').value, 
+                adsoyad: document.getElementById('inpName').value,
                 tel: document.getElementById('inpPhone').value,
                 neden: document.getElementById('inpReason').value,
                 durum: document.getElementById('inpStatus').value,
                 temsilci: document.getElementById('inpAgent').value,
-                not: document.getElementById('inpNote').value,     
+                not: document.getElementById('inpNote').value,
                 bolge: document.getElementById('inpRegion').value
             };
+            sendData(formData, "create");
+        }
 
+        // --- Veri Gönderim/Güncelleme ---
+        function sendData(payload, type) {
             document.getElementById('loader').style.display = 'flex';
+            if (type === "update") editModalObj.hide();
 
             fetch(API_URL, {
                 method: "POST",
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             })
-            .then(response => response.json())
+            .then(res => res.json())
             .then(result => {
-                if(result.success) {
-                    alert(result.message || "İşlem Tamamlandı");
-                    document.getElementById('callForm').reset();
-                    document.getElementById('inpDate').valueAsDate = new Date();
-                    loadData(); // Listeyi yenile
+                if (result.success) {
+                    alert("İşlem Başarılı");
+                    if (type === "create") {
+                        document.getElementById('callForm').reset();
+                        document.getElementById('inpDate').valueAsDate = new Date();
+                    }
+                    loadData(true);
                 } else {
                     alert("Hata: " + result.message);
                     document.getElementById('loader').style.display = 'none';
                 }
             })
-            .catch(error => {
-                handleError(error);
+            .catch(err => {
+                console.error(err);
+                alert("Sunucu Hatası");
+                document.getElementById('loader').style.display = 'none';
             });
         }
 
-        // --- 4. VERİ İŞLEME VE FİLTRELEME ---
+        function saveUpdate() {
+            if (!originalRowData) return;
+            const updatedData = {
+                tarih: document.getElementById('editDate').value,
+                adsoyad: document.getElementById('editName').value,
+                tel: document.getElementById('editPhone').value,
+                neden: document.getElementById('editReason').value,
+                durum: document.getElementById('editStatus').value,
+                temsilci: document.getElementById('editAgent').value,
+                not: document.getElementById('editNote').value,
+                bolge: document.getElementById('editRegion').value
+            };
+            const payload = { action: "update", oldData: originalRowData, newData: updatedData };
+            sendData(payload, "update");
+        }
 
-        function applyFilters() {
-            const searchVal = document.getElementById('filterSearch').value.toLowerCase();
-            const reasonVal = document.getElementById('filterReason').value;
-            const statusVal = document.getElementById('filterStatus').value;
-            const agentVal = document.getElementById('filterAgent').value;
-            const regionVal = document.getElementById('filterRegion').value;
+        // --- Modal ---
+        function openEditModal(index) {
+            const globalIndex = (currentPage - 1) * rowsPerPage + index;
+            const data = currentFilteredData[globalIndex];
+            if (!data) return;
 
-            // Global filtered data güncellemesi
+            originalRowData = data;
+
+            let dateVal = "";
+            if (data.tarih) {
+                if(data.tarih.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                    dateVal = data.tarih;
+                } else {
+                    const d = new Date(data.tarih);
+                    if (!isNaN(d)) dateVal = d.toISOString().split('T')[0];
+                }
+            }
+
+            document.getElementById('editDate').value = dateVal;
+            document.getElementById('editName').value = data.musteri || "";
+            document.getElementById('editPhone').value = data.telefon || "";
+            document.getElementById('editNote').value = data.not || "";
+            
+            setSelectValue('editRegion', data.bolge);
+            setSelectValue('editReason', data.konu);
+            setSelectValue('editStatus', data.durum);
+            setSelectValue('editAgent', data.temsilci);
+
+            editModalObj.show();
+        }
+
+        function setSelectValue(id, val) {
+            const el = document.getElementById(id);
+            if(!el || !val) { if(el) el.value = ""; return; }
+            el.value = val;
+            if(el.selectedIndex === -1) {
+                for(let i=0; i<el.options.length; i++) {
+                    if(el.options[i].value.toLowerCase() === val.toString().toLowerCase()) {
+                        el.selectedIndex = i;
+                        return;
+                    }
+                }
+            }
+        }
+
+        // --- Filtreleme (DÜZELTİLDİ: Tarih Kayması Çözüldü) ---
+        function applyFilters(resetPage = true) {
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+            const reason = document.getElementById('filterReason').value;
+            const status = document.getElementById('filterStatus').value;
+            const region = document.getElementById('filterRegion').value;
+            const dateVal = document.getElementById('filterDate').value; 
+
             currentFilteredData = allData.filter(item => {
-                const sName = (item.musteri || "").toLowerCase();
+                const sName = (item.musteri || "").toString().toLowerCase();
                 const sTel = (item.telefon || "").toString();
                 const sReason = (item.konu || "");
                 const sStatus = (item.durum || "");
-                const sAgent = (item.temsilci || "");
                 const sRegion = (item.bolge || "");
 
-                const matchSearch = sName.includes(searchVal) || sTel.includes(searchVal);
-                const matchReason = reasonVal === "" || sReason === reasonVal;
-                const matchStatus = statusVal === "" || sStatus === statusVal;
-                const matchAgent = agentVal === "" || sAgent === agentVal;
-                const matchRegion = regionVal === "" || sRegion === regionVal;
+                const matchSearch = sName.includes(search) || sTel.includes(search);
+                const matchReason = reason === "" || sReason === reason;
+                const matchStatus = status === "" || sStatus === status;
+                const matchRegion = region === "" || sRegion === region;
 
-                return matchSearch && matchReason && matchStatus && matchAgent && matchRegion;
+                // Tarih Filtresi (Local Time Düzeltmesi)
+                let matchDate = true;
+                if(dateVal) {
+                    if(item.tarih) {
+                        let itemDateStr = "";
+                        if(item.tarih.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                            itemDateStr = item.tarih;
+                        } else {
+                            const d = new Date(item.tarih);
+                            if(!isNaN(d)) {
+                                const year = d.getFullYear();
+                                const month = String(d.getMonth() + 1).padStart(2, '0');
+                                const day = String(d.getDate()).padStart(2, '0');
+                                itemDateStr = `${year}-${month}-${day}`;
+                            }
+                        }
+                        matchDate = (itemDateStr === dateVal);
+                    } else {
+                        matchDate = false; 
+                    }
+                }
+
+                return matchSearch && matchReason && matchStatus && matchRegion && matchDate;
             });
 
-            // Filtre değiştiğinde sayfa 1'e dön
-            currentPage = 1;
-
+            if (resetPage) currentPage = 1;
             renderDashboard(currentFilteredData);
         }
 
@@ -580,252 +856,222 @@
             document.getElementById('filterSearch').value = "";
             document.getElementById('filterReason').value = "";
             document.getElementById('filterStatus').value = "";
-            document.getElementById('filterAgent').value = "";
             document.getElementById('filterRegion').value = "";
-            applyFilters();
+            document.getElementById('filterDate').value = "";
+            applyFilters(true);
         }
 
-        // --- 5. GÖRSELLEŞTİRME (RENDER) ---
-
         function renderDashboard(data) {
-            document.getElementById('loader').style.display = 'none';
-
-            // İstatistikleri Güncelle
             updateStats(data);
-            
-            // Grafikleri Güncelle
             updateCharts(data);
-
-            // Tabloyu Güncelle (Sayfalama ile)
             renderTable(data);
         }
 
         function updateStats(data) {
             const total = data.length;
-            const resolved = data.filter(d => 
-                (d.durum || "").includes("ÇÖZÜMLENDİ") || 
-                (d.durum || "").includes("MEMNUN") || 
-                (d.durum || "").includes("İBAN") 
-            ).length;
-            
-            const pending = data.filter(d => 
-                (d.durum || "").includes("TEKRAR") || 
-                (d.durum || "").includes("AKTARILDI") ||
-                (d.durum || "").includes("YÖNLENDİRİLDİ") ||
-                (d.durum || "").includes("ARIZA KAYDI")
-            ).length;
+            const resolved = data.filter(d => (d.durum || "").match(/ÇÖZÜMLENDİ|MEMNUN|İBAN/i)).length;
+            const pending = data.filter(d => (d.durum || "").match(/TEKRAR|AKTARILDI|YÖNLENDİRİLDİ|ARIZA/i)).length;
 
-            animateValue("statTotal", parseInt(document.getElementById("statTotal").innerText), total, 500);
-            animateValue("statResolved", parseInt(document.getElementById("statResolved").innerText), resolved, 500);
-            animateValue("statPending", parseInt(document.getElementById("statPending").innerText), pending, 500);
-            
-            document.getElementById('recordCountLabel').innerText = `(${total} kayıt)`;
+            document.getElementById("statTotal").innerText = total;
+            document.getElementById("statResolved").innerText = resolved;
+            document.getElementById("statPending").innerText = pending;
+            document.getElementById('recordCountLabel').innerText = `Toplam ${total} kayıt listelendi`;
         }
 
+        // GRAFİK İŞLEMLERİ (TOP 5 ve Sıralama)
         function updateCharts(data) {
-             const topicCounts = {};
+            const tCounts = {};
+            const rCounts = { "İstanbul": 0, "Kocaeli": 0 };
+            
             data.forEach(r => {
-                const topic = r.konu || "Belirtilmemiş";
-                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+                const topic = r.konu || "Belirsiz";
+                tCounts[topic] = (tCounts[topic] || 0) + 1;
+                if (rCounts[r.bolge] !== undefined) rCounts[r.bolge]++;
             });
 
-            const regionCounts = { "İstanbul": 0, "Kocaeli": 0, "Diğer": 0 };
-            data.forEach(r => {
-                if(r.bolge === "İstanbul") regionCounts["İstanbul"]++;
-                else if(r.bolge === "Kocaeli") regionCounts["Kocaeli"]++;
-                else regionCounts["Diğer"]++;
-            });
+            // Arama Nedenlerini Büyükten Küçüğe Sırala ve İlk 5'i Al
+            const sortedTopics = Object.entries(tCounts)
+                .sort((a, b) => b[1] - a[1]) // Değere göre azalan sıralama
+                .slice(0, 5); // İlk 5'i al
 
-            renderTopicChart(topicCounts);
-            renderRegionChart(regionCounts);
+            // Chart.js formatına çevir
+            const topicLabels = sortedTopics.map(item => item[0]);
+            const topicData = sortedTopics.map(item => item[1]);
+
+            renderTopicChart(topicLabels, topicData); 
+            renderRegionChart(rCounts);
         }
 
-        // --- TABLO VE SAYFALAMA ---
+        function renderTopicChart(labels, data) {
+            const ctx = document.getElementById('topicChart').getContext('2d');
+
+            if (chartInstances.topic) {
+                chartInstances.topic.data.labels = labels;
+                chartInstances.topic.data.datasets[0].data = data;
+                chartInstances.topic.update('none'); 
+            } else {
+                chartInstances.topic = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Kayıt',
+                            data: data,
+                            backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                            borderRadius: 6,
+                            barPercentage: 0.7
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { x: { beginAtZero: true, grid: { display: true, color:'#f1f5f9' } }, y: { grid: { display: false } } }
+                    }
+                });
+            }
+        }
+
+        function renderRegionChart(counts) {
+            const ctx = document.getElementById('regionChart').getContext('2d');
+            const labels = Object.keys(counts);
+            const data = Object.values(counts);
+
+            if (chartInstances.region) {
+                chartInstances.region.data.labels = labels;
+                chartInstances.region.data.datasets[0].data = data;
+                chartInstances.region.update('none');
+            } else {
+                chartInstances.region = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Kayıt',
+                            data: data,
+                            backgroundColor: ['#6366f1', '#10b981'],
+                            borderRadius: 6,
+                            barThickness: 50
+                        }]
+                    },
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        scales: { y: { beginAtZero: true, grid: { display: true, color:'#f1f5f9' } }, x: { grid: { display: false } } }, 
+                        plugins: { legend: { display: false } } 
+                    }
+                });
+            }
+        }
 
         function renderTable(data) {
             const tbody = document.querySelector('#dataTable tbody');
             tbody.innerHTML = '';
-            
-            // Sayfalama Hesaplamaları
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = startIndex + rowsPerPage;
-            const pageData = data.slice(startIndex, endIndex);
 
-            pageData.forEach(row => {
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageData = data.slice(start, end);
+
+            if(pageData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Kayıt bulunamadı.</td></tr>';
+                document.getElementById('paginationControls').innerHTML = '';
+                return;
+            }
+
+            pageData.forEach((row, index) => {
                 const tr = document.createElement('tr');
                 
                 let dateStr = row.tarih;
                 try {
                     const d = new Date(row.tarih);
-                    if(!isNaN(d)) dateStr = d.toLocaleDateString('tr-TR');
-                } catch(e){}
+                    if (!isNaN(d)) dateStr = d.toLocaleDateString('tr-TR');
+                } catch(e) {}
 
-                let statusClass = 'badge bg-secondary';
-                const st = (row.durum || "").toLowerCase();
-                if(st.includes('çözüldü') || st.includes('memnun') || st.includes('iban')) statusClass = 'badge badge-status-ok';
-                else if(st.includes('tekrar') || st.includes('bilgi verildi') || st.includes('aktarıldı')) statusClass = 'badge badge-status-wait';
-                else if(st.includes('iptal') || st.includes('sorun') || st.includes('ariza')) statusClass = 'badge badge-status-fail';
+                let badgeClass = "badge-status badge-neutral";
+                const st = (row.durum || "").toUpperCase();
+                if (st.includes("ÇÖZÜMLENDİ") || st.includes("MEMNUN") || st.includes("İBAN")) badgeClass = "badge-status badge-success";
+                else if (st.includes("TEKRAR") || st.includes("AKTARILDI") || st.includes("YÖNLENDİRİLDİ")) badgeClass = "badge-status badge-warning";
+                else if (st.includes("ARIZA") || st.includes("İPTAL")) badgeClass = "badge-status badge-danger";
 
                 tr.innerHTML = `
-                    <td class="text-nowrap text-secondary small fw-bold">${dateStr}</td>
+                    <td class="text-muted fw-medium">${dateStr}</td>
                     <td class="fw-bold text-dark">${row.musteri || '-'}</td>
                     <td>${row.telefon || '-'}</td>
-                    <td><span class="badge bg-light text-dark border text-wrap" style="font-weight:normal">${row.konu || '-'}</span></td>
-                    <td><span class="${statusClass}">${row.durum || '-'}</span></td>
-                    <td class="small text-muted">${row.temsilci || '-'}</td>
-                    <td class="small text-muted text-truncate" style="max-width: 150px;" title="${row.not || ''}">${row.not || '-'}</td>
-                    <td class="small text-muted">${row.bolge || '-'}</td>
+                    <td><div class="text-truncate" style="max-width: 150px;" title="${row.konu}">${row.konu || '-'}</div></td>
+                    <td><span class="${badgeClass}">${row.durum || '-'}</span></td>
+                    <td>${row.bolge || '-'}</td>
+                    <td class="text-end">
+                        <button class="btn-icon" onclick="openEditModal(${index})">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            renderPaginationControls(data.length);
+            renderPagination(data.length);
         }
 
-        function renderPaginationControls(totalItems) {
-            const paginationEl = document.getElementById('paginationControls');
-            paginationEl.innerHTML = '';
-
+        function renderPagination(totalItems) {
+            const container = document.getElementById('paginationControls');
+            container.innerHTML = '';
             const totalPages = Math.ceil(totalItems / rowsPerPage);
-
             if (totalPages <= 1) return;
 
-            // Önceki Butonu
-            const prevLi = document.createElement('li');
-            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-            prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">&laquo;</a>`;
-            paginationEl.appendChild(prevLi);
+            const createItem = (text, page, isActive = false, isDisabled = false) => {
+                const li = document.createElement('li');
+                li.className = `page-item ${isActive ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`;
+                li.innerHTML = `<button class="page-link" onclick="changePage(${page})">${text}</button>`;
+                return li;
+            };
 
-            // Sayfa Numaraları (Basitçe gösterim, çok sayfa varsa hepsini sığdırmak için mantık eklenebilir)
-            // Şimdilik max 5 sayfa gösterimi veya basit bir döngü yapalım.
+            container.appendChild(createItem('<i class="fa-solid fa-chevron-left"></i>', currentPage - 1, false, currentPage === 1));
             
             let startPage = Math.max(1, currentPage - 2);
             let endPage = Math.min(totalPages, currentPage + 2);
 
-            if (startPage > 1) {
-                const firstLi = document.createElement('li');
-                firstLi.className = 'page-item';
-                firstLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(1); return false;">1</a>`;
-                paginationEl.appendChild(firstLi);
-                if(startPage > 2) {
-                     const dotsLi = document.createElement('li');
-                     dotsLi.className = 'page-item disabled';
-                     dotsLi.innerHTML = `<span class="page-link">...</span>`;
-                     paginationEl.appendChild(dotsLi);
-                }
-            }
-
             for (let i = startPage; i <= endPage; i++) {
-                const li = document.createElement('li');
-                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-                li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>`;
-                paginationEl.appendChild(li);
+                container.appendChild(createItem(i, i, i === currentPage));
             }
 
-            if (endPage < totalPages) {
-                if(endPage < totalPages - 1) {
-                     const dotsLi = document.createElement('li');
-                     dotsLi.className = 'page-item disabled';
-                     dotsLi.innerHTML = `<span class="page-link">...</span>`;
-                     paginationEl.appendChild(dotsLi);
-                }
-                const lastLi = document.createElement('li');
-                lastLi.className = 'page-item';
-                lastLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${totalPages}); return false;">${totalPages}</a>`;
-                paginationEl.appendChild(lastLi);
-            }
-
-            // Sonraki Butonu
-            const nextLi = document.createElement('li');
-            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-            nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">&raquo;</a>`;
-            paginationEl.appendChild(nextLi);
+            container.appendChild(createItem('<i class="fa-solid fa-chevron-right"></i>', currentPage + 1, false, currentPage === totalPages));
         }
 
         function changePage(page) {
-            const totalPages = Math.ceil(currentFilteredData.length / rowsPerPage);
-            if (page < 1 || page > totalPages) return;
-            
+            const max = Math.ceil(currentFilteredData.length / rowsPerPage);
+            if (page < 1 || page > max) return;
             currentPage = page;
-            renderTable(currentFilteredData); // Sadece tabloyu güncelle
+            renderTable(currentFilteredData);
         }
 
-        // --- GRAFİK FONKSİYONLARI ---
-
-        function renderTopicChart(counts) {
-            const ctx = document.getElementById('topicChart').getContext('2d');
-            if(chartInstances.topic) chartInstances.topic.destroy();
-
-            const sortedEntries = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 8);
-            
-            chartInstances.topic = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: sortedEntries.map(e => e[0]),
-                    datasets: [{
-                        data: sortedEntries.map(e => e[1]),
-                        backgroundColor: ['#4361ee', '#3a0ca3', '#7209b7', '#f72585', '#4cc9f0', '#4895ef', '#560bad', '#b5179e'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: {size: 10} } } }
+        function copyOptionsToEditModal() {
+            const copy = (srcId, destId) => { 
+                const srcEl = document.getElementById(srcId);
+                const destEl = document.getElementById(destId);
+                if (srcEl && destEl) {
+                    destEl.innerHTML = srcEl.innerHTML; 
                 }
-            });
-        }
-
-        function renderRegionChart(counts) {
-            const ctx = document.getElementById('regionChart').getContext('2d');
-            if(chartInstances.region) chartInstances.region.destroy();
-
-            chartInstances.region = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['İstanbul', 'Kocaeli', 'Diğer'],
-                    datasets: [{
-                        label: 'Kayıt Sayısı',
-                        data: [counts['İstanbul'], counts['Kocaeli'], counts['Diğer']],
-                        backgroundColor: ['#4361ee', '#10b981', '#cbd5e1'],
-                        borderRadius: 6,
-                        barThickness: 40
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true }, x: { grid: { display: false } } },
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
-
-        function handleError(error) {
-            alert("Sunucu Hatası: " + error);
-            document.getElementById('loader').style.display = 'none';
-        }
-
-        function animateValue(id, start, end, duration) {
-            if (start === end) return;
-            const range = end - start;
-            let current = start;
-            const increment = end > start ? 1 : -1;
-            const stepTime = Math.abs(Math.floor(duration / range));
-            const obj = document.getElementById(id);
-            const timer = setInterval(function() {
-                current += increment;
-                obj.innerHTML = current;
-                if (current == end) clearInterval(timer);
-            }, stepTime > 0 ? stepTime : 10);
+            };
+            copy('inpReason', 'editReason');
+            copy('inpStatus', 'editStatus');
+            copy('inpAgent', 'editAgent');
         }
 
         function populateFilterOptions() {
-            const reasonOptions = document.getElementById('inpReason').innerHTML;
-            document.getElementById('filterReason').innerHTML = '<option value="">Tümü</option>' + reasonOptions.replace('disabled selected>Seçiniz...</option>', '></option>');
-            
-            const statusOptions = document.getElementById('inpStatus').innerHTML;
-            document.getElementById('filterStatus').innerHTML = '<option value="">Tümü</option>' + statusOptions.replace('disabled selected>Seçiniz...</option>', '></option>');
+            const reasonSrc = document.getElementById('inpReason');
+            const reasonDest = document.getElementById('filterReason');
+            if(reasonSrc && reasonDest) {
+                const opts = reasonSrc.innerHTML.replace(/disabled|selected/g, '');
+                reasonDest.innerHTML = '<option value="">Arama Nedeni</option>' + opts;
+            }
+
+            const statusSrc = document.getElementById('inpStatus');
+            const statusDest = document.getElementById('filterStatus');
+            if(statusSrc && statusDest) {
+                const opts = statusSrc.innerHTML.replace(/disabled|selected/g, '');
+                statusDest.innerHTML = '<option value="">Durum</option>' + opts;
+            }
         }
     </script>
 </body>
