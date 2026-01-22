@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Hedef AVM Müşteri Hizmetleri Paneli</title>
     
     <!-- Bootstrap 5 CSS -->
@@ -14,370 +14,233 @@
     
     <style>
         :root {
-            --primary-color: #6366f1; /* Indigo 500 */
-            --primary-hover: #4f46e5; /* Indigo 600 */
-            --bg-color: #f8fafc;      /* Slate 50 */
+            --primary: #4f46e5;       
+            --primary-hover: #4338ca; 
+            --bg-body: #f1f5f9;       
             --card-bg: #ffffff;
-            --text-main: #1e293b;     /* Slate 800 */
-            --text-muted: #64748b;    /* Slate 500 */
-            --border-color: #e2e8f0;  /* Slate 200 */
-            --radius: 12px;
+            --text-main: #0f172a;     
+            --text-muted: #64748b;    
+            --border-color: #e2e8f0;  
+            --radius: 16px;
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-body);
             font-family: 'Inter', sans-serif;
             color: var(--text-main);
             padding-bottom: 80px;
+            font-size: 0.95rem;
         }
 
         /* --- Login Screen --- */
         #login-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #f1f5f9;
-            z-index: 10000; /* En üstte */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
         }
         .login-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
+            background: white; padding: 3rem 2rem; border-radius: 24px;
+            box-shadow: var(--shadow-lg); width: 100%; max-width: 420px; text-align: center; border: 1px solid rgba(255,255,255,0.5);
         }
         .login-icon {
-            width: 64px; height: 64px;
-            background: var(--bg-color);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 1.5rem;
-            color: var(--primary-color);
-            font-size: 1.75rem;
+            width: 80px; height: 80px; background: #e0e7ff; border-radius: 24px;
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;
+            color: var(--primary); font-size: 2.5rem; box-shadow: var(--shadow-sm);
         }
 
         /* --- Navbar --- */
         .navbar {
-            background: var(--card-bg);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            padding: 0.75rem 0; margin-bottom: 2rem;
+            position: sticky; top: 0; z-index: 1000;
         }
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--text-main);
-            font-size: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .navbar-brand { font-weight: 700; color: var(--text-main); font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .brand-icon {
+            width: 36px; height: 36px; background: var(--primary); color: white;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem;
         }
 
-        /* --- Kartlar (Cards) --- */
+        /* --- Cards --- */
         .panel-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: var(--radius); box-shadow: var(--shadow-sm);
+            height: 100%; display: flex; flex-direction: column; overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+        .panel-card:hover { box-shadow: var(--shadow-md); }
         
         .card-header-custom {
-            padding: 1.25rem;
-            border-bottom: 1px solid var(--border-color);
-            background: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); background: #fff;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
         }
-        .card-title-custom {
-            font-weight: 600;
-            color: var(--text-main);
-            margin: 0;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .card-body-custom {
-            padding: 1.5rem;
-            flex-grow: 1;
-        }
+        .card-title-custom { font-weight: 700; color: var(--text-main); margin: 0; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+        .card-body-custom { padding: 1.5rem; flex-grow: 1; }
 
-        /* --- İstatistik Kutuları --- */
+        /* --- Stats --- */
         .stat-card {
-            background: white;
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            height: 100%;
-            transition: transform 0.2s;
+            background: white; border-radius: var(--radius); padding: 1.5rem;
+            border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
+            display: flex; align-items: center; height: 100%; transition: transform 0.2s;
         }
-        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        
         .stat-icon {
-            width: 56px; height: 56px;
-            border-radius: 12px;
+            width: 50px; height: 50px; border-radius: 14px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
-            margin-right: 1.25rem;
-            flex-shrink: 0;
+            font-size: 1.4rem; margin-right: 1rem; flex-shrink: 0;
         }
-        .stat-info h3 { font-size: 1.75rem; font-weight: 700; margin: 0; line-height: 1.2; color: var(--text-main); }
-        .stat-info span { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-info h3 { font-size: 1.75rem; font-weight: 800; margin: 0; line-height: 1.1; color: #0f172a; letter-spacing: -0.02em; }
+        .stat-info span { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
-        /* Renkler */
-        .bg-indigo-light { background: #e0e7ff; color: #4338ca; }
-        .bg-emerald-light { background: #d1fae5; color: #065f46; }
-        .bg-amber-light { background: #fef3c7; color: #92400e; }
+        .bg-indigo-light { background: #eef2ff; color: #4f46e5; }
+        .bg-emerald-light { background: #ecfdf5; color: #059669; }
+        .bg-amber-light { background: #fffbeb; color: #d97706; }
 
-        /* --- Grafikler --- */
-        .chart-wrapper {
-            position: relative;
-            height: 320px; /* Grafik yüksekliği artırıldı */
-            width: 100%;
-        }
-
-        /* --- Form Alanları --- */
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 0.4rem;
-        }
+        /* --- Forms --- */
+        .form-label { font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 0.4rem; }
         .form-control, .form-select {
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            color: var(--text-main);
+            border-radius: 10px; border: 1px solid #cbd5e1;
+            padding: 0.6rem 0.9rem; font-size: 0.9rem; color: var(--text-main);
+            background-color: #fff; transition: all 0.2s;
         }
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        .form-control:focus, .form-select:focus { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); 
+            outline: none;
         }
 
-        /* --- Tablo --- */
-        .table-responsive {
-            border-radius: 0 0 var(--radius) var(--radius);
-        }
-        .table-custom {
-            margin-bottom: 0;
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
+        /* --- Table --- */
+        .table-responsive { border-radius: 0 0 var(--radius) var(--radius); }
+        .table-custom { margin: 0; width: 100%; border-collapse: separate; border-spacing: 0; }
         .table-custom thead th {
-            background-color: #f8fafc;
-            color: var(--text-muted);
-            font-weight: 600;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            white-space: nowrap;
+            background-color: #f8fafc; color: #64748b; font-weight: 600;
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+            padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); white-space: nowrap;
         }
         .table-custom tbody td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-            font-size: 0.9rem;
-            color: var(--text-main);
+            padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color);
+            vertical-align: middle; font-size: 0.9rem; color: #334155;
         }
-        .table-custom tbody tr:hover { background-color: #f1f5f9; }
+        .table-custom tbody tr:hover { background-color: #f8fafc; }
 
-        /* --- Badges --- */
-        .badge-status {
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-weight: 500;
-            font-size: 0.75rem;
-            display: inline-block;
-        }
-        .badge-success { background: #dcfce7; color: #15803d; }
-        .badge-warning { background: #fef9c3; color: #a16207; }
-        .badge-danger { background: #fee2e2; color: #b91c1c; }
+        /* --- Badges & Buttons --- */
+        .badge-status { padding: 6px 10px; border-radius: 20px; font-weight: 600; font-size: 0.7rem; display: inline-flex; align-items: center; white-space: nowrap; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef9c3; color: #854d0e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
         .badge-neutral { background: #f1f5f9; color: #475569; }
 
-        /* --- Butonlar --- */
         .btn-primary-custom {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-            font-weight: 500;
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            transition: all 0.2s;
+            background-color: var(--primary); border: 1px solid var(--primary); color: white;
+            font-weight: 600; padding: 0.6rem 1.5rem; border-radius: 10px; 
+            transition: all 0.2s; box-shadow: var(--shadow-sm);
         }
-        .btn-primary-custom:hover {
-            background-color: var(--primary-hover);
-            border-color: var(--primary-hover);
-            transform: translateY(-1px);
-        }
+        .btn-primary-custom:hover { background-color: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        
         .btn-icon {
-            width: 32px; height: 32px;
-            display: inline-flex; align-items: center; justify-content: center;
-            border-radius: 6px; border: 1px solid var(--border-color);
-            color: var(--text-muted); background: white;
-            transition: all 0.2s;
+            width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 8px; border: 1px solid var(--border-color); color: var(--text-muted); background: white;
         }
-        .btn-icon:hover {
-            border-color: var(--primary-color); color: var(--primary-color); background: #eef2ff;
+        .btn-icon:hover { border-color: var(--primary); color: var(--primary); background: #eef2ff; }
+
+        /* --- Mobile Responsive Tweaks --- */
+        @media (max-width: 768px) {
+            body { padding-bottom: 40px; }
+            .navbar-brand { font-size: 1rem; }
+            .brand-icon { width: 32px; height: 32px; font-size: 0.9rem; }
+            .stat-card { padding: 1.2rem; }
+            .stat-icon { width: 42px; height: 42px; font-size: 1.2rem; }
+            .stat-info h3 { font-size: 1.5rem; }
+            
+            .card-header-custom { padding: 1rem; flex-direction: column; align-items: flex-start; }
+            .card-header-custom .d-flex { width: 100%; }
+            
+            /* Filtreleme alanı mobilde alt alta */
+            .filter-row .col-md-auto, .filter-row .col { width: 100%; }
+            .btn-primary-custom { width: 100%; }
         }
 
-        /* --- Pagination --- */
-        .pagination-container {
-            padding: 1rem;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .pagination .page-link {
-            border-radius: 6px;
-            margin: 0 3px;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 0.85rem;
-        }
-        .pagination .page-item.active .page-link {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
-
-        /* Loading */
-        #loader {
-            position: fixed; inset: 0;
-            background: rgba(255,255,255,0.9);
-            z-index: 9999;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
+        #loader { 
+            position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 9999; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(5px);
         }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN EKRANI -->
     <div id="login-screen">
         <div class="login-card">
-            <div class="login-icon">
-                <i class="fa-solid fa-lock"></i>
-            </div>
+            <div class="login-icon"><i class="fa-solid fa-lock"></i></div>
             <h4 class="mb-2 fw-bold text-dark">Güvenli Giriş</h4>
             <p class="text-muted small mb-4">Panele erişmek için şifrenizi giriniz.</p>
-            
             <form onsubmit="checkPassword(event)">
-                <div class="mb-3">
-                    <input type="password" class="form-control text-center" id="passwordInput" placeholder="Şifre" required>
-                </div>
-                <button type="submit" class="btn btn-primary-custom w-100">Giriş Yap</button>
+                <div class="mb-3"><input type="password" class="form-control text-center py-3" id="passwordInput" placeholder="Şifre" required style="letter-spacing: 2px;"></div>
+                <button type="submit" class="btn btn-primary-custom w-100 py-3">Giriş Yap</button>
             </form>
-            <p id="loginError" class="text-danger small mt-2 d-none"><i class="fa-solid fa-circle-exclamation me-1"></i>Hatalı Şifre!</p>
+            <p id="loginError" class="text-danger small mt-3 d-none fw-bold"><i class="fa-solid fa-circle-exclamation me-1"></i>Hatalı Şifre!</p>
         </div>
     </div>
 
-    <!-- ANA İÇERİK (Başlangıçta Gizli) -->
     <div id="main-content" style="display: none;">
-
         <div id="loader">
-            <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
-            <div class="fw-bold text-muted">Veriler İşleniyor...</div>
+            <div class="spinner-border text-primary mb-3" style="width: 3.5rem; height: 3.5rem; border-width: 4px;" role="status"></div>
+            <div class="fw-bold text-dark fs-5">Veriler İşleniyor...</div>
         </div>
 
-        <!-- Navbar -->
-        <nav class="navbar sticky-top">
+        <nav class="navbar">
             <div class="container">
                 <a class="navbar-brand" href="#">
-                    <div class="bg-indigo-light p-2 rounded-3 me-2">
-                        <i class="fa-solid fa-headset"></i>
-                    </div>
-                    Hedef AVM Müşteri Hizmetleri
+                    <div class="brand-icon"><i class="fa-solid fa-headset"></i></div>
+                    Hedef AVM Panel
                 </a>
                 <div class="d-flex align-items-center">
-                    <span class="badge bg-white text-success border px-3 py-2 d-flex align-items-center shadow-sm">
-                        <span class="spinner-grow spinner-grow-sm me-2" role="status"></span>
-                        Canlı (5sn)
+                    <span class="badge bg-white text-success border px-3 py-2 d-flex align-items-center shadow-sm rounded-pill">
+                        <span class="spinner-grow spinner-grow-sm me-2" role="status" style="width: 0.5rem; height: 0.5rem;"></span> Canlı (1sn)
                     </span>
                 </div>
             </div>
         </nav>
 
         <div class="container">
-
-            <!-- 1. BÖLÜM: İstatistik Kartları -->
-            <div class="row g-4 mb-4">
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-icon bg-indigo-light">
-                            <i class="fa-solid fa-phone"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="statTotal">0</h3>
-                            <span>Toplam Çağrı</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-icon bg-emerald-light">
-                            <i class="fa-solid fa-check-circle"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="statResolved">0</h3>
-                            <span>Çözümlenen</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="stat-icon bg-amber-light">
-                            <i class="fa-solid fa-clock-rotate-left"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="statPending">0</h3>
-                            <span>Bekleyen</span>
-                        </div>
+            
+            <!-- ANALİZ FİLTRESİ -->
+            <div class="row mb-4">
+                <div class="col-12 d-flex justify-content-end align-items-center">
+                    <label class="me-2 text-muted fw-bold small">Dönem:</label>
+                    <div class="d-flex align-items-center bg-white p-1 rounded-3 border shadow-sm">
+                        <i class="fa-solid fa-calendar-days text-primary mx-2"></i>
+                        <select class="form-select form-select-sm border-0 bg-transparent fw-bold text-dark" style="width: auto; box-shadow: none; cursor: pointer;" id="analysisPeriodFilter" onchange="applyAnalysisFilter()">
+                            <option value="">Tüm Zamanlar</option>
+                        </select>
                     </div>
                 </div>
             </div>
 
+            <!-- 1. BÖLÜM: İstatistik Kartları -->
+            <div class="row g-3 g-md-4 mb-4">
+                <div class="col-12 col-md-4"><div class="stat-card"><div class="stat-icon bg-indigo-light"><i class="fa-solid fa-phone"></i></div><div class="stat-info"><h3 id="statTotal">0</h3><span>Toplam Çağrı</span></div></div></div>
+                <div class="col-12 col-md-4"><div class="stat-card"><div class="stat-icon bg-emerald-light"><i class="fa-solid fa-check-circle"></i></div><div class="stat-info"><h3 id="statResolved">0</h3><span>Çözümlenen</span></div></div></div>
+                <div class="col-12 col-md-4"><div class="stat-card"><div class="stat-icon bg-amber-light"><i class="fa-solid fa-clock-rotate-left"></i></div><div class="stat-info"><h3 id="statPending">0</h3><span>Bekleyen</span></div></div></div>
+            </div>
+
             <!-- 2. BÖLÜM: Grafikler -->
             <div class="row g-4 mb-5">
-                <!-- Arama Nedenleri (GENİŞ) -->
                 <div class="col-lg-8">
                     <div class="panel-card">
-                        <div class="card-header-custom">
-                            <h6 class="card-title-custom"><i class="fa-solid fa-chart-bar text-muted"></i> En Çok Aranan Konular (Top 5)</h6>
-                        </div>
-                        <div class="card-body-custom d-flex align-items-center">
-                            <div class="chart-wrapper">
-                                <canvas id="topicChart"></canvas>
-                            </div>
-                        </div>
+                        <div class="card-header-custom"><h6 class="card-title-custom"><i class="fa-solid fa-chart-bar text-muted"></i> En Çok Aranan Konular (Top 5)</h6></div>
+                        <div class="card-body-custom d-flex align-items-center"><div class="chart-wrapper" style="width:100%; height:300px;"><canvas id="topicChart"></canvas></div></div>
                     </div>
                 </div>
-                <!-- Bölgesel Dağılım (DAR) -->
                 <div class="col-lg-4">
                     <div class="panel-card">
-                        <div class="card-header-custom">
-                            <h6 class="card-title-custom"><i class="fa-solid fa-map-location-dot text-muted"></i> Bölgesel Dağılım</h6>
-                        </div>
-                        <div class="card-body-custom d-flex align-items-center">
-                            <div class="chart-wrapper">
-                                <canvas id="regionChart"></canvas>
-                            </div>
-                        </div>
+                        <div class="card-header-custom"><h6 class="card-title-custom"><i class="fa-solid fa-map-location-dot text-muted"></i> Bölgesel Dağılım</h6></div>
+                        <div class="card-body-custom d-flex align-items-center"><div class="chart-wrapper" style="width:100%; height:300px;"><canvas id="regionChart"></canvas></div></div>
                     </div>
                 </div>
             </div>
@@ -386,90 +249,51 @@
             <div class="row mb-5">
                 <div class="col-12">
                     <div class="panel-card border-start border-4 border-primary">
-                        <div class="card-header-custom">
-                            <h6 class="card-title-custom text-primary"><i class="fa-solid fa-plus-circle"></i> Yeni Çağrı Kaydı Oluştur</h6>
-                        </div>
+                        <div class="card-header-custom"><h6 class="card-title-custom text-primary fs-5"><i class="fa-solid fa-plus-circle"></i> Yeni Çağrı Kaydı Oluştur</h6></div>
                         <div class="card-body-custom">
                             <form id="callForm" onsubmit="handleFormSubmit(event)">
-                                <div class="row g-4">
-                                    <div class="col-md-3">
-                                        <label class="form-label">Tarih</label>
-                                        <input type="date" class="form-control" id="inpDate" required>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Müşteri Ad Soyad</label>
-                                        <input type="text" class="form-control" id="inpName" placeholder="Ad Soyad" required>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Telefon No</label>
-                                        <input type="text" class="form-control" id="inpPhone" placeholder="05..." required>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">Bölge</label>
-                                        <select class="form-select" id="inpRegion">
-                                            <option value="İstanbul" selected>İstanbul</option>
-                                            <option value="Kocaeli">Kocaeli</option>
-                                        </select>
-                                    </div>
-
+                                <div class="row g-3">
+                                    <div class="col-6 col-md-3"><label class="form-label">Tarih</label><input type="date" class="form-control" id="inpDate" required></div>
+                                    <div class="col-6 col-md-3"><label class="form-label">Bölge</label><select class="form-select" id="inpRegion" onchange="updateReasonOptions('inpRegion', 'inpReason'); updateStatusOptions('inpRegion', 'inpStatus')"><option value="İstanbul" selected>İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
+                                    <div class="col-md-3"><label class="form-label">Müşteri Ad Soyad</label><input type="text" class="form-control" id="inpName" placeholder="Ad Soyad" required></div>
+                                    <div class="col-md-3"><label class="form-label">Telefon No</label><input type="text" class="form-control" id="inpPhone" placeholder="05..." required></div>
+                                    
                                     <div class="col-md-4">
                                         <label class="form-label">Arama Nedeni</label>
                                         <select class="form-select" id="inpReason" required>
                                             <option value="" disabled selected>Seçiniz...</option>
-                                            <option>ÜRÜN TESLİMATI</option>
-                                            <option>ÜRÜN ARIZASI</option>
-                                            <option>TAKSİT İŞLEMLERİ / BORÇ BİLGİSİ</option>
-                                            <option>SERVİS NUMARASI</option>
-                                            <option>ÜRÜN İPTALİ DEĞİŞİMİ</option>
-                                            <option>ÜRÜN BİLGİSİ</option>
-                                            <option>AVUKATLIK MÜŞTERİ</option>
-                                            <option>EKSİK / HATALI ÜRÜN</option>
-                                            <option>FATURA İŞLEMLERİ</option>
-                                            <option>SENET İŞLEMLERİ</option>
-                                            <option>KAMP.BİLGİSİ</option>
-                                            <option>MEMNUNİYET ARAMASI</option>
-                                            <option>THH MÜŞTERİSİ</option>
-                                            <option>SÜREÇLE ALAKALI BİLGİ VERİLDİ</option>
+                                            <option value="ÜRÜN TESLİMATI">ÜRÜN TESLİMATI</option>
+                                            <option value="ÜRÜN ARIZASI">ÜRÜN ARIZASI</option>
+                                            <option value="TAKSİT İŞLEMLERİ/BORÇ BİLGİSİ">TAKSİT İŞLEMLERİ/BORÇ BİLGİSİ</option>
+                                            <option value="GENEL BİLGİ">GENEL BİLGİ</option>
                                         </select>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Sonuç / Durum</label>
                                         <select class="form-select" id="inpStatus" required>
                                             <option value="" disabled selected>Seçiniz...</option>
-                                            <option>ÇÖZÜMLENDİ</option>
-                                            <option>ÇÖZÜLENMEDİ</option>
-                                            <option>TEKRAR GÖRÜŞÜLECEK</option>
-                                            <option>SÜREÇLE ALAKALI BİLGİ VERİLDİ.</option>
-                                            <option>YETKİLİ SERVİSE YÖNLENDİRİLDİ</option>
-                                            <option>ŞUBEYE AKTARILDI</option>
-                                            <option>GECİKME BİRİMİNE AKTARILDI</option>
-                                            <option>İSTANBUL SEVK. PLAN. AKTARILDI</option>
-                                            <option>İBAN PAYLAŞILDI</option>
-                                            <option>MÜŞTERİ MEMNUN</option>
-                                            <option>ARIZA KAYDI AÇILDI</option>
-                                            <option>İSTANBUL MÜŞ. HİZ. AKTARILDI</option>
+                                            <option value="ÇÖZÜMLENDİ">ÇÖZÜMLENDİ</option>
+                                            <option value="TEKRAR GÖRÜŞÜLECEK">TEKRAR GÖRÜŞÜLECEK</option>
+                                            <option value="SÜREÇLE ALAKALI BİLGİ VERİLDİ">SÜREÇLE ALAKALI BİLGİ VERİLDİ</option>
+                                            <option value="ŞUBEYE AKTARILDI">ŞUBEYE AKTARILDI</option>
+                                            <option value="GECİKME BİRİMİNE AKTARILDI">GECİKME BİRİMİNE AKTARILDI</option>
                                         </select>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Temsilci</label>
                                         <select class="form-select" id="inpAgent" required>
                                             <option value="" disabled selected>Seçiniz...</option>
-                                            <option>BURCU KÖSALI</option>
-                                            <option>ELVAN ATAK</option>
-                                            <option>SEVAL TEKOĞUL</option>
-                                            <option>FEYZA NUR DİLEK</option>
-                                            <option>MELİKE KARAPINAR</option>
+                                            <option value="BURCU KÖSALI">BURCU KÖSALI</option>
+                                            <option value="ELVAN ATAK">ELVAN ATAK</option>
+                                            <option value="SEVAL TEKOĞUL">SEVAL TEKOĞUL</option>
+                                            <option value="FEYZA NUR DİLEK">FEYZA NUR DİLEK</option>
+                                            <option value="MELİKE KARAPINAR">MELİKE KARAPINAR</option>
                                         </select>
                                     </div>
-
-                                    <div class="col-12">
-                                        <label class="form-label">Görüşme Notu</label>
-                                        <textarea class="form-control" id="inpNote" rows="2" placeholder="Detaylı açıklama..."></textarea>
-                                    </div>
-
+                                    <div class="col-12"><label class="form-label">Görüşme Notu</label><textarea class="form-control" id="inpNote" rows="2" placeholder="Detaylı açıklama..."></textarea></div>
                                     <div class="col-12 text-end">
                                         <button type="reset" class="btn btn-light border me-2">Temizle</button>
-                                        <button type="submit" class="btn btn-primary-custom px-4"><i class="fa-solid fa-floppy-disk me-2"></i>Kaydet</button>
+                                        <button type="submit" class="btn btn-primary-custom px-5"><i class="fa-solid fa-floppy-disk me-2"></i>Kaydet</button>
                                     </div>
                                 </div>
                             </form>
@@ -482,131 +306,100 @@
             <div class="row">
                 <div class="col-12">
                     <div class="panel-card">
-                        <!-- Filtreleme Alanı -->
-                        <div class="card-header-custom bg-light flex-wrap gap-3">
-                            <div class="d-flex align-items-center gap-2 flex-grow-1">
-                                <i class="fa-solid fa-filter text-muted"></i>
+                        <div class="card-header-custom bg-light">
+                            <div class="d-flex align-items-center mb-2 mb-md-0">
+                                <div class="bg-white p-2 rounded border me-2"><i class="fa-solid fa-filter text-primary"></i></div>
                                 <h6 class="card-title-custom mb-0">Kayıtları Filtrele</h6>
                             </div>
                             
-                            <div class="d-flex flex-wrap gap-2 align-items-center" style="max-width: 100%;">
-                                <!-- Tarih Filtresi (Tek Tarih) -->
-                                <div style="width: 160px;">
-                                    <input type="date" class="form-control form-control-sm" id="filterDate" onchange="applyFilters()">
+                            <!-- Responsive Filtre Grid -->
+                            <div class="row g-2 w-100 mt-2 mt-lg-0 justify-content-end">
+                                <div class="col-6 col-md-2">
+                                    <input type="date" class="form-control form-control-sm" id="filterDate" onchange="applyTableFilters()">
                                 </div>
-                                <!-- Arama -->
-                                <div style="width: 220px;">
-                                    <input type="text" class="form-control form-control-sm" id="filterSearch" placeholder="🔍 İsim veya Telefon..." onkeyup="applyFilters()">
+                                <div class="col-12 col-md-3">
+                                    <input type="text" class="form-control form-control-sm" id="filterSearch" placeholder="🔍 İsim veya Telefon..." onkeyup="applyTableFilters()">
                                 </div>
-                                <!-- Selectler -->
-                                <div style="width: 180px;">
-                                    <select class="form-select form-select-sm" id="filterReason" onchange="applyFilters()">
-                                        <option value="">Arama Nedeni</option>
-                                    </select>
-                                </div>
-                                <div style="width: 180px;">
-                                    <select class="form-select form-select-sm" id="filterStatus" onchange="applyFilters()">
-                                        <option value="">Durum</option>
-                                    </select>
-                                </div>
-                                <div style="width: 140px;">
-                                    <select class="form-select form-select-sm" id="filterRegion" onchange="applyFilters()">
+                                <div class="col-6 col-md-2">
+                                    <select class="form-select form-select-sm" id="filterRegion" onchange="applyTableFilters()">
                                         <option value="">Bölge: Tümü</option>
                                         <option value="İstanbul">İstanbul</option>
                                         <option value="Kocaeli">Kocaeli</option>
                                     </select>
                                 </div>
-                                <button class="btn btn-outline-secondary btn-sm" onclick="resetFilters()" title="Filtreleri Temizle">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
+                                <div class="col-6 col-md-2">
+                                    <select class="form-select form-select-sm" id="filterReason" onchange="applyTableFilters()">
+                                        <option value="">Arama Nedeni</option>
+                                    </select>
+                                </div>
+                                <div class="col-6 col-md-2">
+                                    <select class="form-select form-select-sm" id="filterStatus" onchange="applyTableFilters()">
+                                        <option value="">Durum</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-auto d-grid">
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="resetFilters()" title="Sıfırla"><i class="fa-solid fa-rotate-left"></i> Sıfırla</button>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Tablo -->
                         <div class="table-responsive">
                             <table class="table table-custom table-hover" id="dataTable">
                                 <thead>
                                     <tr>
-                                        <th style="width: 120px;">Tarih</th>
+                                        <th style="min-width: 140px;">Tarih</th>
                                         <th>Müşteri</th>
                                         <th>Telefon</th>
                                         <th>Arama Nedeni</th>
                                         <th>Durum</th>
                                         <th>Bölge</th>
-                                        <th class="text-end" style="width: 100px;">İşlem</th>
+                                        <th class="text-end">İşlem</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <!-- JS ile doldurulacak -->
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                         </div>
-
-                        <!-- Pagination & Footer -->
-                        <div class="pagination-container bg-white">
+                        
+                        <div class="pagination-container">
                             <small class="text-muted fw-semibold" id="recordCountLabel">0 Kayıt Bulundu</small>
-                            <nav>
-                                <ul class="pagination mb-0" id="paginationControls"></ul>
-                            </nav>
+                            <nav><ul class="pagination mb-0" id="paginationControls"></ul></nav>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <!-- Düzenleme Modalı -->
     <div class="modal fade" id="editModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header bg-white border-bottom py-3">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-header bg-white border-bottom py-3 px-4">
                     <h5 class="modal-title fw-bold text-primary"><i class="fa-solid fa-pen-to-square me-2"></i>Kayıt Detayı & Düzenleme</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4 bg-light">
                     <form id="editForm">
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label">Tarih</label>
-                                <input type="date" class="form-control" id="editDate">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Ad Soyad</label>
-                                <input type="text" class="form-control" id="editName">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Telefon</label>
-                                <input type="text" class="form-control" id="editPhone">
-                            </div>
+                            <div class="col-md-4"><label class="form-label">Tarih</label><input type="date" class="form-control" id="editDate"></div>
+                            <div class="col-md-4"><label class="form-label">Ad Soyad</label><input type="text" class="form-control" id="editName"></div>
+                            <div class="col-md-4"><label class="form-label">Telefon</label><input type="text" class="form-control" id="editPhone"></div>
                             <div class="col-md-4">
                                 <label class="form-label">Bölge</label>
-                                <select class="form-select" id="editRegion">
+                                <select class="form-select" id="editRegion" disabled>
                                     <option value="İstanbul">İstanbul</option>
                                     <option value="Kocaeli">Kocaeli</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Neden</label>
-                                <select class="form-select" id="editReason"></select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Durum</label>
-                                <select class="form-select" id="editStatus"></select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Temsilci</label>
-                                <select class="form-select" id="editAgent"></select>
-                            </div>
-                            <div class="col-md-8">
-                                <label class="form-label">Not</label>
-                                <textarea class="form-control" id="editNote" rows="2"></textarea>
-                            </div>
+                            <div class="col-md-4"><label class="form-label">Neden</label><select class="form-select" id="editReason"></select></div>
+                            <div class="col-md-4"><label class="form-label">Durum</label><select class="form-select" id="editStatus"></select></div>
+                            <div class="col-md-4"><label class="form-label">Temsilci</label><select class="form-select" id="editAgent"></select></div>
+                            <div class="col-md-8"><label class="form-label">Not</label><textarea class="form-control" id="editNote" rows="2"></textarea></div>
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer bg-white">
-                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">İptal</button>
+                <div class="modal-footer bg-white px-4 py-3">
+                    <button type="button" class="btn btn-light border px-4" data-bs-dismiss="modal">İptal</button>
                     <button type="button" class="btn btn-primary-custom px-4" onclick="saveUpdate()">Değişiklikleri Kaydet</button>
                 </div>
             </div>
@@ -618,11 +411,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // *** API URL ***
         const API_URL = "https://script.google.com/macros/s/AKfycbzmh0TtUPRgqXpX3mZ7OvytgEg--MBKheEA46hXl7gLTjc23wEahTGugctfGopeikjI4g/exec";
 
         let allData = [];
-        let currentFilteredData = [];
+        let currentTableData = [];
         let chartInstances = {};
         let currentPage = 1;
         const rowsPerPage = 10;
@@ -630,77 +422,190 @@
         let originalRowData = null;
         let refreshInterval;
 
-        // Login Fonksiyonu
         function checkPassword(e) {
             e.preventDefault();
             const pass = document.getElementById('passwordInput').value;
             const errorMsg = document.getElementById('loginError');
-            
             if(pass === "12345") {
-                // Şifre Doğru
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-                
-                // Uygulamayı Başlat
                 initializeApp();
             } else {
-                // Şifre Yanlış
                 errorMsg.classList.remove('d-none');
                 document.getElementById('passwordInput').value = '';
             }
         }
 
-        // Uygulama Başlatıcı (Şifre girildikten sonra çalışır)
         function initializeApp() {
             editModalObj = new bootstrap.Modal(document.getElementById('editModal'));
             document.getElementById('inpDate').valueAsDate = new Date();
+            document.getElementById('filterDate').valueAsDate = new Date(); 
             
             populateFilterOptions();
             copyOptionsToEditModal();
+            
+            updateReasonOptions('inpRegion', 'inpReason');
+            updateStatusOptions('inpRegion', 'inpStatus');
 
             if (!API_URL || API_URL.includes("BURAYA")) {
-                alert("Lütfen API URL'nizi kontrol edin.");
-                document.getElementById('loader').style.display = 'none';
+                alert("API URL Eksik!"); document.getElementById('loader').style.display = 'none';
             } else {
                 loadData(true);
-                refreshInterval = setInterval(() => loadData(false), 5000);
+                refreshInterval = setInterval(() => loadData(false), 1000); 
             }
         }
 
-        // window.onload artık sadece şifre inputuna odaklanabilir
-        window.onload = function() {
-            document.getElementById('passwordInput').focus();
-        };
+        window.onload = function() { document.getElementById('passwordInput').focus(); };
 
         function loadData(showLoader) {
             if(showLoader) document.getElementById('loader').style.display = 'flex';
-            
-            fetch(API_URL)
-                .then(res => res.json())
-                .then(data => {
-                    allData = data.filter(item => {
-                        const m = (item.musteri || "").toString().trim();
-                        const t = (item.telefon || "").toString().trim();
-                        return m !== "" || t !== "";
-                    });
-                    
-                    applyFilters(false);
-                    if(showLoader) document.getElementById('loader').style.display = 'none';
-                })
-                .catch(err => {
-                    console.error(err);
-                    if(showLoader) {
-                        alert("Veri yükleme hatası!");
-                        document.getElementById('loader').style.display = 'none';
-                    }
+            fetch(API_URL).then(res => res.json()).then(data => {
+                allData = data.filter(item => {
+                    const m = (item.musteri || "").toString().trim();
+                    const t = (item.telefon || "").toString().trim();
+                    return m !== "" || t !== "";
                 });
+
+                allData.sort((a, b) => {
+                    if (a.tarih > b.tarih) return -1;
+                    if (a.tarih < b.tarih) return 1;
+                    return 0;
+                });
+                
+                populateMonthFilters();
+                applyAnalysisFilter(); 
+                applyTableFilters(false); 
+
+                if(showLoader) document.getElementById('loader').style.display = 'none';
+            }).catch(err => {
+                console.error(err);
+                if(showLoader) { alert("Veri yüklenemedi."); document.getElementById('loader').style.display = 'none'; }
+            });
         }
 
-        // --- Form Gönderimi ---
+        function populateMonthFilters() {
+            const select = document.getElementById('analysisPeriodFilter');
+            const currentVal = select.value;
+            const uniqueMonths = new Set();
+            
+            allData.forEach(item => {
+                if(item.donem) {
+                    uniqueMonths.add(item.donem);
+                }
+            });
+
+            select.innerHTML = '<option value="">Tüm Zamanlar</option>';
+            Array.from(uniqueMonths).forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.innerText = m;
+                select.appendChild(opt);
+            });
+            if(currentVal) select.value = currentVal;
+        }
+
+        // --- AKILLI SEÇENEK GÜNCELLEME ---
+        function updateReasonOptions(regionSelectId, reasonSelectId) {
+            const regionSelect = document.getElementById(regionSelectId);
+            const reasonSelect = document.getElementById(reasonSelectId);
+            if(!regionSelect || !reasonSelect) return;
+            const region = regionSelect.value;
+            
+            for (let i = 0; i < reasonSelect.options.length; i++) {
+                const opt = reasonSelect.options[i];
+                // TAKSİT Seçeneği Kontrolü
+                if (opt.value.includes("TAKSİT")) {
+                    if (region === "İstanbul") {
+                        opt.value = "TAKSİT İŞLEMLERİ/BORÇ BİLGİSİ"; // Bitişik
+                        opt.text = "TAKSİT İŞLEMLERİ/BORÇ BİLGİSİ";
+                    } else {
+                        opt.value = "TAKSİT İŞLEMLERİ / BORÇ BİLGİSİ"; // Ayrık
+                        opt.text = "TAKSİT İŞLEMLERİ / BORÇ BİLGİSİ";
+                    }
+                }
+            }
+        }
+
+        function updateStatusOptions(regionSelectId, statusSelectId) {
+            const regionSelect = document.getElementById(regionSelectId);
+            const statusSelect = document.getElementById(statusSelectId);
+            if(!regionSelect || !statusSelect) return;
+            const region = regionSelect.value;
+            
+            for (let i = 0; i < statusSelect.options.length; i++) {
+                const opt = statusSelect.options[i];
+                // SÜREÇ Seçeneği Kontrolü
+                if (opt.value.includes("SÜREÇLE ALAKALI BİLGİ VERİLDİ")) {
+                    if (region === "Kocaeli") {
+                        opt.value = "SÜREÇLE ALAKALI BİLGİ VERİLDİ."; // Noktalı
+                        opt.text = "SÜREÇLE ALAKALI BİLGİ VERİLDİ.";
+                    } else {
+                        opt.value = "SÜREÇLE ALAKALI BİLGİ VERİLDİ"; // Noktasız
+                        opt.text = "SÜREÇLE ALAKALI BİLGİ VERİLDİ";
+                    }
+                }
+            }
+        }
+
+        function applyAnalysisFilter() {
+            const selectedPeriod = document.getElementById('analysisPeriodFilter').value;
+            let analysisData = allData;
+
+            if(selectedPeriod) {
+                analysisData = allData.filter(item => item.donem === selectedPeriod);
+            }
+            renderDashboard(analysisData);
+        }
+
+        function applyTableFilters(resetPage = true) {
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+            const reason = document.getElementById('filterReason').value;
+            const status = document.getElementById('filterStatus').value;
+            const region = document.getElementById('filterRegion').value;
+            const dateVal = document.getElementById('filterDate').value; 
+
+            currentTableData = allData.filter(item => {
+                const sName = (item.musteri || "").toString().toLowerCase();
+                const sTel = (item.telefon || "").toString();
+                const sReason = (item.konu || "");
+                const sStatus = (item.durum || "");
+                const sRegion = (item.bolge || "");
+
+                const matchSearch = sName.includes(search) || sTel.includes(search);
+                const matchReason = reason === "" || sReason === reason;
+                const matchStatus = status === "" || sStatus === status;
+                const matchRegion = region === "" || sRegion === region;
+
+                let matchDate = true;
+                if(dateVal) {
+                    if(item.tarih) {
+                        let itemDateStr = "";
+                        if (item.tarih.indexOf('T') > -1) itemDateStr = item.tarih.split('T')[0];
+                        else if(item.tarih.match(/^\d{4}-\d{2}-\d{2}$/)) itemDateStr = item.tarih; 
+                        else if (item.tarih.length >= 10) itemDateStr = item.tarih.substring(0, 10);
+                        matchDate = (itemDateStr === dateVal);
+                    } else { matchDate = false; }
+                }
+                return matchSearch && matchReason && matchStatus && matchRegion && matchDate;
+            });
+
+            if (resetPage) currentPage = 1;
+            renderTable(currentTableData);
+        }
+
+        function renderDashboard(data) { updateStats(data); updateCharts(data); }
+
         function handleFormSubmit(e) {
             e.preventDefault();
+            
+            const dateInput = document.getElementById('inpDate').value;
+            const now = new Date();
+            const timeString = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2) + ':' + ('0' + now.getSeconds()).slice(-2);
+            // TAM ZAMAN DAMGASI
+            const fullDateTime = dateInput + 'T' + timeString;
+
             const formData = {
-                tarih: document.getElementById('inpDate').value,
+                tarih: fullDateTime,
                 adsoyad: document.getElementById('inpName').value,
                 tel: document.getElementById('inpPhone').value,
                 neden: document.getElementById('inpReason').value,
@@ -712,33 +617,21 @@
             sendData(formData, "create");
         }
 
-        // --- Veri Gönderim/Güncelleme ---
         function sendData(payload, type) {
             document.getElementById('loader').style.display = 'flex';
             if (type === "update") editModalObj.hide();
-
-            fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(result => {
+            fetch(API_URL, { method: "POST", body: JSON.stringify(payload) })
+            .then(res => res.json()).then(result => {
+                document.getElementById('loader').style.display = 'none'; 
                 if (result.success) {
-                    alert("İşlem Başarılı");
-                    if (type === "create") {
-                        document.getElementById('callForm').reset();
-                        document.getElementById('inpDate').valueAsDate = new Date();
-                    }
-                    loadData(true);
+                    alert(result.message);
+                    if (type === "create") { document.getElementById('callForm').reset(); document.getElementById('inpDate').valueAsDate = new Date(); }
+                    loadData(false); 
                 } else {
                     alert("Hata: " + result.message);
-                    document.getElementById('loader').style.display = 'none';
                 }
-            })
-            .catch(err => {
-                console.error(err);
-                alert("Sunucu Hatası");
-                document.getElementById('loader').style.display = 'none';
+            }).catch(err => {
+                console.error(err); document.getElementById('loader').style.display = 'none'; alert("Sunucu Hatası");
             });
         }
 
@@ -758,21 +651,18 @@
             sendData(payload, "update");
         }
 
-        // --- Modal ---
         function openEditModal(index) {
             const globalIndex = (currentPage - 1) * rowsPerPage + index;
-            const data = currentFilteredData[globalIndex];
+            const data = currentTableData[globalIndex];
             if (!data) return;
-
             originalRowData = data;
 
             let dateVal = "";
             if (data.tarih) {
-                if(data.tarih.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                    dateVal = data.tarih;
-                } else {
-                    const d = new Date(data.tarih);
-                    if (!isNaN(d)) dateVal = d.toISOString().split('T')[0];
+                if (data.tarih.indexOf('T') > -1) {
+                    dateVal = data.tarih.split('T')[0];
+                } else if (data.tarih.length >= 10) {
+                    dateVal = data.tarih.substring(0, 10);
                 }
             }
 
@@ -781,11 +671,18 @@
             document.getElementById('editPhone').value = data.telefon || "";
             document.getElementById('editNote').value = data.not || "";
             
+            const regionSelect = document.getElementById('editRegion');
             setSelectValue('editRegion', data.bolge);
+            
+            // Seçenekleri anlık güncelle
+            updateReasonOptions('editRegion', 'editReason');
+            updateStatusOptions('editRegion', 'editStatus');
+            
+            regionSelect.disabled = true;
+
             setSelectValue('editReason', data.konu);
             setSelectValue('editStatus', data.durum);
             setSelectValue('editAgent', data.temsilci);
-
             editModalObj.show();
         }
 
@@ -795,61 +692,9 @@
             el.value = val;
             if(el.selectedIndex === -1) {
                 for(let i=0; i<el.options.length; i++) {
-                    if(el.options[i].value.toLowerCase() === val.toString().toLowerCase()) {
-                        el.selectedIndex = i;
-                        return;
-                    }
+                    if(el.options[i].value.toLowerCase() === val.toString().toLowerCase()) { el.selectedIndex = i; return; }
                 }
             }
-        }
-
-        // --- Filtreleme (DÜZELTİLDİ: Tarih Kayması Çözüldü) ---
-        function applyFilters(resetPage = true) {
-            const search = document.getElementById('filterSearch').value.toLowerCase();
-            const reason = document.getElementById('filterReason').value;
-            const status = document.getElementById('filterStatus').value;
-            const region = document.getElementById('filterRegion').value;
-            const dateVal = document.getElementById('filterDate').value; 
-
-            currentFilteredData = allData.filter(item => {
-                const sName = (item.musteri || "").toString().toLowerCase();
-                const sTel = (item.telefon || "").toString();
-                const sReason = (item.konu || "");
-                const sStatus = (item.durum || "");
-                const sRegion = (item.bolge || "");
-
-                const matchSearch = sName.includes(search) || sTel.includes(search);
-                const matchReason = reason === "" || sReason === reason;
-                const matchStatus = status === "" || sStatus === status;
-                const matchRegion = region === "" || sRegion === region;
-
-                // Tarih Filtresi (Local Time Düzeltmesi)
-                let matchDate = true;
-                if(dateVal) {
-                    if(item.tarih) {
-                        let itemDateStr = "";
-                        if(item.tarih.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                            itemDateStr = item.tarih;
-                        } else {
-                            const d = new Date(item.tarih);
-                            if(!isNaN(d)) {
-                                const year = d.getFullYear();
-                                const month = String(d.getMonth() + 1).padStart(2, '0');
-                                const day = String(d.getDate()).padStart(2, '0');
-                                itemDateStr = `${year}-${month}-${day}`;
-                            }
-                        }
-                        matchDate = (itemDateStr === dateVal);
-                    } else {
-                        matchDate = false; 
-                    }
-                }
-
-                return matchSearch && matchReason && matchStatus && matchRegion && matchDate;
-            });
-
-            if (resetPage) currentPage = 1;
-            renderDashboard(currentFilteredData);
         }
 
         function resetFilters() {
@@ -857,221 +702,146 @@
             document.getElementById('filterReason').value = "";
             document.getElementById('filterStatus').value = "";
             document.getElementById('filterRegion').value = "";
-            document.getElementById('filterDate').value = "";
-            applyFilters(true);
-        }
-
-        function renderDashboard(data) {
-            updateStats(data);
-            updateCharts(data);
-            renderTable(data);
+            document.getElementById('filterDate').valueAsDate = new Date(); 
+            applyTableFilters(true);
         }
 
         function updateStats(data) {
             const total = data.length;
             const resolved = data.filter(d => (d.durum || "").match(/ÇÖZÜMLENDİ|MEMNUN|İBAN/i)).length;
             const pending = data.filter(d => (d.durum || "").match(/TEKRAR|AKTARILDI|YÖNLENDİRİLDİ|ARIZA/i)).length;
-
             document.getElementById("statTotal").innerText = total;
             document.getElementById("statResolved").innerText = resolved;
             document.getElementById("statPending").innerText = pending;
-            document.getElementById('recordCountLabel').innerText = `Toplam ${total} kayıt listelendi`;
+            document.getElementById('recordCountLabel').innerText = `Toplam ${total} kayıt`;
         }
 
-        // GRAFİK İŞLEMLERİ (TOP 5 ve Sıralama)
         function updateCharts(data) {
-            const tCounts = {};
-            const rCounts = { "İstanbul": 0, "Kocaeli": 0 };
-            
+            const tCounts = {}; const rCounts = { "İstanbul": 0, "Kocaeli": 0 };
             data.forEach(r => {
                 const topic = r.konu || "Belirsiz";
                 tCounts[topic] = (tCounts[topic] || 0) + 1;
                 if (rCounts[r.bolge] !== undefined) rCounts[r.bolge]++;
             });
-
-            // Arama Nedenlerini Büyükten Küçüğe Sırala ve İlk 5'i Al
-            const sortedTopics = Object.entries(tCounts)
-                .sort((a, b) => b[1] - a[1]) // Değere göre azalan sıralama
-                .slice(0, 5); // İlk 5'i al
-
-            // Chart.js formatına çevir
-            const topicLabels = sortedTopics.map(item => item[0]);
-            const topicData = sortedTopics.map(item => item[1]);
-
-            renderTopicChart(topicLabels, topicData); 
+            const sortedTopics = Object.entries(tCounts).sort((a, b) => b[1] - a[1]).slice(0, 5); 
+            renderTopicChart(sortedTopics.map(i=>i[0]), sortedTopics.map(i=>i[1])); 
             renderRegionChart(rCounts);
         }
 
         function renderTopicChart(labels, data) {
             const ctx = document.getElementById('topicChart').getContext('2d');
-
             if (chartInstances.topic) {
-                chartInstances.topic.data.labels = labels;
-                chartInstances.topic.data.datasets[0].data = data;
-                chartInstances.topic.update('none'); 
+                chartInstances.topic.data.labels = labels; chartInstances.topic.data.datasets[0].data = data; chartInstances.topic.update('none'); 
             } else {
                 chartInstances.topic = new Chart(ctx, {
                     type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Kayıt',
-                            data: data,
-                            backgroundColor: 'rgba(99, 102, 241, 0.8)',
-                            borderRadius: 6,
-                            barPercentage: 0.7
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: { x: { beginAtZero: true, grid: { display: true, color:'#f1f5f9' } }, y: { grid: { display: false } } }
-                    }
+                    data: { labels: labels, datasets: [{ label: 'Kayıt', data: data, backgroundColor: 'rgba(99, 102, 241, 0.8)', borderRadius: 6, barPercentage: 0.7 }] },
+                    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { display: true, color:'#f1f5f9' } }, y: { grid: { display: false } } } }
                 });
             }
         }
 
         function renderRegionChart(counts) {
             const ctx = document.getElementById('regionChart').getContext('2d');
-            const labels = Object.keys(counts);
-            const data = Object.values(counts);
-
+            const labels = Object.keys(counts); const data = Object.values(counts);
             if (chartInstances.region) {
-                chartInstances.region.data.labels = labels;
-                chartInstances.region.data.datasets[0].data = data;
-                chartInstances.region.update('none');
+                chartInstances.region.data.labels = labels; chartInstances.region.data.datasets[0].data = data; chartInstances.region.update('none');
             } else {
                 chartInstances.region = new Chart(ctx, {
                     type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Kayıt',
-                            data: data,
-                            backgroundColor: ['#6366f1', '#10b981'],
-                            borderRadius: 6,
-                            barThickness: 50
-                        }]
-                    },
-                    options: { 
-                        responsive: true, 
-                        maintainAspectRatio: false, 
-                        scales: { y: { beginAtZero: true, grid: { display: true, color:'#f1f5f9' } }, x: { grid: { display: false } } }, 
-                        plugins: { legend: { display: false } } 
-                    }
+                    data: { labels: labels, datasets: [{ label: 'Kayıt', data: data, backgroundColor: ['#6366f1', '#10b981'], borderRadius: 6, barThickness: 50 }] },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { display: true, color:'#f1f5f9' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
                 });
             }
         }
 
-        function renderTable(data) {
-            const tbody = document.querySelector('#dataTable tbody');
-            tbody.innerHTML = '';
-
-            const start = (currentPage - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            const pageData = data.slice(start, end);
-
-            if(pageData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Kayıt bulunamadı.</td></tr>';
-                document.getElementById('paginationControls').innerHTML = '';
-                return;
+        function formatDisplayDate(raw) {
+            if (!raw || raw === "undefined" || raw === "null") return "-";
+            const str = String(raw);
+            
+            if (str.includes('T')) {
+                const parts = str.split('T');
+                const datePart = parts[0]; 
+                const timePart = parts[1].substring(0, 5); 
+                const d = datePart.split('-');
+                if(d.length === 3) return `${d[2]}.${d[1]}.${d[0]} - ${timePart}`; 
             }
+            if (str.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                const p = str.split('-');
+                return `${p[2]}.${p[1]}.${p[0]}`;
+            }
+            const dateObj = new Date(str);
+            if (!isNaN(dateObj.getTime())) {
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const year = dateObj.getFullYear();
+                const hour = String(dateObj.getHours()).padStart(2, '0');
+                const min = String(dateObj.getMinutes()).padStart(2, '0');
+                return `${day}.${month}.${year} - ${hour}:${min}`;
+            }
+            return str;
+        }
+
+        function renderTable(data) {
+            const tbody = document.querySelector('#dataTable tbody'); tbody.innerHTML = '';
+            const start = (currentPage - 1) * rowsPerPage; const end = start + rowsPerPage; const pageData = data.slice(start, end);
+
+            if(pageData.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Kayıt bulunamadı.</td></tr>'; document.getElementById('paginationControls').innerHTML = ''; return; }
 
             pageData.forEach((row, index) => {
                 const tr = document.createElement('tr');
                 
-                let dateStr = row.tarih;
-                try {
-                    const d = new Date(row.tarih);
-                    if (!isNaN(d)) dateStr = d.toLocaleDateString('tr-TR');
-                } catch(e) {}
-
+                let dateStr = formatDisplayDate(row.tarih);
                 let badgeClass = "badge-status badge-neutral";
                 const st = (row.durum || "").toUpperCase();
                 if (st.includes("ÇÖZÜMLENDİ") || st.includes("MEMNUN") || st.includes("İBAN")) badgeClass = "badge-status badge-success";
-                else if (st.includes("TEKRAR") || st.includes("AKTARILDI") || st.includes("YÖNLENDİRİLDİ")) badgeClass = "badge-status badge-warning";
-                else if (st.includes("ARIZA") || st.includes("İPTAL")) badgeClass = "badge-status badge-danger";
+                else if (st.includes("TEKRAR") || st.includes("AKTARILDI") || st.includes("YÖNLENDİRİLDİ") || st.includes("VERİLDİ")) badgeClass = "badge-status badge-warning";
+                else if (st.includes("ARIZA") || st.includes("İPTAL") || st.includes("GECİKME")) badgeClass = "badge-status badge-danger";
 
                 tr.innerHTML = `
-                    <td class="text-muted fw-medium">${dateStr}</td>
-                    <td class="fw-bold text-dark">${row.musteri || '-'}</td>
-                    <td>${row.telefon || '-'}</td>
+                    <td class="text-muted fw-medium">${dateStr}</td><td class="fw-bold text-dark">${row.musteri || '-'}</td><td>${row.telefon || '-'}</td>
                     <td><div class="text-truncate" style="max-width: 150px;" title="${row.konu}">${row.konu || '-'}</div></td>
-                    <td><span class="${badgeClass}">${row.durum || '-'}</span></td>
-                    <td>${row.bolge || '-'}</td>
-                    <td class="text-end">
-                        <button class="btn-icon" onclick="openEditModal(${index})">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-                    </td>
+                    <td><span class="${badgeClass}">${row.durum || '-'}</span></td><td>${row.bolge || '-'}</td>
+                    <td class="text-end"><button class="btn-icon" onclick="openEditModal(${index})"><i class="fa-solid fa-pen-to-square"></i></button></td>
                 `;
                 tbody.appendChild(tr);
             });
-
             renderPagination(data.length);
         }
 
         function renderPagination(totalItems) {
-            const container = document.getElementById('paginationControls');
-            container.innerHTML = '';
-            const totalPages = Math.ceil(totalItems / rowsPerPage);
-            if (totalPages <= 1) return;
-
+            const container = document.getElementById('paginationControls'); container.innerHTML = '';
+            const totalPages = Math.ceil(totalItems / rowsPerPage); if (totalPages <= 1) return;
             const createItem = (text, page, isActive = false, isDisabled = false) => {
-                const li = document.createElement('li');
-                li.className = `page-item ${isActive ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`;
-                li.innerHTML = `<button class="page-link" onclick="changePage(${page})">${text}</button>`;
-                return li;
+                const li = document.createElement('li'); li.className = `page-item ${isActive ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`;
+                li.innerHTML = `<button class="page-link" onclick="changePage(${page})">${text}</button>`; return li;
             };
-
             container.appendChild(createItem('<i class="fa-solid fa-chevron-left"></i>', currentPage - 1, false, currentPage === 1));
-            
-            let startPage = Math.max(1, currentPage - 2);
-            let endPage = Math.min(totalPages, currentPage + 2);
-
-            for (let i = startPage; i <= endPage; i++) {
-                container.appendChild(createItem(i, i, i === currentPage));
-            }
-
+            let start = Math.max(1, currentPage - 2); let end = Math.min(totalPages, currentPage + 2);
+            for (let i = start; i <= end; i++) { container.appendChild(createItem(i, i, i === currentPage)); }
             container.appendChild(createItem('<i class="fa-solid fa-chevron-right"></i>', currentPage + 1, false, currentPage === totalPages));
         }
 
         function changePage(page) {
-            const max = Math.ceil(currentFilteredData.length / rowsPerPage);
-            if (page < 1 || page > max) return;
-            currentPage = page;
-            renderTable(currentFilteredData);
+            const max = Math.ceil(currentTableData.length / rowsPerPage); if (page < 1 || page > max) return;
+            currentPage = page; renderTable(currentTableData);
         }
 
         function copyOptionsToEditModal() {
-            const copy = (srcId, destId) => { 
-                const srcEl = document.getElementById(srcId);
-                const destEl = document.getElementById(destId);
-                if (srcEl && destEl) {
-                    destEl.innerHTML = srcEl.innerHTML; 
-                }
-            };
-            copy('inpReason', 'editReason');
-            copy('inpStatus', 'editStatus');
-            copy('inpAgent', 'editAgent');
+            const copy = (srcId, destId) => { const srcEl = document.getElementById(srcId); const destEl = document.getElementById(destId); if (srcEl && destEl) { destEl.innerHTML = srcEl.innerHTML; } };
+            copy('inpReason', 'editReason'); copy('inpStatus', 'editStatus'); copy('inpAgent', 'editAgent');
         }
 
         function populateFilterOptions() {
-            const reasonSrc = document.getElementById('inpReason');
-            const reasonDest = document.getElementById('filterReason');
-            if(reasonSrc && reasonDest) {
-                const opts = reasonSrc.innerHTML.replace(/disabled|selected/g, '');
-                reasonDest.innerHTML = '<option value="">Arama Nedeni</option>' + opts;
-            }
-
-            const statusSrc = document.getElementById('inpStatus');
-            const statusDest = document.getElementById('filterStatus');
-            if(statusSrc && statusDest) {
-                const opts = statusSrc.innerHTML.replace(/disabled|selected/g, '');
-                statusDest.innerHTML = '<option value="">Durum</option>' + opts;
-            }
+            const copy = (srcId, destId, defaultText) => { 
+                const srcEl = document.getElementById(srcId); const destEl = document.getElementById(destId);
+                if (srcEl && destEl) { 
+                    const opts = srcEl.innerHTML.replace(/disabled|selected/g, ''); 
+                    destEl.innerHTML = `<option value="">${defaultText}</option>` + opts; 
+                }
+            };
+            copy('inpReason', 'filterReason', 'Arama Nedeni'); 
+            copy('inpStatus', 'filterStatus', 'Durum');
         }
     </script>
 </body>
