@@ -437,7 +437,7 @@
                 <input type="hidden" id="modalRowIndex"><input type="hidden" id="modalSheetName">
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div><label class="input-label">Tarih</label><input type="text" id="modalDate" class="input-field bg-slate-100 text-slate-500 cursor-not-allowed border-slate-200" readonly></div>
+                    <div><label class="input-label">Tarih</label><input type="datetime-local" id="modalDate" class="input-field bg-slate-100 text-slate-500 cursor-pointer border-slate-200"></div>
                     <div><label class="input-label">Bölge</label><select id="modalRegion" class="input-field select-field bg-slate-100 text-slate-500 cursor-not-allowed border-slate-200" disabled><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
                 </div>
                 
@@ -552,7 +552,23 @@
         function refreshData(showFullLoader = false) {
             const timeStr = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
             document.getElementById('lastUpdateTime').textContent = timeStr;
-            fetchData(showFullLoader);
+            return fetchData(showFullLoader); // Return promise
+        }
+
+        // Added Retry Logic
+        async function fetchWithRetry(url, options = {}, retries = 3, backoff = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response;
+            } catch (err) {
+                if (retries > 0) {
+                    console.warn(`Retrying fetch... (${retries} left)`);
+                    await new Promise(r => setTimeout(r, backoff));
+                    return fetchWithRetry(url, options, retries - 1, backoff * 2);
+                }
+                throw err;
+            }
         }
 
         async function fetchData(showFullLoader) {
@@ -561,14 +577,14 @@
                     document.getElementById('globalLoader').classList.remove('hidden');
                 }
 
-                // FIX: Add timestamp to prevent caching issues and ensure new request
                 const targetUrl = `${API_URL}${API_URL.includes('?') ? '&' : '?'}t=${new Date().getTime()}`;
                 
-                const response = await fetch(targetUrl);
-                
-                if (!response.ok) {
-                    throw new Error("Sunucu bağlantı hatası: " + response.status);
-                }
+                // Using retry logic and explicit CORS mode
+                const response = await fetchWithRetry(targetUrl, {
+                    method: "GET",
+                    mode: "cors",
+                    redirect: "follow"
+                });
                 
                 const data = await response.json();
                 
@@ -730,13 +746,14 @@
                 const searchStr = searchVal.trim();
                 const matchSearch = String(item.musteri || "").toLowerCase().includes(searchStr) || String(item.telefon || "").includes(searchStr);
                 const matchRegion = regionVal === "" || item.bolge === regionVal;
-                const matchStatus = statusVal === "" || item.durum === statusVal;
-                const matchReason = reasonVal === "" || item.konu === reasonVal;
+                
+                // USE TRIMMED COMPARISON TO HANDLE TRAILING SPACES BUT KEEP EXACT MATCH
+                const matchStatus = statusVal === "" || (item.durum && item.durum.toString().trim() === statusVal.trim());
+                const matchReason = reasonVal === "" || (item.konu && item.konu.toString().trim() === reasonVal.trim());
                 
                 let matchDate = true;
                 if(dateVal) {
                    if(item.tarih) {
-                       // item.tarih can be "2024-01-01T14:30:00" or "2024-01-01"
                        let itemDateStr = "";
                        const tStr = String(item.tarih);
                        if(tStr.includes('T')) itemDateStr = tStr.split('T')[0];
@@ -918,33 +935,53 @@
             const oldHTML = btn.innerHTML;
             btn.innerHTML = '<span class="loader border-t-white w-5 h-5 mr-2"></span> Gönderiliyor...'; btn.disabled = true;
 
-            // FIX: Send sequentially to avoid rate limits
             try {
                 for (const data of dataToSend) {
                     await fetch(API_URL, {method: 'POST', body: JSON.stringify(data)});
                 }
                 
+                // Optimistic UI Update: Add new data locally
+                dataToSend.forEach(item => {
+                    // Add temporary donem for local display consistency if needed, or rely on next fetch
+                    allRecordsData.unshift({
+                        ...item,
+                        musteri: item.adsoyad, // Map back to internal structure
+                        konu: item.neden
+                    });
+                });
+                
                 document.getElementById('inputContainer').innerHTML = '';
                 addInputRow();
-                refreshData(true); // Full refresh after submission
+                
+                document.getElementById('globalLoader').classList.add('hidden');
+                btn.innerHTML = oldHTML; 
+                btn.disabled = false;
+
                 alert("Kayıtlar başarıyla eklendi.");
-            } catch(e) { alert("Hata oluştu."); }
-            finally { btn.innerHTML = oldHTML; btn.disabled = false; }
+                
+                // Re-render table immediately with local data
+                filterRecords(true); 
+                recalculateStats();
+                
+                // Then fetch fresh data quietly
+                refreshData(false); 
+            } catch(e) { 
+                console.error(e);
+                alert("Hata oluştu."); 
+            } finally {
+                btn.innerHTML = oldHTML; 
+                btn.disabled = false;
+            }
         }
 
         // --- EDIT / DELETE LOGIC ---
         window.setupEdit = function(idx) {
             const record = filteredData[idx];
-            originalRowData = record; // Store for update logic reference if needed by backend, though we send full new object usually
+            originalRowData = record; 
             
-            // Format Date for Input
-            let dateVal = "";
-            if (record.tarih) {
-                if (record.tarih.indexOf('T') > -1) dateVal = record.tarih.split('T')[0];
-                else if (record.tarih.length >= 10) dateVal = record.tarih.substring(0, 10);
-            }
+            // Set current time for editing ("Live Time") as requested
+            document.getElementById('modalDate').value = getTodayDateTime();
 
-            document.getElementById('modalDate').value = dateVal;
             document.getElementById('modalName').value = record.musteri;
             document.getElementById('modalPhone').value = record.telefon;
             document.getElementById('modalRegion').value = record.bolge;
@@ -963,8 +1000,6 @@
 
         window.setupDelete = function(idx) {
             const record = filteredData[idx];
-            // Store index relative to global array or use object ref
-            // The provided script uses the entire object to match and delete in sheet
             originalRowData = record; 
             document.getElementById('deleteModal').classList.remove('hidden');
         }
@@ -978,8 +1013,12 @@
             const oldHTML = btn.innerHTML;
             btn.innerHTML = '<span class="loader border-t-white w-4 h-4 mr-2"></span>'; btn.disabled = true;
 
+            // Format date correctly from datetime-local input
+            const rawDate = document.getElementById('modalDate').value;
+            const formattedDate = rawDate.replace('T', ' ');
+
             const newData = {
-                tarih: document.getElementById('modalDate').value,
+                tarih: formattedDate,
                 adsoyad: document.getElementById('modalName').value,
                 tel: document.getElementById('modalPhone').value,
                 neden: document.getElementById('modalReason').value,
@@ -996,7 +1035,25 @@
                 const resJson = await res.json();
                 if(resJson.success) {
                     closeEditModal();
-                    refreshData(true); // Full refresh after update
+                    alert("Kayıt başarıyla güncellendi.");
+                    
+                    // Optimistic Update
+                    // Find item in allRecordsData and update it
+                    const targetIdx = allRecordsData.findIndex(item => item === originalRowData);
+                    if(targetIdx > -1) {
+                        allRecordsData[targetIdx] = {
+                            ...allRecordsData[targetIdx],
+                            tarih: newData.tarih,
+                            musteri: newData.adsoyad,
+                            telefon: newData.tel,
+                            konu: newData.neden,
+                            durum: newData.durum,
+                            temsilci: newData.temsilci,
+                            not: newData.not
+                        };
+                    }
+                    filterRecords(false); // Update table immediately
+                    refreshData(false); // Silent refresh
                 } else { alert("Güncelleme başarısız: " + resJson.message); }
             } catch(e) { alert("Hata"); }
             finally { btn.innerHTML = oldHTML; btn.disabled = false; }
@@ -1014,7 +1071,13 @@
                 const resJson = await res.json();
                 if(resJson.success) {
                     closeDeleteModal();
-                    refreshData(true); // Full refresh after delete
+                    alert("Kayıt silindi.");
+                    
+                    // Optimistic Update
+                    allRecordsData = allRecordsData.filter(item => item !== originalRowData);
+                    filterRecords(false);
+                    
+                    refreshData(false); 
                 } else { alert("Silme başarısız"); }
             } catch(e) { alert("Hata"); }
             finally { btn.innerHTML = oldHTML; btn.disabled = false; }
