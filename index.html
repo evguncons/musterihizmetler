@@ -1,847 +1,893 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Hedef AVM Müşteri Hizmetleri Paneli</title>
-    
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HEDEF AVM MÜŞTERİ HİZMETLERİ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985' },
+                        slate: { 850: '#1e293b' }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'card': '0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                        'gold': '0 20px 40px -5px rgba(234, 179, 8, 0.25)',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary: #4f46e5;       
-            --primary-hover: #4338ca; 
-            --bg-body: #f1f5f9;       
-            --card-bg: #ffffff;
-            --text-main: #0f172a;     
-            --text-muted: #64748b;    
-            --border-color: #e2e8f0;  
-            --radius: 16px;
-            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        }
-
-        body {
-            background-color: var(--bg-body);
-            font-family: 'Inter', sans-serif;
-            color: var(--text-main);
-            padding-bottom: 80px;
-            font-size: 0.95rem;
-        }
-
-        /* --- Login Screen --- */
-        #login-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-            z-index: 10000;
-            display: flex; align-items: center; justify-content: center;
-            padding: 20px;
-        }
-        .login-card {
-            background: white; padding: 3rem 2rem; border-radius: 24px;
-            box-shadow: var(--shadow-lg); width: 100%; max-width: 420px; text-align: center; border: 1px solid rgba(255,255,255,0.5);
-        }
-        .login-icon {
-            width: 80px; height: 80px; background: #e0e7ff; border-radius: 24px;
-            display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;
-            color: var(--primary); font-size: 2.5rem; box-shadow: var(--shadow-sm);
-        }
-
-        /* --- Navbar --- */
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0.75rem 0; margin-bottom: 2rem;
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .navbar-brand { font-weight: 700; color: var(--text-main); font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
-        .brand-icon {
-            width: 36px; height: 36px; background: var(--primary); color: white;
-            border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem;
-        }
-
-        /* --- Cards --- */
-        .panel-card {
-            background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: var(--radius); box-shadow: var(--shadow-sm);
-            height: 100%; display: flex; flex-direction: column; overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .panel-card:hover { box-shadow: var(--shadow-md); }
+        body { background-color: #f8fafc; color: #334155; -webkit-tap-highlight-color: transparent; font-size: 14px; }
         
-        .card-header-custom {
-            padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); background: #fff;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+        /* CARD BASE */
+        .card-base {
+            background: white;
+            border-radius: 1.25rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
         }
-        .card-title-custom { font-weight: 700; color: var(--text-main); margin: 0; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
-        .card-body-custom { padding: 1.5rem; flex-grow: 1; }
 
-        /* --- Stats --- */
-        .stat-card {
-            background: white; border-radius: var(--radius); padding: 1.5rem;
-            border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
-            display: flex; align-items: center; height: 100%; transition: transform 0.2s;
+        /* FORM ENTRY CARD */
+        .entry-card {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         }
-        .stat-icon {
-            width: 50px; height: 50px; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem; margin-right: 1rem; flex-shrink: 0;
+        .entry-card:hover {
+            border-color: #3b82f6; 
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
         }
-        .stat-info h3 { font-size: 1.75rem; font-weight: 800; margin: 0; line-height: 1.1; color: #0f172a; letter-spacing: -0.02em; }
-        .stat-info span { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
-        .bg-indigo-light { background: #eef2ff; color: #4f46e5; }
-        .bg-emerald-light { background: #ecfdf5; color: #059669; }
-        .bg-amber-light { background: #fffbeb; color: #d97706; }
-
-        /* --- Forms --- */
-        .form-label { font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 0.4rem; }
-        .form-control, .form-select {
-            border-radius: 10px; border: 1px solid #cbd5e1;
-            padding: 0.6rem 0.9rem; font-size: 0.9rem; color: var(--text-main);
-            background-color: #fff; transition: all 0.2s;
+        /* TABLE ROW DESIGN */
+        .custom-table-row {
+            transition: all 0.1s ease;
+            border-bottom: 1px solid #f1f5f9;
         }
-        .form-control:focus, .form-select:focus { 
-            border-color: var(--primary); 
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); 
+        .custom-table-row:hover { background-color: #f8fafc; }
+        
+        .table-cell {
+            padding: 0.75rem 1rem;
+            vertical-align: middle;
+            font-size: 0.875rem;
+        }
+
+        /* INPUTS */
+        .input-label {
+            display: block;
+            font-size: 0.7rem; 
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            margin-bottom: 0.35rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.75rem;
             outline: none;
+            transition: all 0.2s;
+            height: 42px;
+        }
+        .input-field:focus {
+            background-color: #ffffff;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
         }
 
-        /* --- Table --- */
-        .table-responsive { border-radius: 0 0 var(--radius) var(--radius); }
-        .table-custom { margin: 0; width: 100%; border-collapse: separate; border-spacing: 0; }
-        .table-custom thead th {
-            background-color: #f8fafc; color: #64748b; font-weight: 600;
-            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
-            padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); white-space: nowrap;
+        .select-field {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 1rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25em 1.25em;
         }
-        .table-custom tbody td {
-            padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color);
-            vertical-align: middle; font-size: 0.9rem; color: #334155;
-        }
-        .table-custom tbody tr:hover { background-color: #f8fafc; }
 
-        /* --- Badges & Buttons --- */
-        .badge-status { padding: 6px 10px; border-radius: 20px; font-weight: 600; font-size: 0.7rem; display: inline-flex; align-items: center; white-space: nowrap; }
-        .badge-success { background: #dcfce7; color: #166534; }
-        .badge-warning { background: #fef9c3; color: #854d0e; }
-        .badge-danger { background: #fee2e2; color: #991b1b; }
-        .badge-neutral { background: #f1f5f9; color: #475569; }
-
-        .btn-primary-custom {
-            background-color: var(--primary); border: 1px solid var(--primary); color: white;
-            font-weight: 600; padding: 0.6rem 1.5rem; border-radius: 10px; 
-            transition: all 0.2s; box-shadow: var(--shadow-sm);
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem; font-weight: 700; font-size: 0.9rem; border-radius: 0.75rem;
+            transition: all 0.2s; cursor: pointer;
+            height: 42px;
         }
-        .btn-primary-custom:hover { background-color: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        .btn-primary { background-color: #0ea5e9; color: white; box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2); }
+        .btn-primary:hover { background-color: #0284c7; transform: translateY(-1px); }
+        .btn-secondary { background-color: white; color: #475569; border: 1px solid #cbd5e1; }
+        .btn-secondary:hover { background-color: #f8fafc; border-color: #94a3b8; color: #1e293b; }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid #f8fafc; }
+
+        /* LOADER */
+        .loader { border: 3px solid #f1f5f9; border-top: 3px solid #0ea5e9; border-radius: 50%; width: 1.5rem; height: 1.5rem; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* RESPONSIVE TABLE */
+        @media (max-width: 1024px) {
+            .resp-table thead { display: none; }
+            .resp-table tbody tr {
+                display: flex; flex-direction: column;
+                background: white; border: 2px solid #f1f5f9; border-radius: 1rem;
+                margin-bottom: 1rem; padding: 1.25rem;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            }
+            .resp-table td {
+                display: flex; justify-content: space-between; align-items: center;
+                padding: 0.75rem 0; border-bottom: 1px dashed #f1f5f9;
+                font-size: 0.95rem;
+            }
+            .resp-table td:last-child { border-bottom: none; padding-top: 1rem; }
+            .resp-table td::before {
+                content: attr(data-label);
+                font-weight: 800; font-size: 0.7rem; color: #94a3b8; text-transform: uppercase;
+                min-width: 100px;
+            }
+        }
         
-        .btn-icon {
-            width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
-            border-radius: 8px; border: 1px solid var(--border-color); color: var(--text-muted); background: white;
+        .desktop-table-header th {
+            background-color: #f8fafc; color: #64748b; font-weight: 800; text-transform: uppercase;
+            font-size: 0.75rem; letter-spacing: 0.05em; padding: 1.25rem 1rem; border-bottom: 2px solid #e2e8f0;
         }
-        .btn-icon:hover { border-color: var(--primary); color: var(--primary); background: #eef2ff; }
-
-        /* --- Mobile Responsive Tweaks --- */
-        @media (max-width: 768px) {
-            body { padding-bottom: 40px; }
-            .navbar-brand { font-size: 1rem; }
-            .brand-icon { width: 32px; height: 32px; font-size: 0.9rem; }
-            .stat-card { padding: 1.2rem; }
-            .stat-icon { width: 42px; height: 42px; font-size: 1.2rem; }
-            .stat-info h3 { font-size: 1.5rem; }
-            
-            .card-header-custom { padding: 1rem; flex-direction: column; align-items: flex-start; }
-            .card-header-custom .d-flex { width: 100%; }
-            
-            /* Filtreleme alanı mobilde alt alta */
-            .filter-row .col-md-auto, .filter-row .col { width: 100%; }
-            .btn-primary-custom { width: 100%; }
+        .desktop-table-row td {
+            padding: 1.25rem 1rem; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle;
         }
-
-        #loader { 
-            position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 9999; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            backdrop-filter: blur(5px);
-        }
+        .desktop-table-row:hover { background-color: #fcfcfc; }
     </style>
 </head>
-<body>
+<body class="pb-12 min-h-screen bg-slate-100 font-sans">
 
-    <div id="login-screen">
-        <div class="login-card">
-            <div class="login-icon"><i class="fa-solid fa-lock"></i></div>
-            <h4 class="mb-2 fw-bold text-dark">Güvenli Giriş</h4>
-            <p class="text-muted small mb-4">Panele erişmek için şifrenizi giriniz.</p>
-            <form onsubmit="checkPassword(event)">
-                <div class="mb-3"><input type="password" class="form-control text-center py-3" id="passwordInput" placeholder="Şifre" required style="letter-spacing: 2px;"></div>
-                <button type="submit" class="btn btn-primary-custom w-100 py-3">Giriş Yap</button>
-            </form>
-            <p id="loginError" class="text-danger small mt-3 d-none fw-bold"><i class="fa-solid fa-circle-exclamation me-1"></i>Hatalı Şifre!</p>
-        </div>
-    </div>
-
-    <div id="main-content" style="display: none;">
-        <div id="loader">
-            <div class="spinner-border text-primary mb-3" style="width: 3.5rem; height: 3.5rem; border-width: 4px;" role="status"></div>
-            <div class="fw-bold text-dark fs-5">Veriler İşleniyor...</div>
-        </div>
-
-        <nav class="navbar">
-            <div class="container">
-                <a class="navbar-brand" href="#">
-                    <div class="brand-icon"><i class="fa-solid fa-headset"></i></div>
-                    Hedef AVM Panel
-                </a>
-                <div class="d-flex align-items-center">
-                    <span class="badge bg-white text-success border px-3 py-2 d-flex align-items-center shadow-sm rounded-pill">
-                        <span class="spinner-grow spinner-grow-sm me-2" role="status" style="width: 0.5rem; height: 0.5rem;"></span> Canlı (1sn)
-                    </span>
-                </div>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 z-[100] bg-slate-100 flex items-center justify-center p-4">
+        <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-brand-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-200 text-white mx-auto mb-6 transform rotate-3">
+                <i class="fas fa-headset text-3xl"></i>
             </div>
-        </nav>
-
-        <div class="container">
+            <h2 class="text-2xl font-black text-slate-800 mb-2">HEDEF AVM</h2>
+            <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-8">MÜŞTERİ HİZMETLERİ</p>
             
-            <!-- ANALİZ FİLTRESİ -->
-            <div class="row mb-4">
-                <div class="col-12 d-flex justify-content-end align-items-center">
-                    <label class="me-2 text-muted fw-bold small">Dönem:</label>
-                    <div class="d-flex align-items-center bg-white p-1 rounded-3 border shadow-sm">
-                        <i class="fa-solid fa-calendar-days text-primary mx-2"></i>
-                        <select class="form-select form-select-sm border-0 bg-transparent fw-bold text-dark" style="width: auto; box-shadow: none; cursor: pointer;" id="analysisPeriodFilter" onchange="applyAnalysisFilter()">
-                            <option value="">Tüm Zamanlar</option>
-                        </select>
-                    </div>
+            <form id="loginForm" class="space-y-4">
+                <div class="relative">
+                    <i class="fas fa-key absolute left-4 top-4 text-slate-400"></i>
+                    <input type="password" id="loginPass" class="input-field pl-10 h-12 text-lg text-center tracking-widest placeholder:tracking-normal placeholder:text-sm" placeholder="Şifrenizi Giriniz">
                 </div>
-            </div>
-
-            <!-- 1. BÖLÜM: İstatistik Kartları -->
-            <div class="row g-3 g-md-4 mb-4">
-                <div class="col-12 col-md-4"><div class="stat-card"><div class="stat-icon bg-indigo-light"><i class="fa-solid fa-phone"></i></div><div class="stat-info"><h3 id="statTotal">0</h3><span>Toplam Çağrı</span></div></div></div>
-                <div class="col-12 col-md-4"><div class="stat-card"><div class="stat-icon bg-emerald-light"><i class="fa-solid fa-check-circle"></i></div><div class="stat-info"><h3 id="statResolved">0</h3><span>Çözümlenen</span></div></div></div>
-                <div class="col-12 col-md-4"><div class="stat-card"><div class="stat-icon bg-amber-light"><i class="fa-solid fa-clock-rotate-left"></i></div><div class="stat-info"><h3 id="statPending">0</h3><span>Bekleyen</span></div></div></div>
-            </div>
-
-            <!-- 2. BÖLÜM: Grafikler -->
-            <div class="row g-4 mb-5">
-                <div class="col-lg-8">
-                    <div class="panel-card">
-                        <div class="card-header-custom"><h6 class="card-title-custom"><i class="fa-solid fa-chart-bar text-muted"></i> En Çok Aranan Konular (Top 5)</h6></div>
-                        <div class="card-body-custom d-flex align-items-center"><div class="chart-wrapper" style="width:100%; height:300px;"><canvas id="topicChart"></canvas></div></div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="panel-card">
-                        <div class="card-header-custom"><h6 class="card-title-custom"><i class="fa-solid fa-map-location-dot text-muted"></i> Bölgesel Dağılım</h6></div>
-                        <div class="card-body-custom d-flex align-items-center"><div class="chart-wrapper" style="width:100%; height:300px;"><canvas id="regionChart"></canvas></div></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. BÖLÜM: Yeni Kayıt Formu -->
-            <div class="row mb-5">
-                <div class="col-12">
-                    <div class="panel-card border-start border-4 border-primary">
-                        <div class="card-header-custom"><h6 class="card-title-custom text-primary fs-5"><i class="fa-solid fa-plus-circle"></i> Yeni Çağrı Kaydı Oluştur</h6></div>
-                        <div class="card-body-custom">
-                            <form id="callForm" onsubmit="handleFormSubmit(event)">
-                                <div class="row g-3">
-                                    <div class="col-6 col-md-3"><label class="form-label">Tarih</label><input type="date" class="form-control" id="inpDate" required></div>
-                                    <div class="col-6 col-md-3"><label class="form-label">Bölge</label><select class="form-select" id="inpRegion" onchange="updateReasonOptions('inpRegion', 'inpReason'); updateStatusOptions('inpRegion', 'inpStatus')"><option value="İstanbul" selected>İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
-                                    <div class="col-md-3"><label class="form-label">Müşteri Ad Soyad</label><input type="text" class="form-control" id="inpName" placeholder="Ad Soyad" required></div>
-                                    <div class="col-md-3"><label class="form-label">Telefon No</label><input type="text" class="form-control" id="inpPhone" placeholder="05..." required></div>
-                                    
-                                    <div class="col-md-4">
-                                        <label class="form-label">Arama Nedeni</label>
-                                        <select class="form-select" id="inpReason" required>
-                                            <option value="" disabled selected>Seçiniz...</option>
-                                            <option value="ÜRÜN TESLİMATI">ÜRÜN TESLİMATI</option>
-                                            <option value="ÜRÜN ARIZASI">ÜRÜN ARIZASI</option>
-                                            <option value="TAKSİT İŞLEMLERİ/BORÇ BİLGİSİ">TAKSİT İŞLEMLERİ/BORÇ BİLGİSİ</option>
-                                            <option value="GENEL BİLGİ">GENEL BİLGİ</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">Sonuç / Durum</label>
-                                        <select class="form-select" id="inpStatus" required>
-                                            <option value="" disabled selected>Seçiniz...</option>
-                                            <option value="ÇÖZÜMLENDİ">ÇÖZÜMLENDİ</option>
-                                            <option value="TEKRAR GÖRÜŞÜLECEK">TEKRAR GÖRÜŞÜLECEK</option>
-                                            <option value="SÜREÇLE ALAKALI BİLGİ VERİLDİ">SÜREÇLE ALAKALI BİLGİ VERİLDİ</option>
-                                            <option value="ŞUBEYE AKTARILDI">ŞUBEYE AKTARILDI</option>
-                                            <option value="GECİKME BİRİMİNE AKTARILDI">GECİKME BİRİMİNE AKTARILDI</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">Temsilci</label>
-                                        <select class="form-select" id="inpAgent" required>
-                                            <option value="" disabled selected>Seçiniz...</option>
-                                            <option value="BURCU KÖSALI">BURCU KÖSALI</option>
-                                            <option value="ELVAN ATAK">ELVAN ATAK</option>
-                                            <option value="SEVAL TEKOĞUL">SEVAL TEKOĞUL</option>
-                                            <option value="FEYZA NUR DİLEK">FEYZA NUR DİLEK</option>
-                                            <option value="MELİKE KARAPINAR">MELİKE KARAPINAR</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-12"><label class="form-label">Görüşme Notu</label><textarea class="form-control" id="inpNote" rows="2" placeholder="Detaylı açıklama..."></textarea></div>
-                                    <div class="col-12 text-end">
-                                        <button type="reset" class="btn btn-light border me-2">Temizle</button>
-                                        <button type="submit" class="btn btn-primary-custom px-5"><i class="fa-solid fa-floppy-disk me-2"></i>Kaydet</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4. BÖLÜM: Filtreleme ve Tablo -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="panel-card">
-                        <div class="card-header-custom bg-light">
-                            <div class="d-flex align-items-center mb-2 mb-md-0">
-                                <div class="bg-white p-2 rounded border me-2"><i class="fa-solid fa-filter text-primary"></i></div>
-                                <h6 class="card-title-custom mb-0">Kayıtları Filtrele</h6>
-                            </div>
-                            
-                            <!-- Responsive Filtre Grid -->
-                            <div class="row g-2 w-100 mt-2 mt-lg-0 justify-content-end">
-                                <div class="col-6 col-md-2">
-                                    <input type="date" class="form-control form-control-sm" id="filterDate" onchange="applyTableFilters()">
-                                </div>
-                                <div class="col-12 col-md-3">
-                                    <input type="text" class="form-control form-control-sm" id="filterSearch" placeholder="🔍 İsim veya Telefon..." onkeyup="applyTableFilters()">
-                                </div>
-                                <div class="col-6 col-md-2">
-                                    <select class="form-select form-select-sm" id="filterRegion" onchange="applyTableFilters()">
-                                        <option value="">Bölge: Tümü</option>
-                                        <option value="İstanbul">İstanbul</option>
-                                        <option value="Kocaeli">Kocaeli</option>
-                                    </select>
-                                </div>
-                                <div class="col-6 col-md-2">
-                                    <select class="form-select form-select-sm" id="filterReason" onchange="applyTableFilters()">
-                                        <option value="">Arama Nedeni</option>
-                                    </select>
-                                </div>
-                                <div class="col-6 col-md-2">
-                                    <select class="form-select form-select-sm" id="filterStatus" onchange="applyTableFilters()">
-                                        <option value="">Durum</option>
-                                    </select>
-                                </div>
-                                <div class="col-12 col-md-auto d-grid">
-                                    <button class="btn btn-outline-secondary btn-sm" onclick="resetFilters()" title="Sıfırla"><i class="fa-solid fa-rotate-left"></i> Sıfırla</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="table-responsive">
-                            <table class="table table-custom table-hover" id="dataTable">
-                                <thead>
-                                    <tr>
-                                        <th style="min-width: 140px;">Tarih</th>
-                                        <th>Müşteri</th>
-                                        <th>Telefon</th>
-                                        <th>Arama Nedeni</th>
-                                        <th>Durum</th>
-                                        <th>Bölge</th>
-                                        <th class="text-end">İşlem</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                        
-                        <div class="pagination-container">
-                            <small class="text-muted fw-semibold" id="recordCountLabel">0 Kayıt Bulundu</small>
-                            <nav><ul class="pagination mb-0" id="paginationControls"></ul></nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <button type="submit" class="btn btn-primary w-full h-12 text-base shadow-lg shadow-brand-200/50">GİRİŞ YAP</button>
+            </form>
+            <p id="loginError" class="text-rose-500 text-xs font-bold mt-4 hidden"><i class="fas fa-exclamation-circle mr-1"></i> Hatalı Şifre!</p>
         </div>
     </div>
 
-    <!-- Düzenleme Modalı -->
-    <div class="modal fade" id="editModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
-                <div class="modal-header bg-white border-bottom py-3 px-4">
-                    <h5 class="modal-title fw-bold text-primary"><i class="fa-solid fa-pen-to-square me-2"></i>Kayıt Detayı & Düzenleme</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- MAIN APP (Hidden initially) -->
+    <div id="mainApp" class="hidden max-w-[1600px] mx-auto px-4 md:px-8 pt-8 space-y-10">
+        
+        <!-- HEADER -->
+        <header class="flex flex-col md:flex-row justify-between items-center gap-6 bg-white p-5 rounded-3xl border border-white/60 shadow-sm sticky top-4 z-40 backdrop-blur-xl bg-white/90">
+            <div class="flex items-center gap-5 w-full md:w-auto">
+                <div class="w-14 h-14 bg-gradient-to-br from-brand-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-200 text-white shrink-0">
+                    <i class="fas fa-headset text-2xl"></i>
                 </div>
-                <div class="modal-body p-4 bg-light">
-                    <form id="editForm">
-                        <div class="row g-3">
-                            <div class="col-md-4"><label class="form-label">Tarih</label><input type="date" class="form-control" id="editDate"></div>
-                            <div class="col-md-4"><label class="form-label">Ad Soyad</label><input type="text" class="form-control" id="editName"></div>
-                            <div class="col-md-4"><label class="form-label">Telefon</label><input type="text" class="form-control" id="editPhone"></div>
-                            <div class="col-md-4">
-                                <label class="form-label">Bölge</label>
-                                <select class="form-select" id="editRegion" disabled>
-                                    <option value="İstanbul">İstanbul</option>
-                                    <option value="Kocaeli">Kocaeli</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4"><label class="form-label">Neden</label><select class="form-select" id="editReason"></select></div>
-                            <div class="col-md-4"><label class="form-label">Durum</label><select class="form-select" id="editStatus"></select></div>
-                            <div class="col-md-4"><label class="form-label">Temsilci</label><select class="form-select" id="editAgent"></select></div>
-                            <div class="col-md-8"><label class="form-label">Not</label><textarea class="form-control" id="editNote" rows="2"></textarea></div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer bg-white px-4 py-3">
-                    <button type="button" class="btn btn-light border px-4" data-bs-dismiss="modal">İptal</button>
-                    <button type="button" class="btn btn-primary-custom px-4" onclick="saveUpdate()">Değişiklikleri Kaydet</button>
+                <div>
+                    <h1 class="text-2xl font-black text-slate-800 tracking-tight leading-none">HEDEF AVM</h1>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-sm font-bold text-slate-400">Müşteri Hizmetleri Paneli</span>
+                    </div>
                 </div>
             </div>
+            
+            <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+                <div class="text-right hidden sm:block px-2">
+                    <span class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">SON VERİ</span>
+                    <span id="lastUpdateTime" class="block text-sm font-bold text-slate-700 font-mono">--:--</span>
+                </div>
+                <button onclick="refreshData()" class="btn btn-secondary !py-2.5 !px-5 text-sm shadow-sm">
+                    <i class="fas fa-sync-alt text-brand-500"></i> Yenile
+                </button>
+            </div>
+        </header>
+
+        <!-- ANALYTICS SECTION (Moved to Top) -->
+        <div class="grid grid-cols-1 gap-8">
+            <div class="flex justify-between items-end border-b border-slate-200 pb-2">
+                 <h3 class="text-lg font-bold text-slate-700 flex items-center gap-2"><i class="fas fa-chart-pie text-brand-500"></i> Performans Analizi</h3>
+                 <!-- Period Filter -->
+                 <div class="flex items-center gap-2 bg-white p-2 rounded-xl shadow-sm border border-slate-200">
+                    <i class="fas fa-calendar-alt text-slate-400"></i>
+                    <select id="periodFilter" onchange="recalculateStats()" class="bg-transparent font-bold text-slate-600 outline-none text-sm cursor-pointer">
+                        <option value="all">Tüm Zamanlar</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- STATS CARDS -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card-base p-6 border-l-4 border-l-indigo-500 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-1">TOPLAM ÇAĞRI</p>
+                        <h4 class="text-3xl font-black text-slate-800" id="statTotal">0</h4>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl"><i class="fas fa-phone"></i></div>
+                </div>
+                <div class="card-base p-6 border-l-4 border-l-emerald-500 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-1">ÇÖZÜMLENEN</p>
+                        <h4 class="text-3xl font-black text-emerald-600" id="statResolved">0</h4>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl"><i class="fas fa-check-circle"></i></div>
+                </div>
+                <div class="card-base p-6 border-l-4 border-l-amber-500 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-1">BEKLEYEN</p>
+                        <h4 class="text-3xl font-black text-amber-600" id="statPending">0</h4>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl"><i class="fas fa-clock"></i></div>
+                </div>
+            </section>
+
+            <!-- CHARTS -->
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="card-base p-6 lg:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fas fa-chart-bar"></i></div>
+                        <h3 class="text-lg font-bold text-slate-800">En Çok Aranan Konular</h3>
+                    </div>
+                    <div class="h-[300px] w-full"><canvas id="topicChart"></canvas></div>
+                </div>
+                <div class="card-base p-6">
+                     <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fas fa-map-marked-alt"></i></div>
+                        <h3 class="text-lg font-bold text-slate-800">Bölgesel Dağılım</h3>
+                    </div>
+                    <div class="h-[300px] w-full"><canvas id="regionChart"></canvas></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- DATA ENTRY -->
+        <section class="card-base border-t-4 border-t-brand-500">
+            <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center"><i class="fas fa-plus-circle"></i></span>
+                    Yeni Çağrı Kaydı
+                </h2>
+            </div>
+            <div class="p-8 bg-white">
+                <div id="inputContainer" class="space-y-6"></div>
+                <div class="mt-8 pt-6 border-t border-slate-100 flex flex-col-reverse sm:flex-row justify-end gap-4">
+                    <button onclick="addInputRow()" class="btn btn-secondary w-full sm:w-auto px-8"><i class="fas fa-plus-circle text-brand-500"></i> Yeni Satır Ekle</button>
+                    <button onclick="submitAllRows()" id="submitBtn" class="btn btn-primary w-full sm:w-auto px-10"><i class="fas fa-paper-plane"></i> Kaydet ve Gönder</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- RECORDS LIST (Updated Filters) -->
+        <section class="card-base flex flex-col min-h-[600px] bg-white">
+            <div class="px-8 py-6 border-b border-slate-100 flex flex-col gap-6">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100"><i class="fas fa-list-ul text-lg"></i></div>
+                        <div><h3 class="text-lg font-bold text-slate-800">Çağrı Listesi</h3><p class="text-xs text-slate-400 font-bold uppercase tracking-wide">TÜM KAYITLAR</p></div>
+                    </div>
+                    <span class="text-sm font-bold bg-slate-100 text-slate-600 px-4 py-2 rounded-xl border border-slate-200" id="totalRecordsBadge">0 Kayıt</span>
+                </div>
+                <!-- Updated Filter Grid with Date -->
+                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4">
+                    <div class="md:col-span-1 lg:col-span-2"><label class="input-label mb-1">Arama</label><div class="relative"><i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i><input type="text" id="filterSearch" placeholder="İsim veya Telefon..." class="input-field pl-10" onkeyup="filterRecords()"></div></div>
+                    
+                    <div><label class="input-label mb-1">Tarih</label><input type="date" id="filterDate" class="input-field" onchange="filterRecords()"></div>
+
+                    <div><label class="input-label mb-1">Bölge</label><select id="filterRegion" class="input-field select-field" onchange="populateReasonStatusOptions('filterRegion', 'filterReason', 'filterStatus', true); filterRecords()"><option value="">Tümü</option><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
+                    
+                    <div><label class="input-label mb-1">Arama Nedeni</label><select id="filterReason" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option></select></div>
+                    
+                    <div><label class="input-label mb-1">Durum</label><select id="filterStatus" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option></select></div>
+                    
+                    <div class="flex items-end"><button onclick="clearFilters()" class="btn btn-secondary w-full"><i class="fas fa-eraser"></i> Temizle</button></div>
+                </div>
+            </div>
+            
+            <div class="flex-1 overflow-x-auto">
+                <table class="w-full text-left resp-table">
+                    <thead class="desktop-table-header bg-slate-50 sticky top-0 z-10 shadow-sm">
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Bölge</th>
+                            <th>Müşteri</th>
+                            <th>Telefon</th>
+                            <th>Arama Nedeni</th>
+                            <th>Durum</th>
+                            <th>Temsilci</th>
+                            <th class="text-right">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="crmTableBody" class="divide-y divide-slate-100"><tr><td colspan="8" class="text-center py-20 text-slate-400 text-sm">Veriler yükleniyor...</td></tr></tbody>
+                </table>
+            </div>
+
+            <div class="px-8 py-4 border-t border-slate-100 bg-slate-50/50 rounded-b-[1.25rem] flex flex-col sm:flex-row justify-between items-center gap-4">
+                <span class="text-sm font-bold text-slate-500" id="paginationInfo">Sayfa 1 / 1</span>
+                <div class="flex items-center gap-2" id="paginationControls"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div id="editModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 transition-all duration-300">
+        <div class="card-base w-full max-w-2xl shadow-2xl border-0 bg-white max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 sticky top-0 z-10">
+                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2"><i class="fas fa-pen-to-square text-brand-500"></i> Kayıt Düzenle</h3>
+                <button onclick="closeEditModal()" class="w-10 h-10 rounded-xl flex items-center justify-center bg-white border-2 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 transition-all"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="editForm" class="p-8 space-y-5">
+                <input type="hidden" id="modalRowIndex"><input type="hidden" id="modalSheetName">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div><label class="input-label">Tarih</label><input type="text" id="modalDate" class="input-field bg-slate-100 text-slate-500 cursor-not-allowed border-slate-200" readonly></div>
+                    <div><label class="input-label">Bölge</label><select id="modalRegion" class="input-field select-field bg-slate-100 text-slate-500 cursor-not-allowed border-slate-200" disabled><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div><label class="input-label">Müşteri Ad Soyad</label><input type="text" id="modalName" class="input-field"></div>
+                    <div><label class="input-label">Telefon</label><input type="text" id="modalPhone" class="input-field"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div><label class="input-label">Arama Nedeni</label><select id="modalReason" class="input-field select-field"></select></div>
+                    <div><label class="input-label">Durum</label><select id="modalStatus" class="input-field select-field"></select></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div><label class="input-label">Temsilci</label><select id="modalAgent" class="input-field select-field"><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>SEVAL TEKOĞUL</option><option>FEYZA NUR DİLEK</option><option>MELİKE KARAPINAR</option></select></div>
+                </div>
+
+                <div>
+                    <label class="input-label">Görüşme Notu</label>
+                    <textarea id="modalNote" class="input-field h-24 pt-2 resize-none" placeholder="Detaylar..."></textarea>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-slate-100 mt-2">
+                    <button type="button" onclick="closeEditModal()" class="btn btn-secondary px-6">Vazgeç</button>
+                    <button type="submit" id="editSubmitBtn" class="btn btn-primary px-8">Değişiklikleri Kaydet</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- DELETE MODAL -->
+    <div id="deleteModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div class="card-base w-full max-w-sm p-8 text-center shadow-2xl border-0 bg-white">
+            <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-rose-100"><i class="fas fa-trash-alt text-2xl"></i></div>
+            <h3 class="text-xl font-black text-slate-800 mb-2">Emin misiniz?</h3>
+            <p class="text-sm text-slate-500 font-medium mb-8 px-4 leading-relaxed">Bu kaydı silmek üzeresiniz. Bu işlem geri alınamaz.</p>
+            <input type="hidden" id="deleteIndex">
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeDeleteModal()" class="btn btn-secondary w-full">Vazgeç</button>
+                <button onclick="confirmDelete()" id="btnConfirmDelete" class="btn btn-primary bg-rose-600 hover:bg-rose-700 w-full">Evet, Sil</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzmh0TtUPRgqXpX3mZ7OvytgEg--MBKheEA46hXl7gLTjc23wEahTGugctfGopeikjI4g/exec";
-
-        let allData = [];
-        let currentTableData = [];
+        
+        let allRecordsData = []; 
+        let filteredData = [];
         let chartInstances = {};
         let currentPage = 1;
-        const rowsPerPage = 10;
-        let editModalObj;
-        let originalRowData = null;
-        let refreshInterval;
-
-        function checkPassword(e) {
-            e.preventDefault();
-            const pass = document.getElementById('passwordInput').value;
-            const errorMsg = document.getElementById('loginError');
-            if(pass === "12345") {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                initializeApp();
+        const rowsPerPage = 10; 
+        let originalRowData = null; // Edit için
+        
+        // --- LOGIN FUNCTION ---
+        function checkLogin() {
+            const pass = document.getElementById('loginPass').value;
+            if(pass === '134679') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').classList.remove('hidden');
+                
+                // Init Calls
+                addInputRow(); 
+                // Populate filters (initial state)
+                populateReasonStatusOptions('filterRegion', 'filterReason', 'filterStatus', true);
+                
+                refreshData();
+                setInterval(refreshData, 15000); 
             } else {
-                errorMsg.classList.remove('d-none');
-                document.getElementById('passwordInput').value = '';
+                document.getElementById('loginError').classList.remove('hidden');
+                document.getElementById('loginPass').classList.add('border-rose-500', 'ring-2', 'ring-rose-200');
             }
         }
 
-        function initializeApp() {
-            editModalObj = new bootstrap.Modal(document.getElementById('editModal'));
-            document.getElementById('inpDate').valueAsDate = new Date();
-            document.getElementById('filterDate').valueAsDate = new Date(); 
-            
-            populateFilterOptions();
-            copyOptionsToEditModal();
-            
-            updateReasonOptions('inpRegion', 'inpReason');
-            updateStatusOptions('inpRegion', 'inpStatus');
+        document.getElementById('loginForm').addEventListener('submit', function(e) { e.preventDefault(); checkLogin(); });
+        document.getElementById('loginPass').addEventListener('keypress', function(e) { if(e.key === 'Enter') { e.preventDefault(); checkLogin(); } });
 
-            if (!API_URL || API_URL.includes("BURAYA")) {
-                alert("API URL Eksik!"); document.getElementById('loader').style.display = 'none';
-            } else {
-                loadData(true);
-                refreshInterval = setInterval(() => loadData(false), 1000); 
-            }
+        // --- DYNAMIC OPTIONS LOGIC ---
+        function populateReasonStatusOptions(regionId, reasonId, statusId, isFilter = false) {
+            const regionSelect = document.getElementById(regionId);
+            const reasonSelect = document.getElementById(reasonId);
+            const statusSelect = document.getElementById(statusId);
+            if(!regionSelect || !reasonSelect || !statusSelect) return;
+
+            const region = regionSelect.value;
+            
+            // Reasons
+            let reasons = ["ÜRÜN TESLİMATI", "ÜRÜN ARIZASI", "GENEL BİLGİ"];
+            if (region === "İstanbul") reasons.push("TAKSİT İŞLEMLERİ/BORÇ BİLGİSİ");
+            else reasons.push("TAKSİT İŞLEMLERİ / BORÇ BİLGİSİ"); // Kocaeli Spacing
+
+            // Statuses
+            let statuses = ["ÇÖZÜMLENDİ", "TEKRAR GÖRÜŞÜLECEK", "ŞUBEYE AKTARILDI", "GECİKME BİRİMİNE AKTARILDI"];
+            if (region === "Kocaeli") statuses.push("SÜREÇLE ALAKALI BİLGİ VERİLDİ."); // Dot
+            else statuses.push("SÜREÇLE ALAKALI BİLGİ VERİLDİ");
+
+            // Populate Function
+            const defaultText = isFilter ? "Tümü" : "Seçiniz";
+            const fill = (sel, opts, placeholder) => {
+                const oldVal = sel.value;
+                sel.innerHTML = `<option value="">${placeholder}</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join('');
+                // Preserve value if possible, otherwise reset
+                if(oldVal && opts.includes(oldVal)) sel.value = oldVal;
+                else sel.value = "";
+            };
+
+            fill(reasonSelect, reasons, defaultText);
+            fill(statusSelect, statuses, defaultText);
         }
 
-        window.onload = function() { document.getElementById('passwordInput').focus(); };
+        // --- DATA FUNCTIONS ---
+        function refreshData() {
+            const timeStr = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
+            document.getElementById('lastUpdateTime').textContent = timeStr;
+            fetchData();
+        }
 
-        function loadData(showLoader) {
-            if(showLoader) document.getElementById('loader').style.display = 'flex';
-            fetch(API_URL).then(res => res.json()).then(data => {
-                allData = data.filter(item => {
+        async function fetchData() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                
+                // Map API keys to our internal keys
+                allRecordsData = data.filter(item => {
                     const m = (item.musteri || "").toString().trim();
                     const t = (item.telefon || "").toString().trim();
-                    return m !== "" || t !== "";
-                });
+                    const d = (item.tarih || "").toString().trim();
+                    // FILTER OUT HEADER ROW (If name contains 'Ad Soyad' or 'Müşteri')
+                    // Also strictly filter empty required fields
+                    if (m === "" || t === "" || d === "" || d === "undefined") return false;
+                    
+                    const mLower = m.toLowerCase();
+                    if (mLower.includes("ad soyad") || mLower.includes("müşteri") || mLower === "adı soyadı") return false;
+                    
+                    return true;
+                }).map(item => ({
+                    tarih: item.tarih,
+                    musteri: item.musteri,
+                    telefon: String(item.telefon || ""), // Ensure string conversion
+                    konu: item.konu, 
+                    durum: item.durum,
+                    temsilci: item.temsilci,
+                    not: item.not,
+                    bolge: item.bolge,
+                    donem: item.donem
+                })).sort((a, b) => (a.tarih > b.tarih ? -1 : 1));
 
-                allData.sort((a, b) => {
-                    if (a.tarih > b.tarih) return -1;
-                    if (a.tarih < b.tarih) return 1;
-                    return 0;
-                });
+                // Populate Period Filter
+                const periods = [...new Set(allRecordsData.map(d => d.donem).filter(d => d))];
+                const periodSelect = document.getElementById('periodFilter');
+                const currentPeriod = periodSelect.value;
+                periodSelect.innerHTML = '<option value="all">Tüm Zamanlar</option>' + periods.map(p => `<option value="${p}">${p}</option>`).join('');
+                if(periods.includes(currentPeriod)) periodSelect.value = currentPeriod;
+
+                filterRecords(false); 
+                recalculateStats();
+            } catch(e) { console.error("Data fetch error", e); }
+        }
+
+        function recalculateStats() {
+            const periodVal = document.getElementById('periodFilter').value;
+            
+            // Filter data based on selected period for analytics
+            const analyticsData = periodVal === 'all' 
+                ? allRecordsData 
+                : allRecordsData.filter(d => d.donem === periodVal);
+
+            const total = analyticsData.length;
+            const resolved = analyticsData.filter(d => (d.durum || "").match(/ÇÖZÜMLENDİ|MEMNUN|İBAN/i)).length;
+            const pending = analyticsData.filter(d => (d.durum || "").match(/TEKRAR|AKTARILDI|YÖNLENDİRİLDİ|ARIZA/i)).length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statResolved').textContent = resolved;
+            document.getElementById('statPending').textContent = pending;
+
+            // Charts
+            const topicCounts = {};
+            const regionCounts = { "İstanbul": 0, "Kocaeli": 0 };
+            
+            analyticsData.forEach(r => {
+                const topic = r.konu || "Belirsiz";
+                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+                if (regionCounts[r.bolge] !== undefined) regionCounts[r.bolge]++;
+            });
+
+            const sortedTopics = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            renderCharts(sortedTopics, regionCounts);
+        }
+
+        function renderCharts(topicsData, regionData) {
+            // Topic Chart
+            const topicCtx = document.getElementById('topicChart').getContext('2d');
+            if (chartInstances.topic) chartInstances.topic.destroy();
+            chartInstances.topic = new Chart(topicCtx, {
+                type: 'bar',
+                data: {
+                    labels: topicsData.map(i => i[0]),
+                    datasets: [{
+                        label: 'Çağrı Sayısı',
+                        data: topicsData.map(i => i[1]),
+                        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true, grid: { color: '#f1f5f9' } }, y: { grid: { display: false } } }
+                }
+            });
+
+            // Region Chart
+            const regionCtx = document.getElementById('regionChart').getContext('2d');
+            if (chartInstances.region) chartInstances.region.destroy();
+            chartInstances.region = new Chart(regionCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(regionData),
+                    datasets: [{
+                        label: 'Çağrı Sayısı',
+                        data: Object.values(regionData),
+                        backgroundColor: ['#6366f1', '#10b981'],
+                        borderRadius: 6,
+                        barThickness: 50
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
+                }
+            });
+        }
+
+        function filterRecords(resetPage = true) {
+            const searchVal = document.getElementById('filterSearch').value.toLowerCase();
+            const dateVal = document.getElementById('filterDate').value; // YYYY-MM-DD
+            const regionVal = document.getElementById('filterRegion').value;
+            const statusVal = document.getElementById('filterStatus').value;
+            const reasonVal = document.getElementById('filterReason').value;
+            
+            filteredData = allRecordsData.filter(item => {
+                const searchStr = searchVal.trim();
+                const matchSearch = String(item.musteri || "").toLowerCase().includes(searchStr) || String(item.telefon || "").includes(searchStr);
+                const matchRegion = regionVal === "" || item.bolge === regionVal;
+                const matchStatus = statusVal === "" || item.durum === statusVal;
+                const matchReason = reasonVal === "" || item.konu === reasonVal;
                 
-                populateMonthFilters();
-                applyAnalysisFilter(); 
-                applyTableFilters(false); 
-
-                if(showLoader) document.getElementById('loader').style.display = 'none';
-            }).catch(err => {
-                console.error(err);
-                if(showLoader) { alert("Veri yüklenemedi."); document.getElementById('loader').style.display = 'none'; }
-            });
-        }
-
-        function populateMonthFilters() {
-            const select = document.getElementById('analysisPeriodFilter');
-            const currentVal = select.value;
-            const uniqueMonths = new Set();
-            
-            allData.forEach(item => {
-                if(item.donem) {
-                    uniqueMonths.add(item.donem);
-                }
-            });
-
-            select.innerHTML = '<option value="">Tüm Zamanlar</option>';
-            Array.from(uniqueMonths).forEach(m => {
-                const opt = document.createElement('option');
-                opt.value = m;
-                opt.innerText = m;
-                select.appendChild(opt);
-            });
-            if(currentVal) select.value = currentVal;
-        }
-
-        // --- AKILLI SEÇENEK GÜNCELLEME ---
-        function updateReasonOptions(regionSelectId, reasonSelectId) {
-            const regionSelect = document.getElementById(regionSelectId);
-            const reasonSelect = document.getElementById(reasonSelectId);
-            if(!regionSelect || !reasonSelect) return;
-            const region = regionSelect.value;
-            
-            for (let i = 0; i < reasonSelect.options.length; i++) {
-                const opt = reasonSelect.options[i];
-                // TAKSİT Seçeneği Kontrolü
-                if (opt.value.includes("TAKSİT")) {
-                    if (region === "İstanbul") {
-                        opt.value = "TAKSİT İŞLEMLERİ/BORÇ BİLGİSİ"; // Bitişik
-                        opt.text = "TAKSİT İŞLEMLERİ/BORÇ BİLGİSİ";
-                    } else {
-                        opt.value = "TAKSİT İŞLEMLERİ / BORÇ BİLGİSİ"; // Ayrık
-                        opt.text = "TAKSİT İŞLEMLERİ / BORÇ BİLGİSİ";
-                    }
-                }
-            }
-        }
-
-        function updateStatusOptions(regionSelectId, statusSelectId) {
-            const regionSelect = document.getElementById(regionSelectId);
-            const statusSelect = document.getElementById(statusSelectId);
-            if(!regionSelect || !statusSelect) return;
-            const region = regionSelect.value;
-            
-            for (let i = 0; i < statusSelect.options.length; i++) {
-                const opt = statusSelect.options[i];
-                // SÜREÇ Seçeneği Kontrolü
-                if (opt.value.includes("SÜREÇLE ALAKALI BİLGİ VERİLDİ")) {
-                    if (region === "Kocaeli") {
-                        opt.value = "SÜREÇLE ALAKALI BİLGİ VERİLDİ."; // Noktalı
-                        opt.text = "SÜREÇLE ALAKALI BİLGİ VERİLDİ.";
-                    } else {
-                        opt.value = "SÜREÇLE ALAKALI BİLGİ VERİLDİ"; // Noktasız
-                        opt.text = "SÜREÇLE ALAKALI BİLGİ VERİLDİ";
-                    }
-                }
-            }
-        }
-
-        function applyAnalysisFilter() {
-            const selectedPeriod = document.getElementById('analysisPeriodFilter').value;
-            let analysisData = allData;
-
-            if(selectedPeriod) {
-                analysisData = allData.filter(item => item.donem === selectedPeriod);
-            }
-            renderDashboard(analysisData);
-        }
-
-        function applyTableFilters(resetPage = true) {
-            const search = document.getElementById('filterSearch').value.toLowerCase();
-            const reason = document.getElementById('filterReason').value;
-            const status = document.getElementById('filterStatus').value;
-            const region = document.getElementById('filterRegion').value;
-            const dateVal = document.getElementById('filterDate').value; 
-
-            currentTableData = allData.filter(item => {
-                const sName = (item.musteri || "").toString().toLowerCase();
-                const sTel = (item.telefon || "").toString();
-                const sReason = (item.konu || "");
-                const sStatus = (item.durum || "");
-                const sRegion = (item.bolge || "");
-
-                const matchSearch = sName.includes(search) || sTel.includes(search);
-                const matchReason = reason === "" || sReason === reason;
-                const matchStatus = status === "" || sStatus === status;
-                const matchRegion = region === "" || sRegion === region;
-
                 let matchDate = true;
                 if(dateVal) {
-                    if(item.tarih) {
-                        let itemDateStr = "";
-                        if (item.tarih.indexOf('T') > -1) itemDateStr = item.tarih.split('T')[0];
-                        else if(item.tarih.match(/^\d{4}-\d{2}-\d{2}$/)) itemDateStr = item.tarih; 
-                        else if (item.tarih.length >= 10) itemDateStr = item.tarih.substring(0, 10);
-                        matchDate = (itemDateStr === dateVal);
-                    } else { matchDate = false; }
+                   if(item.tarih) {
+                       // item.tarih can be "2024-01-01T14:30:00" or "2024-01-01"
+                       let itemDateStr = "";
+                       const tStr = String(item.tarih);
+                       if(tStr.includes('T')) itemDateStr = tStr.split('T')[0];
+                       else if(tStr.length >= 10) itemDateStr = tStr.substring(0, 10);
+                       
+                       matchDate = (itemDateStr === dateVal);
+                   } else matchDate = false;
                 }
-                return matchSearch && matchReason && matchStatus && matchRegion && matchDate;
+                
+                return matchSearch && matchRegion && matchStatus && matchReason && matchDate;
             });
-
-            if (resetPage) currentPage = 1;
-            renderTable(currentTableData);
-        }
-
-        function renderDashboard(data) { updateStats(data); updateCharts(data); }
-
-        function handleFormSubmit(e) {
-            e.preventDefault();
             
-            const dateInput = document.getElementById('inpDate').value;
-            const now = new Date();
-            const timeString = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2) + ':' + ('0' + now.getSeconds()).slice(-2);
-            // TAM ZAMAN DAMGASI
-            const fullDateTime = dateInput + 'T' + timeString;
-
-            const formData = {
-                tarih: fullDateTime,
-                adsoyad: document.getElementById('inpName').value,
-                tel: document.getElementById('inpPhone').value,
-                neden: document.getElementById('inpReason').value,
-                durum: document.getElementById('inpStatus').value,
-                temsilci: document.getElementById('inpAgent').value,
-                not: document.getElementById('inpNote').value,
-                bolge: document.getElementById('inpRegion').value
-            };
-            sendData(formData, "create");
+            if(resetPage) currentPage = 1;
+            renderTable();
         }
 
-        function sendData(payload, type) {
-            document.getElementById('loader').style.display = 'flex';
-            if (type === "update") editModalObj.hide();
-            fetch(API_URL, { method: "POST", body: JSON.stringify(payload) })
-            .then(res => res.json()).then(result => {
-                document.getElementById('loader').style.display = 'none'; 
-                if (result.success) {
-                    alert(result.message);
-                    if (type === "create") { document.getElementById('callForm').reset(); document.getElementById('inpDate').valueAsDate = new Date(); }
-                    loadData(false); 
-                } else {
-                    alert("Hata: " + result.message);
-                }
-            }).catch(err => {
-                console.error(err); document.getElementById('loader').style.display = 'none'; alert("Sunucu Hatası");
-            });
-        }
-
-        function saveUpdate() {
-            if (!originalRowData) return;
-            const updatedData = {
-                tarih: document.getElementById('editDate').value,
-                adsoyad: document.getElementById('editName').value,
-                tel: document.getElementById('editPhone').value,
-                neden: document.getElementById('editReason').value,
-                durum: document.getElementById('editStatus').value,
-                temsilci: document.getElementById('editAgent').value,
-                not: document.getElementById('editNote').value,
-                bolge: document.getElementById('editRegion').value
-            };
-            const payload = { action: "update", oldData: originalRowData, newData: updatedData };
-            sendData(payload, "update");
-        }
-
-        function openEditModal(index) {
-            const globalIndex = (currentPage - 1) * rowsPerPage + index;
-            const data = currentTableData[globalIndex];
-            if (!data) return;
-            originalRowData = data;
-
-            let dateVal = "";
-            if (data.tarih) {
-                if (data.tarih.indexOf('T') > -1) {
-                    dateVal = data.tarih.split('T')[0];
-                } else if (data.tarih.length >= 10) {
-                    dateVal = data.tarih.substring(0, 10);
-                }
-            }
-
-            document.getElementById('editDate').value = dateVal;
-            document.getElementById('editName').value = data.musteri || "";
-            document.getElementById('editPhone').value = data.telefon || "";
-            document.getElementById('editNote').value = data.not || "";
-            
-            const regionSelect = document.getElementById('editRegion');
-            setSelectValue('editRegion', data.bolge);
-            
-            // Seçenekleri anlık güncelle
-            updateReasonOptions('editRegion', 'editReason');
-            updateStatusOptions('editRegion', 'editStatus');
-            
-            regionSelect.disabled = true;
-
-            setSelectValue('editReason', data.konu);
-            setSelectValue('editStatus', data.durum);
-            setSelectValue('editAgent', data.temsilci);
-            editModalObj.show();
-        }
-
-        function setSelectValue(id, val) {
-            const el = document.getElementById(id);
-            if(!el || !val) { if(el) el.value = ""; return; }
-            el.value = val;
-            if(el.selectedIndex === -1) {
-                for(let i=0; i<el.options.length; i++) {
-                    if(el.options[i].value.toLowerCase() === val.toString().toLowerCase()) { el.selectedIndex = i; return; }
-                }
-            }
-        }
-
-        function resetFilters() {
-            document.getElementById('filterSearch').value = "";
-            document.getElementById('filterReason').value = "";
-            document.getElementById('filterStatus').value = "";
-            document.getElementById('filterRegion').value = "";
-            document.getElementById('filterDate').valueAsDate = new Date(); 
-            applyTableFilters(true);
-        }
-
-        function updateStats(data) {
-            const total = data.length;
-            const resolved = data.filter(d => (d.durum || "").match(/ÇÖZÜMLENDİ|MEMNUN|İBAN/i)).length;
-            const pending = data.filter(d => (d.durum || "").match(/TEKRAR|AKTARILDI|YÖNLENDİRİLDİ|ARIZA/i)).length;
-            document.getElementById("statTotal").innerText = total;
-            document.getElementById("statResolved").innerText = resolved;
-            document.getElementById("statPending").innerText = pending;
-            document.getElementById('recordCountLabel').innerText = `Toplam ${total} kayıt`;
-        }
-
-        function updateCharts(data) {
-            const tCounts = {}; const rCounts = { "İstanbul": 0, "Kocaeli": 0 };
-            data.forEach(r => {
-                const topic = r.konu || "Belirsiz";
-                tCounts[topic] = (tCounts[topic] || 0) + 1;
-                if (rCounts[r.bolge] !== undefined) rCounts[r.bolge]++;
-            });
-            const sortedTopics = Object.entries(tCounts).sort((a, b) => b[1] - a[1]).slice(0, 5); 
-            renderTopicChart(sortedTopics.map(i=>i[0]), sortedTopics.map(i=>i[1])); 
-            renderRegionChart(rCounts);
-        }
-
-        function renderTopicChart(labels, data) {
-            const ctx = document.getElementById('topicChart').getContext('2d');
-            if (chartInstances.topic) {
-                chartInstances.topic.data.labels = labels; chartInstances.topic.data.datasets[0].data = data; chartInstances.topic.update('none'); 
-            } else {
-                chartInstances.topic = new Chart(ctx, {
-                    type: 'bar',
-                    data: { labels: labels, datasets: [{ label: 'Kayıt', data: data, backgroundColor: 'rgba(99, 102, 241, 0.8)', borderRadius: 6, barPercentage: 0.7 }] },
-                    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { display: true, color:'#f1f5f9' } }, y: { grid: { display: false } } } }
-                });
-            }
-        }
-
-        function renderRegionChart(counts) {
-            const ctx = document.getElementById('regionChart').getContext('2d');
-            const labels = Object.keys(counts); const data = Object.values(counts);
-            if (chartInstances.region) {
-                chartInstances.region.data.labels = labels; chartInstances.region.data.datasets[0].data = data; chartInstances.region.update('none');
-            } else {
-                chartInstances.region = new Chart(ctx, {
-                    type: 'bar',
-                    data: { labels: labels, datasets: [{ label: 'Kayıt', data: data, backgroundColor: ['#6366f1', '#10b981'], borderRadius: 6, barThickness: 50 }] },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { display: true, color:'#f1f5f9' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
-                });
-            }
+        function clearFilters() {
+            document.getElementById('filterSearch').value = '';
+            document.getElementById('filterDate').value = '';
+            document.getElementById('filterRegion').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterReason').value = '';
+            populateReasonStatusOptions('filterRegion', 'filterReason', 'filterStatus', true); // Reset opts
+            filterRecords();
         }
 
         function formatDisplayDate(raw) {
-            if (!raw || raw === "undefined" || raw === "null") return "-";
+            if (!raw) return "-";
             const str = String(raw);
-            
             if (str.includes('T')) {
                 const parts = str.split('T');
-                const datePart = parts[0]; 
-                const timePart = parts[1].substring(0, 5); 
-                const d = datePart.split('-');
-                if(d.length === 3) return `${d[2]}.${d[1]}.${d[0]} - ${timePart}`; 
+                const d = parts[0].split('-');
+                return `${d[2]}.${d[1]}.${d[0]} ${parts[1].substring(0, 5)}`; 
             }
             if (str.match(/^\d{4}-\d{2}-\d{2}$/)) {
                 const p = str.split('-');
                 return `${p[2]}.${p[1]}.${p[0]}`;
             }
-            const dateObj = new Date(str);
-            if (!isNaN(dateObj.getTime())) {
-                const day = String(dateObj.getDate()).padStart(2, '0');
-                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                const year = dateObj.getFullYear();
-                const hour = String(dateObj.getHours()).padStart(2, '0');
-                const min = String(dateObj.getMinutes()).padStart(2, '0');
-                return `${day}.${month}.${year} - ${hour}:${min}`;
-            }
             return str;
         }
 
-        function renderTable(data) {
-            const tbody = document.querySelector('#dataTable tbody'); tbody.innerHTML = '';
-            const start = (currentPage - 1) * rowsPerPage; const end = start + rowsPerPage; const pageData = data.slice(start, end);
-
-            if(pageData.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Kayıt bulunamadı.</td></tr>'; document.getElementById('paginationControls').innerHTML = ''; return; }
-
-            pageData.forEach((row, index) => {
+        function renderTable() {
+            const tbody = document.getElementById('crmTableBody');
+            const totalRecords = filteredData.length;
+            document.getElementById('totalRecordsBadge').textContent = `${totalRecords} Kayıt`;
+            tbody.innerHTML = '';
+            
+            if (totalRecords === 0) { 
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-16 text-slate-400 text-sm italic">Kayıt bulunamadı.</td></tr>'; 
+                renderPagination(0); return; 
+            }
+            
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+            
+            pageData.forEach((row, idx) => {
+                const absoluteIndex = startIndex + idx;
                 const tr = document.createElement('tr');
+                tr.className = "desktop-table-row group transition-colors hover:bg-slate-50";
                 
-                let dateStr = formatDisplayDate(row.tarih);
-                let badgeClass = "badge-status badge-neutral";
+                let badgeClass = "bg-slate-100 text-slate-500";
                 const st = (row.durum || "").toUpperCase();
-                if (st.includes("ÇÖZÜMLENDİ") || st.includes("MEMNUN") || st.includes("İBAN")) badgeClass = "badge-status badge-success";
-                else if (st.includes("TEKRAR") || st.includes("AKTARILDI") || st.includes("YÖNLENDİRİLDİ") || st.includes("VERİLDİ")) badgeClass = "badge-status badge-warning";
-                else if (st.includes("ARIZA") || st.includes("İPTAL") || st.includes("GECİKME")) badgeClass = "badge-status badge-danger";
+                if (st.includes("ÇÖZÜMLENDİ")) badgeClass = "bg-emerald-100 text-emerald-700";
+                else if (st.includes("TEKRAR") || st.includes("AKTARILDI")) badgeClass = "bg-amber-100 text-amber-700";
+                else if (st.includes("ARIZA") || st.includes("GECİKME")) badgeClass = "bg-rose-100 text-rose-700";
 
                 tr.innerHTML = `
-                    <td class="text-muted fw-medium">${dateStr}</td><td class="fw-bold text-dark">${row.musteri || '-'}</td><td>${row.telefon || '-'}</td>
-                    <td><div class="text-truncate" style="max-width: 150px;" title="${row.konu}">${row.konu || '-'}</div></td>
-                    <td><span class="${badgeClass}">${row.durum || '-'}</span></td><td>${row.bolge || '-'}</td>
-                    <td class="text-end"><button class="btn-icon" onclick="openEditModal(${index})"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                    <td data-label="Tarih" class="table-cell whitespace-nowrap text-slate-600 font-bold text-xs">${formatDisplayDate(row.tarih)}</td>
+                    <td data-label="Bölge" class="table-cell whitespace-nowrap"><span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase border border-indigo-100 tracking-wide">${row.bolge}</span></td>
+                    <td data-label="Müşteri" class="table-cell font-bold text-slate-800 text-sm">${row.musteri}</td>
+                    <td data-label="Telefon" class="table-cell text-slate-600 text-xs">${row.telefon}</td>
+                    <td data-label="Neden" class="table-cell text-xs font-medium text-slate-600 max-w-[150px] truncate" title="${row.konu}">${row.konu}</td>
+                    <td data-label="Durum" class="table-cell"><span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold border border-transparent shadow-sm ${badgeClass}">${row.durum}</span></td>
+                    <td data-label="Temsilci" class="table-cell text-xs font-bold text-slate-500">${row.temsilci}</td>
+                    <td data-label="İşlem" class="table-cell">
+                        <div class="flex justify-end gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                            <button onclick="setupEdit(${absoluteIndex})" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200 transition-all shadow-sm"><i class="fas fa-pen text-xs"></i></button>
+                            <button onclick="setupDelete(${absoluteIndex})" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-all shadow-sm"><i class="fas fa-trash text-xs"></i></button>
+                        </div>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
-            renderPagination(data.length);
+            renderPagination(Math.ceil(totalRecords / rowsPerPage));
         }
 
-        function renderPagination(totalItems) {
-            const container = document.getElementById('paginationControls'); container.innerHTML = '';
-            const totalPages = Math.ceil(totalItems / rowsPerPage); if (totalPages <= 1) return;
-            const createItem = (text, page, isActive = false, isDisabled = false) => {
-                const li = document.createElement('li'); li.className = `page-item ${isActive ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`;
-                li.innerHTML = `<button class="page-link" onclick="changePage(${page})">${text}</button>`; return li;
+        function renderPagination(totalPages) {
+            const paginationContainer = document.getElementById('paginationControls');
+            document.getElementById('paginationInfo').textContent = `Sayfa ${currentPage} / ${totalPages || 1}`;
+            paginationContainer.innerHTML = '';
+            if (totalPages <= 1) return;
+            const createBtn = (icon, page, disabled) => {
+                const btn = document.createElement('button');
+                btn.innerHTML = icon;
+                btn.className = `w-8 h-8 rounded-lg flex items-center justify-center border transition-all text-xs ${disabled ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed' : 'bg-white text-slate-600 border-slate-200 hover:bg-white hover:border-brand-300 hover:text-brand-600 shadow-sm'}`;
+                btn.disabled = disabled;
+                btn.onclick = () => { if(!disabled) { currentPage = page; renderTable(); }};
+                return btn;
             };
-            container.appendChild(createItem('<i class="fa-solid fa-chevron-left"></i>', currentPage - 1, false, currentPage === 1));
-            let start = Math.max(1, currentPage - 2); let end = Math.min(totalPages, currentPage + 2);
-            for (let i = start; i <= end; i++) { container.appendChild(createItem(i, i, i === currentPage)); }
-            container.appendChild(createItem('<i class="fa-solid fa-chevron-right"></i>', currentPage + 1, false, currentPage === totalPages));
+            paginationContainer.appendChild(createBtn('<i class="fas fa-chevron-left"></i>', currentPage - 1, currentPage === 1));
+            const pageNum = document.createElement('span');
+            pageNum.className = "px-3 py-1.5 bg-brand-600 text-white font-bold text-xs rounded-lg shadow-md shadow-brand-200";
+            pageNum.textContent = currentPage;
+            paginationContainer.appendChild(pageNum);
+            paginationContainer.appendChild(createBtn('<i class="fas fa-chevron-right"></i>', currentPage + 1, currentPage === totalPages));
         }
 
-        function changePage(page) {
-            const max = Math.ceil(currentTableData.length / rowsPerPage); if (page < 1 || page > max) return;
-            currentPage = page; renderTable(currentTableData);
+        function getTodayDateTime() {
+            const now = new Date();
+            const offsetMs = now.getTimezoneOffset() * 60 * 1000;
+            const msLocal = now.getTime() - offsetMs;
+            return new Date(msLocal).toISOString().slice(0, 16);
         }
 
-        function copyOptionsToEditModal() {
-            const copy = (srcId, destId) => { const srcEl = document.getElementById(srcId); const destEl = document.getElementById(destId); if (srcEl && destEl) { destEl.innerHTML = srcEl.innerHTML; } };
-            copy('inpReason', 'editReason'); copy('inpStatus', 'editStatus'); copy('inpAgent', 'editAgent');
+        function addInputRow() {
+            const container = document.getElementById('inputContainer');
+            const div = document.createElement('div');
+            div.className = "entry-card animate-[slideIn_0.3s_ease-out]";
+            div.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 mb-4">
+                    <div class="lg:col-span-2"><label class="input-label">Tarih</label><input type="datetime-local" class="input-field inp-date" value="${getTodayDateTime()}"></div>
+                    <div class="lg:col-span-2"><label class="input-label">Bölge</label><select class="input-field select-field inp-region" onchange="populateReasonStatusOptions(this.id, this.closest('.entry-card').querySelector('.inp-reason').id, this.closest('.entry-card').querySelector('.inp-status').id)"><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
+                    <div class="lg:col-span-3"><label class="input-label">Müşteri Ad Soyad</label><input type="text" class="input-field inp-name" placeholder="Ad Soyad"></div>
+                    <div class="lg:col-span-2"><label class="input-label">Telefon</label><input type="text" class="input-field inp-phone" placeholder="05XX..."></div>
+                    <div class="lg:col-span-3"><label class="input-label">Temsilci</label><select class="input-field select-field inp-agent"><option value="" disabled selected>Seçiniz</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>SEVAL TEKOĞUL</option><option>FEYZA NUR DİLEK</option><option>MELİKE KARAPINAR</option></select></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div><label class="input-label">Arama Nedeni</label><select class="input-field select-field inp-reason"></select></div>
+                    <div><label class="input-label">Sonuç / Durum</label><select class="input-field select-field inp-status"></select></div>
+                    <div class="flex gap-3 items-end">
+                        <div class="flex-1"><label class="input-label">Not</label><input type="text" class="input-field inp-note" placeholder="Kısa not..."></div>
+                        <button onclick="this.closest('div.entry-card').remove()" class="w-10 h-[42px] rounded-lg bg-slate-50 text-slate-400 hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 border border-slate-200 transition-all flex items-center justify-center shrink-0" title="Sil"><i class="fas fa-trash-alt text-sm"></i></button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            
+            // Assign unique IDs to the new row's selects for the populate function to work
+            const idSuffix = Date.now() + Math.random().toString(36).substr(2, 5);
+            const row = div;
+            row.querySelector('.inp-region').id = `reg_${idSuffix}`;
+            row.querySelector('.inp-reason').id = `rea_${idSuffix}`;
+            row.querySelector('.inp-status').id = `sta_${idSuffix}`;
+            
+            // Initial Population
+            populateReasonStatusOptions(`reg_${idSuffix}`, `rea_${idSuffix}`, `sta_${idSuffix}`);
         }
 
-        function populateFilterOptions() {
-            const copy = (srcId, destId, defaultText) => { 
-                const srcEl = document.getElementById(srcId); const destEl = document.getElementById(destId);
-                if (srcEl && destEl) { 
-                    const opts = srcEl.innerHTML.replace(/disabled|selected/g, ''); 
-                    destEl.innerHTML = `<option value="">${defaultText}</option>` + opts; 
+        async function submitAllRows() {
+            const rows = document.querySelectorAll('#inputContainer > div');
+            const dataToSend = [];
+            let error = false;
+            rows.forEach(row => {
+                const region = row.querySelector('.inp-region').value;
+                const name = row.querySelector('.inp-name').value;
+                const dateVal = row.querySelector('.inp-date').value;
+                
+                if(!name) { row.style.borderColor = '#f43f5e'; error = true; }
+                else {
+                    row.style.borderColor = '#e2e8f0';
+                    let formattedDate = dateVal.replace('T', ' ');
+                    dataToSend.push({
+                        tarih: formattedDate,
+                        adsoyad: name,
+                        tel: row.querySelector('.inp-phone').value,
+                        neden: row.querySelector('.inp-reason').value,
+                        durum: row.querySelector('.inp-status').value,
+                        temsilci: row.querySelector('.inp-agent').value,
+                        not: row.querySelector('.inp-note').value,
+                        bolge: region
+                    });
                 }
+            });
+            if(error) return alert("Lütfen müşteri adını giriniz.");
+            if(dataToSend.length === 0) return;
+
+            const btn = document.getElementById('submitBtn');
+            const oldHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="loader border-t-white w-5 h-5 mr-2"></span> Gönderiliyor...'; btn.disabled = true;
+
+            // Apps Script expects single object create logic mostly, but let's loop
+            try {
+                // Sending sequentially to match the single create logic of the provided script logic, or adapt if script supports bulk
+                // Based on provided script (handleFormSubmit), it takes one object.
+                // We will send requests in parallel
+                const promises = dataToSend.map(data => fetch(API_URL, {method: 'POST', body: JSON.stringify(data)}));
+                await Promise.all(promises);
+                
+                document.getElementById('inputContainer').innerHTML = '';
+                addInputRow();
+                refreshData();
+                alert("Kayıtlar başarıyla eklendi.");
+            } catch(e) { alert("Hata oluştu."); }
+            finally { btn.innerHTML = oldHTML; btn.disabled = false; }
+        }
+
+        // --- EDIT / DELETE LOGIC ---
+        window.setupEdit = function(idx) {
+            const record = filteredData[idx];
+            originalRowData = record; // Store for update logic reference if needed by backend, though we send full new object usually
+            
+            // Format Date for Input
+            let dateVal = "";
+            if (record.tarih) {
+                if (record.tarih.indexOf('T') > -1) dateVal = record.tarih.split('T')[0];
+                else if (record.tarih.length >= 10) dateVal = record.tarih.substring(0, 10);
+            }
+
+            document.getElementById('modalDate').value = dateVal;
+            document.getElementById('modalName').value = record.musteri;
+            document.getElementById('modalPhone').value = record.telefon;
+            document.getElementById('modalRegion').value = record.bolge;
+            document.getElementById('modalAgent').value = record.temsilci;
+            document.getElementById('modalNote').value = record.not;
+
+            // Populate options based on saved region
+            populateReasonStatusOptions('modalRegion', 'modalReason', 'modalStatus');
+            
+            // Set Selected Values
+            document.getElementById('modalReason').value = record.konu;
+            document.getElementById('modalStatus').value = record.durum;
+
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        window.setupDelete = function(idx) {
+            const record = filteredData[idx];
+            // Store index relative to global array or use object ref
+            // The provided script uses the entire object to match and delete in sheet
+            originalRowData = record; 
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        window.closeEditModal = function() { document.getElementById('editModal').classList.add('hidden'); }
+        window.closeDeleteModal = function() { document.getElementById('deleteModal').classList.add('hidden'); }
+
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('editSubmitBtn');
+            const oldHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="loader border-t-white w-4 h-4 mr-2"></span>'; btn.disabled = true;
+
+            const newData = {
+                tarih: document.getElementById('modalDate').value,
+                adsoyad: document.getElementById('modalName').value,
+                tel: document.getElementById('modalPhone').value,
+                neden: document.getElementById('modalReason').value,
+                durum: document.getElementById('modalStatus').value,
+                temsilci: document.getElementById('modalAgent').value,
+                not: document.getElementById('modalNote').value,
+                bolge: document.getElementById('modalRegion').value
             };
-            copy('inpReason', 'filterReason', 'Arama Nedeni'); 
-            copy('inpStatus', 'filterStatus', 'Durum');
+
+            const payload = { action: "update", oldData: originalRowData, newData: newData };
+
+            try {
+                const res = await fetch(API_URL, {method:'POST', body:JSON.stringify(payload)});
+                const resJson = await res.json();
+                if(resJson.success) {
+                    closeEditModal();
+                    refreshData();
+                } else { alert("Güncelleme başarısız: " + resJson.message); }
+            } catch(e) { alert("Hata"); }
+            finally { btn.innerHTML = oldHTML; btn.disabled = false; }
+        });
+
+        window.confirmDelete = async function() {
+            const btn = document.getElementById('btnConfirmDelete');
+            const oldHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="loader border-t-white w-4 h-4 mr-2"></span>'; btn.disabled = true;
+
+            const payload = { action: "delete", data: originalRowData };
+            
+            try {
+                const res = await fetch(API_URL, {method:'POST', body:JSON.stringify(payload)});
+                const resJson = await res.json();
+                if(resJson.success) {
+                    closeDeleteModal();
+                    refreshData();
+                } else { alert("Silme başarısız"); }
+            } catch(e) { alert("Hata"); }
+            finally { btn.innerHTML = oldHTML; btn.disabled = false; }
         }
     </script>
 </body>
