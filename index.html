@@ -457,9 +457,19 @@
             let reasons = ["ÜRÜN TESLİMATI", "ÜRÜN ARIZASI", "GENEL BİLGİ"];
             if (region === "İstanbul") reasons.push("TAKSİT İŞLEMLERİ/BORÇ BİLGİSİ");
             else reasons.push("TAKSİT İŞLEMLERİ / BORÇ BİLGİSİ");
-            let statuses = ["ÇÖZÜMLENDİ", "TEKRAR GÖRÜŞÜLECEK", "ŞUBEYE AKTARILDI", "GECİKME BİRİMİNE AKTARILDI"];
+            
+            // Statuses list updated
+            let statuses = [
+                "ÇÖZÜMLENDİ", 
+                "TEKRAR GÖRÜŞÜLECEK", 
+                "ŞUBEYE AKTARILDI", 
+                "SEVKİYAT BİRİMİNE AKTARILDI", 
+                "GECİKME BİRİMİNE AKTARILDI"
+            ];
+            
             if (region === "Kocaeli") statuses.push("SÜREÇLE ALAKALI BİLGİ VERİLDİ.");
             else statuses.push("SÜREÇLE ALAKALI BİLGİ VERİLDİ");
+            
             const defaultText = isFilter ? "Tümü" : "Seçiniz";
             const fill = (sel, opts, placeholder) => {
                 const oldVal = sel.value;
@@ -579,7 +589,7 @@
             const regionVal = document.getElementById('filterRegion').value;
             const statusVal = document.getElementById('filterStatus').value;
             const reasonVal = document.getElementById('filterReason').value;
-            const agentVal = document.getElementById('filterAgent').value; // Get Agent Filter
+            const agentVal = document.getElementById('filterAgent').value; 
             
             filteredData = allRecordsData.filter(item => {
                 const searchStr = searchVal.trim();
