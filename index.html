@@ -333,7 +333,6 @@
                     
                     <div><label class="input-label mb-1">Durum</label><select id="filterStatus" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option></select></div>
 
-                    <!-- NEW: Agent Filter -->
                     <div><label class="input-label mb-1">Temsilci</label><select id="filterAgent" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>SEVAL TEKOĞUL</option><option>FEYZA NUR DİLEK</option></select></div>
                     
                     <div class="flex items-end"><button onclick="clearFilters()" class="btn btn-secondary w-full"><i class="fas fa-eraser"></i> Temizle</button></div>
@@ -454,19 +453,19 @@
             const statusSelect = document.getElementById(statusId);
             if(!regionSelect || !reasonSelect || !statusSelect) return;
             const region = regionSelect.value;
+            
+            // If no region selected, clear options
+            if (!region) {
+                reasonSelect.innerHTML = `<option value="">${isFilter ? 'Tümü' : 'Seçiniz'}</option>`;
+                statusSelect.innerHTML = `<option value="">${isFilter ? 'Tümü' : 'Seçiniz'}</option>`;
+                return;
+            }
+
             let reasons = ["ÜRÜN TESLİMATI", "ÜRÜN ARIZASI", "GENEL BİLGİ"];
             if (region === "İstanbul") reasons.push("TAKSİT İŞLEMLERİ/BORÇ BİLGİSİ");
             else reasons.push("TAKSİT İŞLEMLERİ / BORÇ BİLGİSİ");
             
-            // Statuses list updated
-            let statuses = [
-                "ÇÖZÜMLENDİ", 
-                "TEKRAR GÖRÜŞÜLECEK", 
-                "ŞUBEYE AKTARILDI", 
-                "SEVKİYAT BİRİMİNE AKTARILDI", 
-                "GECİKME BİRİMİNE AKTARILDI"
-            ];
-            
+            let statuses = ["ÇÖZÜMLENDİ", "TEKRAR GÖRÜŞÜLECEK", "ŞUBEYE AKTARILDI", "SEVKİYAT BİRİMİNE AKTARILDI", "GECİKME BİRİMİNE AKTARILDI"];
             if (region === "Kocaeli") statuses.push("SÜREÇLE ALAKALI BİLGİ VERİLDİ.");
             else statuses.push("SÜREÇLE ALAKALI BİLGİ VERİLDİ");
             
@@ -710,7 +709,7 @@
             div.innerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 mb-4">
                     <div class="lg:col-span-2"><label class="input-label">Tarih</label><input type="datetime-local" class="input-field inp-date" value="${getTodayDateTime()}"></div>
-                    <div class="lg:col-span-2"><label class="input-label">Bölge</label><select class="input-field select-field inp-region" onchange="populateReasonStatusOptions(this.id, this.closest('.entry-card').querySelector('.inp-reason').id, this.closest('.entry-card').querySelector('.inp-status').id)"><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
+                    <div class="lg:col-span-2"><label class="input-label">Bölge</label><select class="input-field select-field inp-region" onchange="populateReasonStatusOptions(this.id, this.closest('.entry-card').querySelector('.inp-reason').id, this.closest('.entry-card').querySelector('.inp-status').id)"><option value="" disabled selected>Seçiniz</option><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
                     <div class="lg:col-span-3"><label class="input-label">Müşteri Ad Soyad</label><input type="text" class="input-field inp-name" placeholder="Ad Soyad"></div>
                     <div class="lg:col-span-2"><label class="input-label">Telefon</label><input type="text" class="input-field inp-phone" placeholder="05XX..."></div>
                     <div class="lg:col-span-3"><label class="input-label">Temsilci</label><select class="input-field select-field inp-agent"><option value="" disabled selected>Seçiniz</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>SEVAL TEKOĞUL</option><option>FEYZA NUR DİLEK</option></select></div>
@@ -720,7 +719,7 @@
                     <div><label class="input-label">Sonuç / Durum</label><select class="input-field select-field inp-status"></select></div>
                     <div class="flex gap-3 items-end">
                         <div class="flex-1"><label class="input-label">Not</label><input type="text" class="input-field inp-note" placeholder="Kısa not..."></div>
-                        <button onclick="this.closest('div.entry-card').remove()" class="w-10 h-[42px] rounded-lg bg-slate-50 text-slate-400 hover:text-rose-50 border border-slate-200 transition-all flex items-center justify-center shrink-0"><i class="fas fa-trash-alt text-sm"></i></button>
+                        <button onclick="this.closest('div.entry-card').remove()" class="w-10 h-[42px] rounded-lg bg-slate-50 text-slate-400 hover:bg-rose-50 border border-slate-200 transition-all flex items-center justify-center shrink-0"><i class="fas fa-trash-alt text-sm"></i></button>
                     </div>
                 </div>
             `;
@@ -736,22 +735,39 @@
             const rows = document.querySelectorAll('#inputContainer > div');
             const dataToSend = [];
             let error = false;
-            rows.forEach(row => {
+            
+            for (let row of rows) {
                 const name = row.querySelector('.inp-name').value;
-                if(!name) { row.style.borderColor = '#f43f5e'; error = true; }
-                else {
-                    row.style.borderColor = '#e2e8f0';
-                    dataToSend.push({
-                        tarih: row.querySelector('.inp-date').value.replace('T', ' '),
-                        adsoyad: name, tel: row.querySelector('.inp-phone').value,
-                        neden: row.querySelector('.inp-reason').value, durum: row.querySelector('.inp-status').value,
-                        temsilci: row.querySelector('.inp-agent').value, not: row.querySelector('.inp-note').value,
-                        bolge: row.querySelector('.inp-region').value
-                    });
+                const region = row.querySelector('.inp-region').value;
+                
+                // Reset styles
+                row.style.borderColor = '#e2e8f0';
+
+                // Validation
+                if(!region) {
+                    row.style.borderColor = '#f43f5e';
+                    alert("Lütfen bölge seçiniz.");
+                    error = true;
+                    break;
                 }
-            });
-            if(error) return alert("Lütfen müşteri adını giriniz.");
-            if(dataToSend.length === 0) return;
+                if(!name) {
+                    row.style.borderColor = '#f43f5e';
+                    alert("Lütfen müşteri adını giriniz.");
+                    error = true;
+                    break;
+                }
+
+                dataToSend.push({
+                    tarih: row.querySelector('.inp-date').value.replace('T', ' '),
+                    adsoyad: name, tel: row.querySelector('.inp-phone').value,
+                    neden: row.querySelector('.inp-reason').value, durum: row.querySelector('.inp-status').value,
+                    temsilci: row.querySelector('.inp-agent').value, not: row.querySelector('.inp-note').value,
+                    bolge: region
+                });
+            }
+
+            if(error || dataToSend.length === 0) return;
+
             const btn = document.getElementById('submitBtn');
             const oldHTML = btn.innerHTML;
             btn.innerHTML = '<span class="loader border-t-white w-5 h-5 mr-2"></span> Gönderiliyor...'; btn.disabled = true;
