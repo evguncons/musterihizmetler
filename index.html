@@ -321,20 +321,30 @@
                     </div>
                     <span class="text-sm font-bold bg-slate-100 text-slate-600 px-4 py-2 rounded-xl border border-slate-200" id="totalRecordsBadge">0 Kayıt</span>
                 </div>
-                <!-- Filter Grid -->
-                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+                <!-- Filter Grid (8 Kolon olarak güncellendi) -->
+                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
+                    <!-- Arama -->
                     <div><label class="input-label mb-1">Arama</label><div class="relative"><i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i><input type="text" id="filterSearch" placeholder="İsim/Tel..." class="input-field pl-10" onkeyup="filterRecords()"></div></div>
                     
-                    <div><label class="input-label mb-1">Tarih</label><input type="date" id="filterDate" class="input-field" onchange="filterRecords()"></div>
+                    <!-- Başlangıç Tarihi -->
+                    <div><label class="input-label mb-1">Başlangıç</label><input type="date" id="filterStartDate" class="input-field" onchange="filterRecords()"></div>
 
+                    <!-- Bitiş Tarihi -->
+                    <div><label class="input-label mb-1">Bitiş</label><input type="date" id="filterEndDate" class="input-field" onchange="filterRecords()"></div>
+
+                    <!-- Bölge -->
                     <div><label class="input-label mb-1">Bölge</label><select id="filterRegion" class="input-field select-field" onchange="populateReasonStatusOptions('filterRegion', 'filterReason', 'filterStatus', true); filterRecords()"><option value="">Tümü</option><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
                     
-                    <div><label class="input-label mb-1">Arama Nedeni</label><select id="filterReason" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option></select></div>
+                    <!-- Arama Nedeni -->
+                    <div><label class="input-label mb-1">Neden</label><select id="filterReason" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option></select></div>
                     
+                    <!-- Durum -->
                     <div><label class="input-label mb-1">Durum</label><select id="filterStatus" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option></select></div>
 
+                    <!-- Temsilci -->
                     <div><label class="input-label mb-1">Temsilci</label><select id="filterAgent" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>SEVAL TEKOĞUL</option><option>FEYZA NUR DİLEK</option><option>CANSU IŞIK</option><option>TUĞÇE TANRIVERDİ</option><option>ESRA ERDOĞAN</option></select></div>
                     
+                    <!-- Temizle Butonu -->
                     <div class="flex items-end"><button onclick="clearFilters()" class="btn btn-secondary w-full"><i class="fas fa-eraser"></i> Temizle</button></div>
                 </div>
             </div>
@@ -584,7 +594,8 @@
 
         function filterRecords(resetPage = true) {
             const searchVal = document.getElementById('filterSearch').value.toLowerCase();
-            const dateVal = document.getElementById('filterDate').value;
+            const startDateVal = document.getElementById('filterStartDate').value;
+            const endDateVal = document.getElementById('filterEndDate').value;
             const regionVal = document.getElementById('filterRegion').value;
             const statusVal = document.getElementById('filterStatus').value;
             const reasonVal = document.getElementById('filterReason').value;
@@ -599,10 +610,18 @@
                 const matchAgent = agentVal === "" || (item.temsilci && item.temsilci.toString().trim() === agentVal.trim());
                 
                 let matchDate = true;
-                if(dateVal) {
+                if(startDateVal || endDateVal) {
                    if(item.tarih) {
                        let itemDateStr = String(item.tarih).includes('T') ? String(item.tarih).split('T')[0] : String(item.tarih).substring(0, 10);
-                       matchDate = (itemDateStr === dateVal);
+                       
+                       if (startDateVal && endDateVal) {
+                           matchDate = (itemDateStr >= startDateVal && itemDateStr <= endDateVal);
+                       } else if (startDateVal) {
+                           matchDate = (itemDateStr >= startDateVal);
+                       } else if (endDateVal) {
+                           matchDate = (itemDateStr <= endDateVal);
+                       }
+
                    } else matchDate = false;
                 }
                 return matchSearch && matchRegion && matchStatus && matchReason && matchDate && matchAgent;
@@ -613,7 +632,8 @@
 
         function clearFilters() {
             document.getElementById('filterSearch').value = '';
-            document.getElementById('filterDate').value = '';
+            document.getElementById('filterStartDate').value = '';
+            document.getElementById('filterEndDate').value = '';
             document.getElementById('filterRegion').value = '';
             document.getElementById('filterStatus').value = '';
             document.getElementById('filterReason').value = '';
