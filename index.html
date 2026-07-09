@@ -321,10 +321,10 @@
                     </div>
                     <span class="text-sm font-bold bg-slate-100 text-slate-600 px-4 py-2 rounded-xl border border-slate-200" id="totalRecordsBadge">0 Kayıt</span>
                 </div>
-                <!-- Filter Grid (8 Kolon olarak güncellendi) -->
+                <!-- Filter Grid -->
                 <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
                     <!-- Arama -->
-                    <div><label class="input-label mb-1">Arama</label><div class="relative"><i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i><input type="text" id="filterSearch" placeholder="İsim/Tel..." class="input-field pl-10" onkeyup="filterRecords()"></div></div>
+                    <div><label class="input-label mb-1">Arama</label><div class="relative"><i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i><input type="text" id="filterSearch" placeholder="İsim/Tel..." class="input-field pl-10" onkeyup="debouncedFilterRecords()"></div></div>
                     
                     <!-- Başlangıç Tarihi -->
                     <div><label class="input-label mb-1">Başlangıç</label><input type="date" id="filterStartDate" class="input-field" onchange="filterRecords()"></div>
@@ -342,7 +342,7 @@
                     <div><label class="input-label mb-1">Durum</label><select id="filterStatus" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option></select></div>
 
                     <!-- Temsilci -->
-                    <div><label class="input-label mb-1">Temsilci</label><select id="filterAgent" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>EYLEM KARĞI</option><option>FEYZA NUR DİLEK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option></select></div>
+                    <div><label class="input-label mb-1">Temsilci</label><select id="filterAgent" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option><option>SİBEL GÜNAYDIN</option></select></div>
                     
                     <!-- Temizle Butonu -->
                     <div class="flex items-end"><button onclick="clearFilters()" class="btn btn-secondary w-full"><i class="fas fa-eraser"></i> Temizle</button></div>
@@ -400,7 +400,7 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div><label class="input-label">Temsilci</label><select id="modalAgent" class="input-field select-field"><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>EYLEM KARĞI</option><option>FEYZA NUR DİLEK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option></select></div>
+                    <div><label class="input-label">Temsilci</label><select id="modalAgent" class="input-field select-field"><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option><option>SİBEL GÜNAYDIN</option></select></div>
                 </div>
 
                 <div>
@@ -430,6 +430,9 @@
         </div>
     </div>
 
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-4 right-4 z-[110] flex flex-col gap-2 pointer-events-none"></div>
+
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzmh0TtUPRgqXpX3mZ7OvytgEg--MBKheEA46hXl7gLTjc23wEahTGugctfGopeikjI4g/exec";
         
@@ -439,7 +442,61 @@
         let currentPage = 1;
         const rowsPerPage = 10; 
         let originalRowData = null; 
+        let isFetching = false; // Üst üste istek atılmasını (overlap) engellemek için güvenlik değişkeni
+
+        // YEREL GÜNCELLEMELER İÇİN YARDIMCI FONKSİYON: Tarihten Dönem (Sayfa Adı) Çıkarımı
+        function getSheetNameFromDateLocal(dateStr) {
+            if (!dateStr) return "";
+            const d = new Date(dateStr.replace(' ', 'T'));
+            if (isNaN(d.getTime())) return "";
+            const months = ["OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS", "EYLÜL", "EKİM", "KASIM", "ARALIK"];
+            return months[d.getMonth()] + " " + d.getFullYear();
+        }
+
+        // GÜVENLİK: XSS Koruması için HTML etiketlerini zararsız hale getiren fonksiyon
+        function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // UX: Modern bildirim fonksiyonu (alert yerine)
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bgColor = type === 'error' ? 'bg-rose-500' : (type === 'warning' ? 'bg-amber-500' : 'bg-emerald-500');
+            const icon = type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle';
+            
+            toast.className = `px-4 py-3 rounded-xl shadow-lg text-white text-sm font-bold flex items-center gap-2 transform transition-all duration-300 translate-y-10 opacity-0 ${bgColor}`;
+            toast.innerHTML = `<i class="fas ${icon}"></i> ${escapeHTML(message)}`;
+            
+            container.appendChild(toast);
+            
+            // Görünme efekti
+            setTimeout(() => { toast.classList.remove('translate-y-10', 'opacity-0'); }, 10);
+            
+            // 3 saniye sonra kaybolma efekti
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // PERFORMANS: Arama işlemi için Debounce (Klavye tuşlarına her basıldığında sistemi yormamak için)
+        let searchTimeout;
+        function debouncedFilterRecords() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filterRecords();
+            }, 300);
+        }
         
+        let refreshInterval;
+
         function checkLogin() {
             const pass = document.getElementById('loginPass').value;
             if(pass === '134679') {
@@ -448,7 +505,10 @@
                 addInputRow(); 
                 populateReasonStatusOptions('filterRegion', 'filterReason', 'filterStatus', true);
                 refreshData(true);
-                setInterval(() => refreshData(false), 30000);
+                
+                // Eski arkaplan yenileyicisini temizleyip 30 saniyede bir çalışacak şekilde yeniden kuruyoruz
+                if(refreshInterval) clearInterval(refreshInterval);
+                refreshInterval = setInterval(() => refreshData(false), 30000);
             } else {
                 document.getElementById('loginError').classList.remove('hidden');
                 document.getElementById('loginPass').classList.add('border-rose-500', 'ring-2', 'ring-rose-200');
@@ -496,26 +556,57 @@
             return fetchData(showFullLoader);
         }
 
-        async function fetchWithRetry(url, options = {}, retries = 3, backoff = 1000) {
+        async function fetchWithRetry(url, options = {}, retries = 2, backoff = 1000) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), 45000); 
             try {
-                const response = await fetch(url, options);
+                const response = await fetch(url, { ...options, signal: controller.signal });
+                clearTimeout(id);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return response;
             } catch (err) {
+                clearTimeout(id);
+                
+                // Eğer hata bir AbortError ise (süre dolduğu için bizim fırlattığımız), yeniden denemeden temizce hatayı fırlat.
+                // Bu, tarayıcının kırmızı renkte "signal is aborted without reason" atmasını engeller.
+                if (err.name === 'AbortError' || (err.message && err.message.includes('aborted'))) {
+                    throw new Error("Sunucu yanıt vermedi (Zaman Aşımı). Lütfen bağlantınızı kontrol edip tekrar deneyin.");
+                }
+
                 if (retries > 0) {
                     await new Promise(r => setTimeout(r, backoff));
                     return fetchWithRetry(url, options, retries - 1, backoff * 2);
                 }
+                
                 throw err;
             }
         }
 
         async function fetchData(showFullLoader) {
+            // OPTİMİZASYON: Halihazırda bir istek atıldıysa ve henüz bitmediyse, arkaplan yenilemesini atla (Overlap Koruması)
+            if (isFetching && !showFullLoader) return; 
+            
+            isFetching = true;
+            
             try {
                 if(showFullLoader) document.getElementById('globalLoader').classList.remove('hidden');
+                
                 const targetUrl = `${API_URL}${API_URL.includes('?') ? '&' : '?'}t=${new Date().getTime()}`;
                 const response = await fetchWithRetry(targetUrl, { method: "GET", mode: "cors", redirect: "follow" });
-                const data = await response.json();
+                
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    throw new Error("Sunucudan geçerli bir veri alınamadı. Google Apps Script izninizi kontrol edin. (HTML Yanıtı Döndü)");
+                }
+
+                if (!Array.isArray(data)) {
+                    if (data && data.error) throw new Error("Google Sunucu Hatası: " + data.error);
+                    throw new Error("Gelen veri beklenen liste formatında değil.");
+                }
+
                 allRecordsData = data.filter(item => {
                     const m = (item.musteri || "").toString().trim();
                     const t = (item.telefon || "").toString().trim();
@@ -533,11 +624,23 @@
                 const currentPeriod = periodSelect.value;
                 periodSelect.innerHTML = '<option value="all">Tüm Zamanlar</option>' + periods.map(p => `<option value="${p}">${p}</option>`).join('');
                 if(periods.includes(currentPeriod)) periodSelect.value = currentPeriod;
+                
                 toggleLoadingState(false);
                 filterRecords(false); 
                 recalculateStats();
-            } catch(e) { console.error("Fetch error", e); }
-            finally { document.getElementById('globalLoader').classList.add('hidden'); }
+            } catch(e) { 
+                // Eğer hata arka planda oluşan bir zaman aşımı ise konsolu kırmızıya boyamadan uyarı bas
+                if(showFullLoader) {
+                    showToast("Veriler yüklenirken sorun oluştu! " + e.message, "error");
+                    console.warn("Veri Yükleme Hatası:", e.message);
+                } else {
+                    console.warn("Arka plan veri yenileme işlemi başarısız (Göz ardı ediliyor):", e.message);
+                }
+            }
+            finally { 
+                isFetching = false;
+                document.getElementById('globalLoader').classList.add('hidden'); 
+            }
         }
 
         function toggleLoadingState(isLoading) {
@@ -612,7 +715,20 @@
                 let matchDate = true;
                 if(startDateVal || endDateVal) {
                    if(item.tarih) {
-                       let itemDateStr = String(item.tarih).includes('T') ? String(item.tarih).split('T')[0] : String(item.tarih).substring(0, 10);
+                       let tStr = String(item.tarih);
+                       let itemDateStr = "";
+                       
+                       // Gelen farklı tarih formatlarını güvenli bir şekilde standart (YYYY-AA-GG) formata çevirme
+                       if (tStr.includes('T')) {
+                           itemDateStr = tStr.split('T')[0];
+                       } else if (tStr.match(/^\d{4}-\d{2}-\d{2}/)) {
+                           itemDateStr = tStr.substring(0, 10);
+                       } else if (tStr.match(/^\d{2}\.\d{2}\.\d{4}/)) {
+                           const p = tStr.substring(0, 10).split('.');
+                           itemDateStr = `${p[2]}-${p[1]}-${p[0]}`;
+                       } else {
+                           itemDateStr = tStr.substring(0, 10);
+                       }
                        
                        if (startDateVal && endDateVal) {
                            matchDate = (itemDateStr >= startDateVal && itemDateStr <= endDateVal);
@@ -645,15 +761,14 @@
         function formatDisplayDate(raw) {
             if (!raw) return "-";
             const str = String(raw);
-            if (str.includes('T')) {
-                const parts = str.split('T');
-                const d = parts[0].split('-');
-                return `${d[2]}.${d[1]}.${d[0]} ${parts[1].substring(0, 5)}`; 
-            }
-            if (str.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                const p = str.split('-');
-                return `${p[2]}.${p[1]}.${p[0]}`;
-            }
+            
+            // Tüm tarih tiplerini (YYYY-AA-GG HH:DD veya GG.AA.YYYY HH:DD vb.) listelemede düzgün göstermek için
+            const match1 = str.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}:\d{2}))?/);
+            if (match1) return match1[4] ? `${match1[3]}.${match1[2]}.${match1[1]} ${match1[4]}` : `${match1[3]}.${match1[2]}.${match1[1]}`;
+            
+            const match2 = str.match(/^(\d{2})\.(\d{2})\.(\d{4})(?: (\d{2}:\d{2}))?/);
+            if (match2) return match2[4] ? `${match2[1]}.${match2[2]}.${match2[3]} ${match2[4]}` : `${match2[1]}.${match2[2]}.${match2[3]}`;
+            
             return str;
         }
 
@@ -677,14 +792,16 @@
                 if (st.includes("ÇÖZÜMLENDİ")) badgeClass = "bg-emerald-100 text-emerald-700";
                 else if (st.includes("TEKRAR") || st.includes("AKTARILDI")) badgeClass = "bg-amber-100 text-amber-700";
                 else if (st.includes("ARIZA") || st.includes("GECİKME")) badgeClass = "bg-rose-100 text-rose-700";
+                
+                // GÜVENLİK: Tabloya basılan tüm string değerleri escapeHTML'den geçirildi
                 tr.innerHTML = `
                     <td data-label="Tarih" class="table-cell whitespace-nowrap text-slate-600 font-bold text-xs">${formatDisplayDate(row.tarih)}</td>
-                    <td data-label="Bölge" class="table-cell whitespace-nowrap"><span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase border border-indigo-100 tracking-wide">${row.bolge}</span></td>
-                    <td data-label="Müşteri" class="table-cell font-bold text-slate-800 text-sm">${row.musteri}</td>
-                    <td data-label="Telefon" class="table-cell text-slate-600 text-xs">${row.telefon}</td>
-                    <td data-label="Neden" class="table-cell text-xs font-medium text-slate-600 max-w-[150px] truncate" title="${row.konu}">${row.konu}</td>
-                    <td data-label="Durum" class="table-cell"><span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold border border-transparent shadow-sm ${badgeClass}">${row.durum}</span></td>
-                    <td data-label="Temsilci" class="table-cell text-xs font-bold text-slate-500">${row.temsilci}</td>
+                    <td data-label="Bölge" class="table-cell whitespace-nowrap"><span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase border border-indigo-100 tracking-wide">${escapeHTML(row.bolge)}</span></td>
+                    <td data-label="Müşteri" class="table-cell font-bold text-slate-800 text-sm">${escapeHTML(row.musteri)}</td>
+                    <td data-label="Telefon" class="table-cell text-slate-600 text-xs">${escapeHTML(row.telefon)}</td>
+                    <td data-label="Neden" class="table-cell text-xs font-medium text-slate-600 max-w-[150px] truncate" title="${escapeHTML(row.konu)}">${escapeHTML(row.konu)}</td>
+                    <td data-label="Durum" class="table-cell"><span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold border border-transparent shadow-sm ${badgeClass}">${escapeHTML(row.durum)}</span></td>
+                    <td data-label="Temsilci" class="table-cell text-xs font-bold text-slate-500">${escapeHTML(row.temsilci)}</td>
                     <td data-label="İşlem" class="table-cell"><div class="flex justify-end gap-2">
                         <button onclick="setupEdit(${absoluteIndex})" class="w-9 h-9 flex items-center justify-center rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-600 hover:bg-indigo-100 transition-all shadow-sm"><i class="fas fa-pen text-xs"></i></button>
                         <button onclick="setupDelete(${absoluteIndex})" class="w-9 h-9 flex items-center justify-center rounded-lg bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 transition-all shadow-sm"><i class="fas fa-trash text-xs"></i></button>
@@ -716,6 +833,16 @@
             paginationContainer.appendChild(createBtn('<i class="fas fa-chevron-right"></i>', currentPage + 1, currentPage === totalPages));
         }
 
+        // Google Sheets'in saati tanıması için özel çevirici format fonksiyonu
+        function formatDateForSheets(raw) {
+            if (!raw) return "";
+            // Apps Script hatasını önlemek için YYYY-MM-DD HH:mm:ss formatına dönüyoruz.
+            if (raw.includes('T')) {
+                return raw.replace('T', ' ') + ':00'; 
+            }
+            return raw;
+        }
+
         function getTodayDateTime() {
             const now = new Date();
             const msLocal = now.getTime() - (now.getTimezoneOffset() * 60 * 1000);
@@ -732,7 +859,7 @@
                     <div class="lg:col-span-2"><label class="input-label">Bölge</label><select class="input-field select-field inp-region" onchange="populateReasonStatusOptions(this.id, this.closest('.entry-card').querySelector('.inp-reason').id, this.closest('.entry-card').querySelector('.inp-status').id)"><option value="" disabled selected>Seçiniz</option><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
                     <div class="lg:col-span-3"><label class="input-label">Müşteri Ad Soyad</label><input type="text" class="input-field inp-name" placeholder="Ad Soyad"></div>
                     <div class="lg:col-span-2"><label class="input-label">Telefon</label><input type="text" class="input-field inp-phone" placeholder="05XX..."></div>
-                    <div class="lg:col-span-3"><label class="input-label">Temsilci</label><select class="input-field select-field inp-agent"><option value="" disabled selected>Seçiniz</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>EYLEM KARĞI</option><option>FEYZA NUR DİLEK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option></select></div>
+                    <div class="lg:col-span-3"><label class="input-label">Temsilci</label><select class="input-field select-field inp-agent"><option value="" disabled selected>Seçiniz</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option><option>SİBEL GÜNAYDIN</option></select></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div><label class="input-label">Arama Nedeni</label><select class="input-field select-field inp-reason"></select></div>
@@ -766,19 +893,19 @@
                 // Validation
                 if(!region) {
                     row.style.borderColor = '#f43f5e';
-                    alert("Lütfen bölge seçiniz.");
+                    showToast("Lütfen bölge seçiniz.", "error");
                     error = true;
                     break;
                 }
                 if(!name) {
                     row.style.borderColor = '#f43f5e';
-                    alert("Lütfen müşteri adını giriniz.");
+                    showToast("Lütfen müşteri adını giriniz.", "error");
                     error = true;
                     break;
                 }
 
                 dataToSend.push({
-                    tarih: row.querySelector('.inp-date').value.replace('T', ' '),
+                    tarih: formatDateForSheets(row.querySelector('.inp-date').value),
                     adsoyad: name, tel: row.querySelector('.inp-phone').value,
                     neden: row.querySelector('.inp-reason').value, durum: row.querySelector('.inp-status').value,
                     temsilci: row.querySelector('.inp-agent').value, not: row.querySelector('.inp-note').value,
@@ -792,12 +919,34 @@
             const oldHTML = btn.innerHTML;
             btn.innerHTML = '<span class="loader border-t-white w-5 h-5 mr-2"></span> Gönderiliyor...'; btn.disabled = true;
             try {
-                for (const data of dataToSend) { await fetch(API_URL, {method: 'POST', body: JSON.stringify(data)}); }
+                for (const data of dataToSend) { 
+                    await fetch(API_URL, {method: 'POST', body: JSON.stringify(data)}); 
+                    
+                    // ANINDA UI GÜNCELLEMESİ (Optimistic Update)
+                    allRecordsData.unshift({
+                        tarih: data.tarih,
+                        musteri: data.adsoyad,
+                        telefon: data.tel,
+                        konu: data.neden,
+                        durum: data.durum,
+                        temsilci: data.temsilci,
+                        not: data.not,
+                        bolge: data.bolge,
+                        donem: getSheetNameFromDateLocal(data.tarih)
+                    });
+                }
+                
                 document.getElementById('inputContainer').innerHTML = '';
                 addInputRow();
-                alert("Kayıtlar başarıyla eklendi.");
+                showToast("Kayıtlar başarıyla eklendi.", "success");
+                
+                // Listeyi ve İstatistikleri Google'ı beklemeden anında ekrana bas
+                filterRecords(true);
+                recalculateStats();
+
+                // Arka planda sunucuyu sessizce eşitle
                 refreshData(false); 
-            } catch(e) { alert("Hata oluştu."); }
+            } catch(e) { showToast("Kayıt eklenirken hata oluştu.", "error"); }
             finally { btn.innerHTML = oldHTML; btn.disabled = false; }
         }
 
@@ -830,7 +979,7 @@
             const oldHTML = btn.innerHTML;
             btn.innerHTML = '<span class="loader border-t-white w-4 h-4 mr-2"></span>'; btn.disabled = true;
             const newData = {
-                tarih: document.getElementById('modalDate').value.replace('T', ' '),
+                tarih: formatDateForSheets(document.getElementById('modalDate').value),
                 adsoyad: document.getElementById('modalName').value,
                 tel: document.getElementById('modalPhone').value,
                 neden: document.getElementById('modalReason').value,
@@ -842,9 +991,33 @@
             try {
                 const res = await fetch(API_URL, {method:'POST', body:JSON.stringify({ action: "update", oldData: originalRowData, newData: newData })});
                 const resJson = await res.json();
-                if(resJson.success) { closeEditModal(); alert("Kayıt başarıyla güncellendi."); refreshData(false); }
-                else { alert("Güncelleme başarısız: " + resJson.message); }
-            } catch(e) { alert("Hata"); }
+                if(resJson.success) { 
+                    closeEditModal(); 
+                    showToast("Kayıt başarıyla güncellendi.", "success"); 
+                    
+                    // ANINDA UI GÜNCELLEMESİ (Optimistic Update)
+                    const idx = allRecordsData.findIndex(r => r === originalRowData);
+                    if (idx !== -1) {
+                        allRecordsData[idx] = {
+                            ...originalRowData,
+                            tarih: newData.tarih,
+                            musteri: newData.adsoyad,
+                            telefon: newData.tel,
+                            konu: newData.neden,
+                            durum: newData.durum,
+                            temsilci: newData.temsilci,
+                            not: newData.not,
+                            bolge: newData.bolge,
+                            donem: getSheetNameFromDateLocal(newData.tarih)
+                        };
+                        filterRecords(false);
+                        recalculateStats();
+                    }
+
+                    refreshData(false); 
+                }
+                else { showToast("Güncelleme başarısız: " + resJson.message, "error"); }
+            } catch(e) { showToast("Bağlantı hatası oluştu.", "error"); }
             finally { btn.innerHTML = oldHTML; btn.disabled = false; }
         });
 
@@ -855,9 +1028,19 @@
             try {
                 const res = await fetch(API_URL, {method:'POST', body:JSON.stringify({ action: "delete", data: originalRowData })});
                 const resJson = await res.json();
-                if(resJson.success) { closeDeleteModal(); alert("Kayıt silindi."); refreshData(false); }
-                else { alert("Silme başarısız"); }
-            } catch(e) { alert("Hata"); }
+                if(resJson.success) { 
+                    closeDeleteModal(); 
+                    showToast("Kayıt silindi.", "success"); 
+                    
+                    // ANINDA UI GÜNCELLEMESİ (Optimistic Update)
+                    allRecordsData = allRecordsData.filter(r => r !== originalRowData);
+                    filterRecords(false);
+                    recalculateStats();
+
+                    refreshData(false); 
+                }
+                else { showToast("Silme işlemi başarısız.", "error"); }
+            } catch(e) { showToast("Bağlantı hatası oluştu.", "error"); }
             finally { btn.innerHTML = oldHTML; btn.disabled = false; }
         }
     </script>
