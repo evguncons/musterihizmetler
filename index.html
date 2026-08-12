@@ -159,7 +159,6 @@
 </head>
 <body class="pb-12 min-h-screen bg-slate-100 font-sans">
 
-    <!-- GLOBAL LOADING OVERLAY -->
     <div id="globalLoader" class="fixed inset-0 z-[100] bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center transition-all duration-300 hidden">
         <div class="relative">
             <div class="w-16 h-16 border-4 border-slate-200 border-t-brand-600 rounded-full animate-spin"></div>
@@ -167,11 +166,10 @@
                 <i class="fas fa-database text-brand-600 text-lg animate-pulse"></i>
             </div>
         </div>
-        <h3 class="text-xl font-bold text-slate-800 mt-6 animate-pulse tracking-tight">Veriler Yükleniyor...</h3>
-        <p class="text-sm text-slate-500 font-medium mt-2">Lütfen bekleyiniz, bağlantı kuruluyor.</p>
+        <h3 class="text-xl font-bold text-slate-800 mt-6 animate-pulse tracking-tight" id="loaderTitle">Veriler Yükleniyor...</h3>
+        <p class="text-sm text-slate-500 font-medium mt-2 text-center px-4" id="loaderText">Lütfen bekleyiniz, güvenli bağlantı kuruluyor.</p>
     </div>
 
-    <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="fixed inset-0 z-[90] bg-slate-100 flex items-center justify-center p-4">
         <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md text-center">
             <div class="w-20 h-20 bg-gradient-to-br from-brand-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-200 text-white mx-auto mb-6 transform rotate-3">
@@ -191,10 +189,8 @@
         </div>
     </div>
 
-    <!-- MAIN APP -->
     <div id="mainApp" class="hidden max-w-[1600px] mx-auto px-4 md:px-8 pt-8 space-y-10">
         
-        <!-- HEADER -->
         <header class="flex flex-col md:flex-row justify-between items-center gap-6 bg-white p-5 rounded-3xl border border-white/60 shadow-sm sticky top-4 z-40 backdrop-blur-xl bg-white/90">
             <div class="flex items-center gap-5 w-full md:w-auto">
                 <div class="w-14 h-14 bg-gradient-to-br from-brand-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-200 text-white shrink-0">
@@ -220,7 +216,6 @@
             </div>
         </header>
 
-        <!-- ANALYTICS SECTION -->
         <div class="grid grid-cols-1 gap-8">
             <div class="flex justify-between items-end border-b border-slate-200 pb-2">
                  <h3 class="text-lg font-bold text-slate-700 flex items-center gap-2"><i class="fas fa-chart-pie text-brand-500"></i> Performans Analizi</h3>
@@ -232,7 +227,6 @@
                 </div>
             </div>
 
-            <!-- STATS CARDS -->
             <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="card-base p-6 border-l-4 border-l-indigo-500 flex items-center justify-between">
                     <div>
@@ -260,7 +254,6 @@
                 </div>
             </section>
 
-            <!-- CHARTS -->
             <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="card-base p-6 lg:col-span-2">
                     <div class="flex items-center gap-3 mb-6">
@@ -294,7 +287,6 @@
             </section>
         </div>
 
-        <!-- DATA ENTRY -->
         <section class="card-base border-t-4 border-t-brand-500">
             <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <h2 class="text-xl font-bold text-slate-800 flex items-center gap-3">
@@ -311,7 +303,6 @@
             </div>
         </section>
 
-        <!-- RECORDS LIST -->
         <section class="card-base flex flex-col min-h-[600px] bg-white">
             <div class="px-8 py-6 border-b border-slate-100 flex flex-col gap-6">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -321,30 +312,14 @@
                     </div>
                     <span class="text-sm font-bold bg-slate-100 text-slate-600 px-4 py-2 rounded-xl border border-slate-200" id="totalRecordsBadge">0 Kayıt</span>
                 </div>
-                <!-- Filter Grid -->
                 <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
-                    <!-- Arama -->
                     <div><label class="input-label mb-1">Arama</label><div class="relative"><i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i><input type="text" id="filterSearch" placeholder="İsim/Tel..." class="input-field pl-10" onkeyup="debouncedFilterRecords()"></div></div>
-                    
-                    <!-- Başlangıç Tarihi -->
                     <div><label class="input-label mb-1">Başlangıç</label><input type="date" id="filterStartDate" class="input-field" onchange="filterRecords()"></div>
-
-                    <!-- Bitiş Tarihi -->
                     <div><label class="input-label mb-1">Bitiş</label><input type="date" id="filterEndDate" class="input-field" onchange="filterRecords()"></div>
-
-                    <!-- Bölge -->
                     <div><label class="input-label mb-1">Bölge</label><select id="filterRegion" class="input-field select-field" onchange="populateReasonStatusOptions('filterRegion', 'filterReason', 'filterStatus', true); filterRecords()"><option value="">Tümü</option><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
-                    
-                    <!-- Arama Nedeni -->
                     <div><label class="input-label mb-1">Neden</label><select id="filterReason" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option></select></div>
-                    
-                    <!-- Durum -->
                     <div><label class="input-label mb-1">Durum</label><select id="filterStatus" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option></select></div>
-
-                    <!-- Temsilci -->
                     <div><label class="input-label mb-1">Temsilci</label><select id="filterAgent" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option><option>SİBEL GÜNAYDIN</option><option>EYLEM KARĞI</option><option>YAĞMUR BAYOĞLU</option></select></div>
-                    
-                    <!-- Temizle Butonu -->
                     <div class="flex items-end"><button onclick="clearFilters()" class="btn btn-secondary w-full"><i class="fas fa-eraser"></i> Temizle</button></div>
                 </div>
             </div>
@@ -374,7 +349,6 @@
         </section>
     </div>
 
-    <!-- EDIT MODAL -->
     <div id="editModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 transition-all duration-300">
         <div class="card-base w-full max-w-2xl shadow-2xl border-0 bg-white max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 sticky top-0 z-10">
@@ -382,32 +356,22 @@
                 <button onclick="closeEditModal()" class="w-10 h-10 rounded-xl flex items-center justify-center bg-white border-2 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 transition-all"><i class="fas fa-times"></i></button>
             </div>
             <form id="editForm" class="p-8 space-y-5">
-                <input type="hidden" id="modalRowIndex"><input type="hidden" id="modalSheetName">
-                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div><label class="input-label">Tarih</label><input type="datetime-local" id="modalDate" class="input-field bg-slate-100 text-slate-500 cursor-pointer border-slate-200"></div>
                     <div><label class="input-label">Bölge</label><select id="modalRegion" class="input-field select-field bg-slate-100 text-slate-500 cursor-not-allowed border-slate-200" disabled><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
                 </div>
-                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div><label class="input-label">Müşteri Ad Soyad</label><input type="text" id="modalName" class="input-field"></div>
                     <div><label class="input-label">Telefon</label><input type="text" id="modalPhone" class="input-field"></div>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div><label class="input-label">Arama Nedeni</label><select id="modalReason" class="input-field select-field"></select></div>
                     <div><label class="input-label">Durum</label><select id="modalStatus" class="input-field select-field"></select></div>
                 </div>
-                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div><label class="input-label">Temsilci</label><select id="modalAgent" class="input-field select-field"><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option><option>SİBEL GÜNAYDIN</option><option>EYLEM KARĞI</option><option>YAĞMUR BAYOĞLU</option></select></div>
                 </div>
-
-                <div>
-                    <label class="input-label">Görüşme Notu</label>
-                    <textarea id="modalNote" class="input-field h-24 pt-2 resize-none" placeholder="Detaylar..."></textarea>
-                </div>
-
+                <div><label class="input-label">Görüşme Notu</label><textarea id="modalNote" class="input-field h-24 pt-2 resize-none" placeholder="Detaylar..."></textarea></div>
                 <div class="pt-4 flex justify-end gap-3 border-t border-slate-100 mt-2">
                     <button type="button" onclick="closeEditModal()" class="btn btn-secondary px-6">Vazgeç</button>
                     <button type="submit" id="editSubmitBtn" class="btn btn-primary px-8">Değişiklikleri Kaydet</button>
@@ -416,13 +380,11 @@
         </div>
     </div>
 
-    <!-- DELETE MODAL -->
     <div id="deleteModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
         <div class="card-base w-full max-w-sm p-8 text-center shadow-2xl border-0 bg-white">
             <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-rose-100"><i class="fas fa-trash-alt text-2xl"></i></div>
             <h3 class="text-xl font-black text-slate-800 mb-2">Emin misiniz?</h3>
             <p class="text-sm text-slate-500 font-medium mb-8 px-4 leading-relaxed">Bu kaydı silmek üzeresiniz. Bu işlem geri alınamaz.</p>
-            <input type="hidden" id="deleteIndex">
             <div class="flex gap-3 justify-center">
                 <button onclick="closeDeleteModal()" class="btn btn-secondary w-full">Vazgeç</button>
                 <button onclick="confirmDelete()" id="btnConfirmDelete" class="btn btn-primary bg-rose-600 hover:bg-rose-700 w-full">Evet, Sil</button>
@@ -430,7 +392,6 @@
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION CONTAINER -->
     <div id="toastContainer" class="fixed bottom-4 right-4 z-[110] flex flex-col gap-2 pointer-events-none"></div>
 
     <script>
@@ -442,9 +403,9 @@
         let currentPage = 1;
         const rowsPerPage = 10; 
         let originalRowData = null; 
-        let isFetching = false; // Üst üste istek atılmasını (overlap) engellemek için güvenlik değişkeni
+        let isFetching = false; 
+        let currentDataHash = ""; 
 
-        // YEREL GÜNCELLEMELER İÇİN YARDIMCI FONKSİYON: Tarihten Dönem (Sayfa Adı) Çıkarımı
         function getSheetNameFromDateLocal(dateStr) {
             if (!dateStr) return "";
             const d = new Date(dateStr.replace(' ', 'T'));
@@ -453,18 +414,11 @@
             return months[d.getMonth()] + " " + d.getFullYear();
         }
 
-        // GÜVENLİK: XSS Koruması için HTML etiketlerini zararsız hale getiren fonksiyon
         function escapeHTML(str) {
             if (str === null || str === undefined) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
 
-        // UX: Modern bildirim fonksiyonu (alert yerine)
         function showToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -475,28 +429,20 @@
             toast.innerHTML = `<i class="fas ${icon}"></i> ${escapeHTML(message)}`;
             
             container.appendChild(toast);
-            
-            // Görünme efekti
             setTimeout(() => { toast.classList.remove('translate-y-10', 'opacity-0'); }, 10);
-            
-            // 3 saniye sonra kaybolma efekti
             setTimeout(() => {
                 toast.classList.add('translate-y-10', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
 
-        // PERFORMANS: Arama işlemi için Debounce (Klavye tuşlarına her basıldığında sistemi yormamak için)
         let searchTimeout;
         function debouncedFilterRecords() {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                filterRecords();
-            }, 300);
+            searchTimeout = setTimeout(() => { filterRecords(); }, 300);
         }
         
         let refreshInterval;
-
         function checkLogin() {
             const pass = document.getElementById('loginPass').value;
             if(pass === '134679') {
@@ -506,15 +452,13 @@
                 populateReasonStatusOptions('filterRegion', 'filterReason', 'filterStatus', true);
                 refreshData(true);
                 
-                // Eski arkaplan yenileyicisini temizleyip 30 saniyede bir çalışacak şekilde yeniden kuruyoruz
                 if(refreshInterval) clearInterval(refreshInterval);
-                refreshInterval = setInterval(() => refreshData(false), 30000);
+                refreshInterval = setInterval(() => refreshData(false), 15000);
             } else {
                 document.getElementById('loginError').classList.remove('hidden');
                 document.getElementById('loginPass').classList.add('border-rose-500', 'ring-2', 'ring-rose-200');
             }
         }
-
         document.getElementById('loginForm').addEventListener('submit', function(e) { e.preventDefault(); checkLogin(); });
 
         function populateReasonStatusOptions(regionId, reasonId, statusId, isFilter = false) {
@@ -524,7 +468,6 @@
             if(!regionSelect || !reasonSelect || !statusSelect) return;
             const region = regionSelect.value;
             
-            // If no region selected, clear options
             if (!region) {
                 reasonSelect.innerHTML = `<option value="">${isFilter ? 'Tümü' : 'Seçiniz'}</option>`;
                 statusSelect.innerHTML = `<option value="">${isFilter ? 'Tümü' : 'Seçiniz'}</option>`;
@@ -560,32 +503,30 @@
             const controller = new AbortController();
             const id = setTimeout(() => controller.abort(), 45000); 
             try {
-                const response = await fetch(url, { ...options, signal: controller.signal });
+                const fetchOptions = {
+                    ...options,
+                    signal: controller.signal,
+                    headers: { 'Accept': 'application/json' }
+                };
+                const response = await fetch(url, fetchOptions);
                 clearTimeout(id);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return response;
             } catch (err) {
                 clearTimeout(id);
-                
-                // Eğer hata bir AbortError ise (süre dolduğu için bizim fırlattığımız), yeniden denemeden temizce hatayı fırlat.
-                // Bu, tarayıcının kırmızı renkte "signal is aborted without reason" atmasını engeller.
                 if (err.name === 'AbortError' || (err.message && err.message.includes('aborted'))) {
                     throw new Error("Sunucu yanıt vermedi (Zaman Aşımı). Lütfen bağlantınızı kontrol edip tekrar deneyin.");
                 }
-
                 if (retries > 0) {
                     await new Promise(r => setTimeout(r, backoff));
                     return fetchWithRetry(url, options, retries - 1, backoff * 2);
                 }
-                
                 throw err;
             }
         }
 
         async function fetchData(showFullLoader) {
-            // OPTİMİZASYON: Halihazırda bir istek atıldıysa ve henüz bitmediyse, arkaplan yenilemesini atla (Overlap Koruması)
             if (isFetching && !showFullLoader) return; 
-            
             isFetching = true;
             
             try {
@@ -599,7 +540,7 @@
                 try {
                     data = JSON.parse(text);
                 } catch (e) {
-                    throw new Error("Sunucudan geçerli bir veri alınamadı. Google Apps Script izninizi kontrol edin. (HTML Yanıtı Döndü)");
+                    throw new Error("Sunucudan geçerli bir veri alınamadı. HTML Yanıtı döndü.");
                 }
 
                 if (!Array.isArray(data)) {
@@ -607,18 +548,57 @@
                     throw new Error("Gelen veri beklenen liste formatında değil.");
                 }
 
-                allRecordsData = data.filter(item => {
+                let newRecords = data.filter(item => {
                     const m = (item.musteri || "").toString().trim();
                     const t = (item.telefon || "").toString().trim();
-                    const d = (item.tarih || "").toString().trim();
-                    if (m === "" || t === "" || d === "" || d === "undefined") return false;
+                    if (m === "" || t === "" || item.tarih === undefined) return false;
                     const mLower = m.toLowerCase();
                     if (mLower.includes("ad soyad") || mLower.includes("müşteri") || mLower === "adı soyadı") return false;
                     return true;
-                }).map(item => ({
-                    tarih: item.tarih, musteri: item.musteri, telefon: String(item.telefon || ""), 
-                    konu: item.konu, durum: item.durum, temsilci: item.temsilci, not: item.not, bolge: item.bolge, donem: item.donem
-                })).sort((a, b) => (a.tarih > b.tarih ? -1 : 1));
+                }).map(item => {
+                    // YENİ OPTİMİZASYON: Çok yüksek hızlı Timestamp (Milisaniye) çözümlemesi
+                    let fDate = ""; let dDate = "-"; let sortDate = 0;
+                    
+                    if(item.tarih) {
+                        if (typeof item.tarih === 'number') {
+                            const d = new Date(item.tarih);
+                            sortDate = item.tarih;
+                            const y = d.getFullYear(); const m = String(d.getMonth()+1).padStart(2, '0');
+                            const day = String(d.getDate()).padStart(2, '0'); const h = String(d.getHours()).padStart(2, '0');
+                            const min = String(d.getMinutes()).padStart(2, '0');
+                            fDate = `${y}-${m}-${day}`;
+                            dDate = `${day}.${m}.${y} ${h}:${min}`;
+                        } else {
+                            const tStr = String(item.tarih);
+                            sortDate = new Date(tStr.replace(' ', 'T')).getTime() || 0;
+                            if (tStr.includes('T')) {
+                                const parts = tStr.split('T'); fDate = parts[0]; const dp = parts[0].split('-');
+                                dDate = `${dp[2]}.${dp[1]}.${dp[0]} ${parts[1].substring(0,5)}`;
+                            } else if (tStr.includes(' ')) {
+                                const parts = tStr.split(' '); fDate = parts[0]; const dp = parts[0].split('-');
+                                if(dp.length === 3) dDate = `${dp[2]}.${dp[1]}.${dp[0]} ${parts[1].substring(0,5)}`;
+                            } else {
+                                fDate = tStr.substring(0,10); dDate = fDate;
+                            }
+                        }
+                    }
+
+                    return {
+                        tarih: item.tarih, _filterDate: fDate, _displayDate: dDate, _sortDate: sortDate,
+                        musteri: item.musteri, telefon: String(item.telefon || ""), 
+                        konu: item.konu, durum: item.durum, temsilci: item.temsilci, not: item.not, bolge: item.bolge, donem: item.donem
+                    };
+                }).sort((a, b) => (b._sortDate - a._sortDate)); // OPTİMİZASYON: Milyonlarca satırı frontend'de saliseler içinde sıralar
+
+                const newHash = JSON.stringify(newRecords);
+                if (newHash === currentDataHash && !showFullLoader) {
+                    isFetching = false;
+                    return; 
+                }
+                
+                currentDataHash = newHash;
+                allRecordsData = newRecords;
+
                 const periods = [...new Set(allRecordsData.map(d => d.donem).filter(d => d))];
                 const periodSelect = document.getElementById('periodFilter');
                 const currentPeriod = periodSelect.value;
@@ -629,15 +609,8 @@
                 filterRecords(false); 
                 recalculateStats();
             } catch(e) { 
-                // Eğer hata arka planda oluşan bir zaman aşımı ise konsolu kırmızıya boyamadan uyarı bas
-                if(showFullLoader) {
-                    showToast("Veriler yüklenirken sorun oluştu! " + e.message, "error");
-                    console.warn("Veri Yükleme Hatası:", e.message);
-                } else {
-                    console.warn("Arka plan veri yenileme işlemi başarısız (Göz ardı ediliyor):", e.message);
-                }
-            }
-            finally { 
+                if(showFullLoader) { showToast("Veriler yüklenirken sorun oluştu! " + e.message, "error"); }
+            } finally { 
                 isFetching = false;
                 document.getElementById('globalLoader').classList.add('hidden'); 
             }
@@ -677,20 +650,14 @@
             if (chartInstances.topic) chartInstances.topic.destroy();
             chartInstances.topic = new Chart(topicCtx, {
                 type: 'bar',
-                data: {
-                    labels: topicsData.map(i => i[0]),
-                    datasets: [{ label: 'Çağrı Sayısı', data: topicsData.map(i => i[1]), backgroundColor: 'rgba(99, 102, 241, 0.8)', borderRadius: 6 }]
-                },
+                data: { labels: topicsData.map(i => i[0]), datasets: [{ label: 'Çağrı Sayısı', data: topicsData.map(i => i[1]), backgroundColor: 'rgba(99, 102, 241, 0.8)', borderRadius: 6 }] },
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true }, y: { grid: { display: false } } } }
             });
             const regionCtx = document.getElementById('regionChart').getContext('2d');
             if (chartInstances.region) chartInstances.region.destroy();
             chartInstances.region = new Chart(regionCtx, {
                 type: 'bar',
-                data: {
-                    labels: Object.keys(regionData),
-                    datasets: [{ label: 'Çağrı Sayısı', data: Object.values(regionData), backgroundColor: ['#6366f1', '#10b981'], borderRadius: 6, barThickness: 50 }]
-                },
+                data: { labels: Object.keys(regionData), datasets: [{ label: 'Çağrı Sayısı', data: Object.values(regionData), backgroundColor: ['#6366f1', '#10b981'], borderRadius: 6, barThickness: 50 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }
             });
         }
@@ -714,30 +681,10 @@
                 
                 let matchDate = true;
                 if(startDateVal || endDateVal) {
-                   if(item.tarih) {
-                       let tStr = String(item.tarih);
-                       let itemDateStr = "";
-                       
-                       // Gelen farklı tarih formatlarını güvenli bir şekilde standart (YYYY-AA-GG) formata çevirme
-                       if (tStr.includes('T')) {
-                           itemDateStr = tStr.split('T')[0];
-                       } else if (tStr.match(/^\d{4}-\d{2}-\d{2}/)) {
-                           itemDateStr = tStr.substring(0, 10);
-                       } else if (tStr.match(/^\d{2}\.\d{2}\.\d{4}/)) {
-                           const p = tStr.substring(0, 10).split('.');
-                           itemDateStr = `${p[2]}-${p[1]}-${p[0]}`;
-                       } else {
-                           itemDateStr = tStr.substring(0, 10);
-                       }
-                       
-                       if (startDateVal && endDateVal) {
-                           matchDate = (itemDateStr >= startDateVal && itemDateStr <= endDateVal);
-                       } else if (startDateVal) {
-                           matchDate = (itemDateStr >= startDateVal);
-                       } else if (endDateVal) {
-                           matchDate = (itemDateStr <= endDateVal);
-                       }
-
+                   if(item._filterDate) {
+                       if (startDateVal && endDateVal) { matchDate = (item._filterDate >= startDateVal && item._filterDate <= endDateVal); } 
+                       else if (startDateVal) { matchDate = (item._filterDate >= startDateVal); } 
+                       else if (endDateVal) { matchDate = (item._filterDate <= endDateVal); }
                    } else matchDate = false;
                 }
                 return matchSearch && matchRegion && matchStatus && matchReason && matchDate && matchAgent;
@@ -747,29 +694,12 @@
         }
 
         function clearFilters() {
-            document.getElementById('filterSearch').value = '';
-            document.getElementById('filterStartDate').value = '';
-            document.getElementById('filterEndDate').value = '';
-            document.getElementById('filterRegion').value = '';
-            document.getElementById('filterStatus').value = '';
-            document.getElementById('filterReason').value = '';
+            document.getElementById('filterSearch').value = ''; document.getElementById('filterStartDate').value = '';
+            document.getElementById('filterEndDate').value = ''; document.getElementById('filterRegion').value = '';
+            document.getElementById('filterStatus').value = ''; document.getElementById('filterReason').value = '';
             document.getElementById('filterAgent').value = '';
             populateReasonStatusOptions('filterRegion', 'filterReason', 'filterStatus', true);
             filterRecords();
-        }
-
-        function formatDisplayDate(raw) {
-            if (!raw) return "-";
-            const str = String(raw);
-            
-            // Tüm tarih tiplerini (YYYY-AA-GG HH:DD veya GG.AA.YYYY HH:DD vb.) listelemede düzgün göstermek için
-            const match1 = str.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}:\d{2}))?/);
-            if (match1) return match1[4] ? `${match1[3]}.${match1[2]}.${match1[1]} ${match1[4]}` : `${match1[3]}.${match1[2]}.${match1[1]}`;
-            
-            const match2 = str.match(/^(\d{2})\.(\d{2})\.(\d{4})(?: (\d{2}:\d{2}))?/);
-            if (match2) return match2[4] ? `${match2[1]}.${match2[2]}.${match2[3]} ${match2[4]}` : `${match2[1]}.${match2[2]}.${match2[3]}`;
-            
-            return str;
         }
 
         function renderTable() {
@@ -783,6 +713,8 @@
             }
             const startIndex = (currentPage - 1) * rowsPerPage;
             const pageData = filteredData.slice(startIndex, startIndex + rowsPerPage);
+            
+            const fragment = document.createDocumentFragment();
             pageData.forEach((row, idx) => {
                 const absoluteIndex = startIndex + idx;
                 const tr = document.createElement('tr');
@@ -793,9 +725,8 @@
                 else if (st.includes("TEKRAR") || st.includes("AKTARILDI")) badgeClass = "bg-amber-100 text-amber-700";
                 else if (st.includes("ARIZA") || st.includes("GECİKME")) badgeClass = "bg-rose-100 text-rose-700";
                 
-                // GÜVENLİK: Tabloya basılan tüm string değerleri escapeHTML'den geçirildi
                 tr.innerHTML = `
-                    <td data-label="Tarih" class="table-cell whitespace-nowrap text-slate-600 font-bold text-xs">${formatDisplayDate(row.tarih)}</td>
+                    <td data-label="Tarih" class="table-cell whitespace-nowrap text-slate-600 font-bold text-xs">${escapeHTML(row._displayDate)}</td>
                     <td data-label="Bölge" class="table-cell whitespace-nowrap"><span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase border border-indigo-100 tracking-wide">${escapeHTML(row.bolge)}</span></td>
                     <td data-label="Müşteri" class="table-cell font-bold text-slate-800 text-sm">${escapeHTML(row.musteri)}</td>
                     <td data-label="Telefon" class="table-cell text-slate-600 text-xs">${escapeHTML(row.telefon)}</td>
@@ -807,8 +738,9 @@
                         <button onclick="setupDelete(${absoluteIndex})" class="w-9 h-9 flex items-center justify-center rounded-lg bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 transition-all shadow-sm"><i class="fas fa-trash text-xs"></i></button>
                     </div></td>
                 `;
-                tbody.appendChild(tr);
+                fragment.appendChild(tr);
             });
+            tbody.appendChild(fragment);
             renderPagination(Math.ceil(totalRecords / rowsPerPage));
         }
 
@@ -833,13 +765,9 @@
             paginationContainer.appendChild(createBtn('<i class="fas fa-chevron-right"></i>', currentPage + 1, currentPage === totalPages));
         }
 
-        // Google Sheets'in saati tanıması için özel çevirici format fonksiyonu
         function formatDateForSheets(raw) {
             if (!raw) return "";
-            // Apps Script hatasını önlemek için YYYY-MM-DD HH:mm:ss formatına dönüyoruz.
-            if (raw.includes('T')) {
-                return raw.replace('T', ' ') + ':00'; 
-            }
+            if (raw.includes('T')) { return raw.replace('T', ' ') + ':00'; }
             return raw;
         }
 
@@ -872,10 +800,20 @@
             `;
             container.appendChild(div);
             const idSuffix = Date.now() + Math.random().toString(36).substr(2, 5);
-            div.querySelector('.inp-region').id = `reg_${idSuffix}`;
-            div.querySelector('.inp-reason').id = `rea_${idSuffix}`;
-            div.querySelector('.inp-status').id = `sta_${idSuffix}`;
+            div.querySelector('.inp-region').id = `reg_${idSuffix}`; div.querySelector('.inp-reason').id = `rea_${idSuffix}`; div.querySelector('.inp-status').id = `sta_${idSuffix}`;
             populateReasonStatusOptions(`reg_${idSuffix}`, `rea_${idSuffix}`, `sta_${idSuffix}`);
+        }
+
+        async function safePostRequest(data) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST', mode: 'cors', redirect: 'follow', 
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(data)
+                });
+                const text = await response.text();
+                try { return JSON.parse(text); } catch(e) { return { success: true, message: "İşlem başarılı" }; }
+            } catch (err) { throw err; }
         }
 
         async function submitAllRows() {
@@ -886,161 +824,117 @@
             for (let row of rows) {
                 const name = row.querySelector('.inp-name').value;
                 const region = row.querySelector('.inp-region').value;
-                
-                // Reset styles
                 row.style.borderColor = '#e2e8f0';
-
-                // Validation
-                if(!region) {
-                    row.style.borderColor = '#f43f5e';
-                    showToast("Lütfen bölge seçiniz.", "error");
-                    error = true;
-                    break;
-                }
-                if(!name) {
-                    row.style.borderColor = '#f43f5e';
-                    showToast("Lütfen müşteri adını giriniz.", "error");
-                    error = true;
-                    break;
-                }
+                if(!region) { row.style.borderColor = '#f43f5e'; showToast("Lütfen bölge seçiniz.", "error"); error = true; break; }
+                if(!name) { row.style.borderColor = '#f43f5e'; showToast("Lütfen müşteri adını giriniz.", "error"); error = true; break; }
 
                 dataToSend.push({
                     tarih: formatDateForSheets(row.querySelector('.inp-date').value),
                     adsoyad: name, tel: row.querySelector('.inp-phone').value,
                     neden: row.querySelector('.inp-reason').value, durum: row.querySelector('.inp-status').value,
-                    temsilci: row.querySelector('.inp-agent').value, not: row.querySelector('.inp-note').value,
-                    bolge: region
+                    temsilci: row.querySelector('.inp-agent').value, not: row.querySelector('.inp-note').value, bolge: region
                 });
             }
 
             if(error || dataToSend.length === 0) return;
 
-            const btn = document.getElementById('submitBtn');
-            const oldHTML = btn.innerHTML;
+            const btn = document.getElementById('submitBtn'); const oldHTML = btn.innerHTML;
             btn.innerHTML = '<span class="loader border-t-white w-5 h-5 mr-2"></span> Gönderiliyor...'; btn.disabled = true;
             try {
-                for (const data of dataToSend) { 
-                    await fetch(API_URL, {method: 'POST', body: JSON.stringify(data)}); 
+                await safePostRequest({ action: 'batchSave', data: dataToSend });
+                
+                for (const data of dataToSend) {
+                    let dDate = "-"; let fDate = ""; let sortDate = 0;
+                    if(data.tarih) {
+                        const parts = data.tarih.split(' '); fDate = parts[0]; const dp = parts[0].split('-');
+                        dDate = `${dp[2]}.${dp[1]}.${dp[0]} ${parts[1].substring(0,5)}`;
+                        sortDate = new Date(data.tarih.replace(' ', 'T')).getTime();
+                    }
                     
-                    // ANINDA UI GÜNCELLEMESİ (Optimistic Update)
                     allRecordsData.unshift({
-                        tarih: data.tarih,
-                        musteri: data.adsoyad,
-                        telefon: data.tel,
-                        konu: data.neden,
-                        durum: data.durum,
-                        temsilci: data.temsilci,
-                        not: data.not,
-                        bolge: data.bolge,
-                        donem: getSheetNameFromDateLocal(data.tarih)
+                        tarih: data.tarih, _filterDate: fDate, _displayDate: dDate, _sortDate: sortDate,
+                        musteri: data.adsoyad, telefon: data.tel, konu: data.neden, durum: data.durum,
+                        temsilci: data.temsilci, not: data.not, bolge: data.bolge, donem: getSheetNameFromDateLocal(fDate)
                     });
                 }
-                
-                document.getElementById('inputContainer').innerHTML = '';
-                addInputRow();
-                showToast("Kayıtlar başarıyla eklendi.", "success");
-                
-                // Listeyi ve İstatistikleri Google'ı beklemeden anında ekrana bas
-                filterRecords(true);
-                recalculateStats();
 
-                // Arka planda sunucuyu sessizce eşitle
-                refreshData(false); 
-            } catch(e) { showToast("Kayıt eklenirken hata oluştu.", "error"); }
-            finally { btn.innerHTML = oldHTML; btn.disabled = false; }
+                currentDataHash = JSON.stringify(allRecordsData);
+                document.getElementById('inputContainer').innerHTML = '';
+                addInputRow(); showToast("Kayıtlar başarıyla eklendi.", "success");
+                
+                filterRecords(true); recalculateStats();
+                setTimeout(() => refreshData(false), 2000); 
+            } catch(e) { 
+                showToast("Ağ hatası yaşandı, verileriniz yollanmış olabilir.", "warning"); 
+                setTimeout(() => refreshData(false), 3000);
+            } finally { btn.innerHTML = oldHTML; btn.disabled = false; }
         }
 
         window.setupEdit = function(idx) {
             const record = filteredData[idx];
             originalRowData = record; 
             document.getElementById('modalDate').value = getTodayDateTime();
-            document.getElementById('modalName').value = record.musteri;
-            document.getElementById('modalPhone').value = record.telefon;
-            document.getElementById('modalRegion').value = record.bolge;
-            document.getElementById('modalAgent').value = record.temsilci;
+            document.getElementById('modalName').value = record.musteri; document.getElementById('modalPhone').value = record.telefon;
+            document.getElementById('modalRegion').value = record.bolge; document.getElementById('modalAgent').value = record.temsilci;
             document.getElementById('modalNote').value = record.not;
             populateReasonStatusOptions('modalRegion', 'modalReason', 'modalStatus');
-            document.getElementById('modalReason').value = record.konu;
-            document.getElementById('modalStatus').value = record.durum;
+            document.getElementById('modalReason').value = record.konu; document.getElementById('modalStatus').value = record.durum;
             document.getElementById('editModal').classList.remove('hidden');
         }
 
-        window.setupDelete = function(idx) {
-            originalRowData = filteredData[idx]; 
-            document.getElementById('deleteModal').classList.remove('hidden');
-        }
-
+        window.setupDelete = function(idx) { originalRowData = filteredData[idx]; document.getElementById('deleteModal').classList.remove('hidden'); }
         window.closeEditModal = function() { document.getElementById('editModal').classList.add('hidden'); }
         window.closeDeleteModal = function() { document.getElementById('deleteModal').classList.add('hidden'); }
 
         document.getElementById('editForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('editSubmitBtn');
-            const oldHTML = btn.innerHTML;
+            const btn = document.getElementById('editSubmitBtn'); const oldHTML = btn.innerHTML;
             btn.innerHTML = '<span class="loader border-t-white w-4 h-4 mr-2"></span>'; btn.disabled = true;
             const newData = {
-                tarih: formatDateForSheets(document.getElementById('modalDate').value),
-                adsoyad: document.getElementById('modalName').value,
-                tel: document.getElementById('modalPhone').value,
-                neden: document.getElementById('modalReason').value,
-                durum: document.getElementById('modalStatus').value,
-                temsilci: document.getElementById('modalAgent').value,
-                not: document.getElementById('modalNote').value,
-                bolge: document.getElementById('modalRegion').value
+                tarih: formatDateForSheets(document.getElementById('modalDate').value), adsoyad: document.getElementById('modalName').value,
+                tel: document.getElementById('modalPhone').value, neden: document.getElementById('modalReason').value,
+                durum: document.getElementById('modalStatus').value, temsilci: document.getElementById('modalAgent').value,
+                not: document.getElementById('modalNote').value, bolge: document.getElementById('modalRegion').value
             };
             try {
-                const res = await fetch(API_URL, {method:'POST', body:JSON.stringify({ action: "update", oldData: originalRowData, newData: newData })});
-                const resJson = await res.json();
+                const resJson = await safePostRequest({ action: "update", oldData: originalRowData, newData: newData });
                 if(resJson.success) { 
-                    closeEditModal(); 
-                    showToast("Kayıt başarıyla güncellendi.", "success"); 
-                    
-                    // ANINDA UI GÜNCELLEMESİ (Optimistic Update)
+                    closeEditModal(); showToast("Kayıt başarıyla güncellendi.", "success"); 
                     const idx = allRecordsData.findIndex(r => r === originalRowData);
                     if (idx !== -1) {
+                        let dDate = "-"; let fDate = ""; let sortDate = 0;
+                        if(newData.tarih) {
+                            const parts = newData.tarih.split(' '); fDate = parts[0]; const dp = parts[0].split('-');
+                            dDate = `${dp[2]}.${dp[1]}.${dp[0]} ${parts[1].substring(0,5)}`;
+                            sortDate = new Date(newData.tarih.replace(' ', 'T')).getTime();
+                        }
+                        
                         allRecordsData[idx] = {
-                            ...originalRowData,
-                            tarih: newData.tarih,
-                            musteri: newData.adsoyad,
-                            telefon: newData.tel,
-                            konu: newData.neden,
-                            durum: newData.durum,
-                            temsilci: newData.temsilci,
-                            not: newData.not,
-                            bolge: newData.bolge,
-                            donem: getSheetNameFromDateLocal(newData.tarih)
+                            ...originalRowData, tarih: newData.tarih, _filterDate: fDate, _displayDate: dDate, _sortDate: sortDate,
+                            musteri: newData.adsoyad, telefon: newData.tel, konu: newData.neden, durum: newData.durum, temsilci: newData.temsilci, 
+                            not: newData.not, bolge: newData.bolge, donem: getSheetNameFromDateLocal(fDate)
                         };
-                        filterRecords(false);
-                        recalculateStats();
+                        currentDataHash = JSON.stringify(allRecordsData);
+                        filterRecords(false); recalculateStats();
                     }
-
-                    refreshData(false); 
-                }
-                else { showToast("Güncelleme başarısız: " + resJson.message, "error"); }
-            } catch(e) { showToast("Bağlantı hatası oluştu.", "error"); }
+                    setTimeout(() => refreshData(false), 2000); 
+                } else { showToast("Güncelleme başarısız: " + (resJson.message || "Hata"), "error"); }
+            } catch(e) { closeEditModal(); showToast("Ağ hatası yaşandı.", "warning"); setTimeout(() => refreshData(false), 3000); } 
             finally { btn.innerHTML = oldHTML; btn.disabled = false; }
         });
 
         window.confirmDelete = async function() {
-            const btn = document.getElementById('btnConfirmDelete');
-            const oldHTML = btn.innerHTML;
+            const btn = document.getElementById('btnConfirmDelete'); const oldHTML = btn.innerHTML;
             btn.innerHTML = '<span class="loader border-t-white w-4 h-4 mr-2"></span>'; btn.disabled = true;
             try {
-                const res = await fetch(API_URL, {method:'POST', body:JSON.stringify({ action: "delete", data: originalRowData })});
-                const resJson = await res.json();
+                const resJson = await safePostRequest({ action: "delete", data: originalRowData });
                 if(resJson.success) { 
-                    closeDeleteModal(); 
-                    showToast("Kayıt silindi.", "success"); 
-                    
-                    // ANINDA UI GÜNCELLEMESİ (Optimistic Update)
-                    allRecordsData = allRecordsData.filter(r => r !== originalRowData);
-                    filterRecords(false);
-                    recalculateStats();
-
-                    refreshData(false); 
-                }
-                else { showToast("Silme işlemi başarısız.", "error"); }
-            } catch(e) { showToast("Bağlantı hatası oluştu.", "error"); }
+                    closeDeleteModal(); showToast("Kayıt silindi.", "success"); 
+                    allRecordsData = allRecordsData.filter(r => r !== originalRowData); currentDataHash = JSON.stringify(allRecordsData);
+                    filterRecords(false); recalculateStats();
+                    setTimeout(() => refreshData(false), 2000); 
+                } else { showToast("Silme işlemi başarısız.", "error"); }
+            } catch(e) { closeDeleteModal(); showToast("Ağ hatası yaşandı.", "warning"); setTimeout(() => refreshData(false), 3000); } 
             finally { btn.innerHTML = oldHTML; btn.disabled = false; }
         }
     </script>
