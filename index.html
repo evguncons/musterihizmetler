@@ -319,7 +319,7 @@
                     <div><label class="input-label mb-1">Bölge</label><select id="filterRegion" class="input-field select-field" onchange="populateReasonStatusOptions('filterRegion', 'filterReason', 'filterStatus', true); filterRecords()"><option value="">Tümü</option><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
                     <div><label class="input-label mb-1">Neden</label><select id="filterReason" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option></select></div>
                     <div><label class="input-label mb-1">Durum</label><select id="filterStatus" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option></select></div>
-                    <div><label class="input-label mb-1">Temsilci</label><select id="filterAgent" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option><option>SİBEL GÜNAYDIN</option><option>EYLEM KARĞI</option><option>YAĞMUR BAYOĞLU</option></select></div>
+                    <div><label class="input-label mb-1">Temsilci</label><select id="filterAgent" class="input-field select-field" onchange="filterRecords()"><option value="">Tümü</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option><option>SİBEL GÜNAYDIN</option><option>EYLEM KARĞI</option><option>YAĞMUR BAYOĞLU</option><option>ELİF ANDAÇ</option></select></div>
                     <div class="flex items-end"><button onclick="clearFilters()" class="btn btn-secondary w-full"><i class="fas fa-eraser"></i> Temizle</button></div>
                 </div>
             </div>
@@ -369,7 +369,7 @@
                     <div><label class="input-label">Durum</label><select id="modalStatus" class="input-field select-field"></select></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div><label class="input-label">Temsilci</label><select id="modalAgent" class="input-field select-field"><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option><option>SİBEL GÜNAYDIN</option><option>EYLEM KARĞI</option><option>YAĞMUR BAYOĞLU</option></select></div>
+                    <div><label class="input-label">Temsilci</label><select id="modalAgent" class="input-field select-field"><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option><option>SİBEL GÜNAYDIN</option><option>EYLEM KARĞI</option><option>YAĞMUR BAYOĞLU</option><option>ELİF ANDAÇ</option></select></div>
                 </div>
                 <div><label class="input-label">Görüşme Notu</label><textarea id="modalNote" class="input-field h-24 pt-2 resize-none" placeholder="Detaylar..."></textarea></div>
                 <div class="pt-4 flex justify-end gap-3 border-t border-slate-100 mt-2">
@@ -787,7 +787,7 @@
                     <div class="lg:col-span-2"><label class="input-label">Bölge</label><select class="input-field select-field inp-region" onchange="populateReasonStatusOptions(this.id, this.closest('.entry-card').querySelector('.inp-reason').id, this.closest('.entry-card').querySelector('.inp-status').id)"><option value="" disabled selected>Seçiniz</option><option value="İstanbul">İstanbul</option><option value="Kocaeli">Kocaeli</option></select></div>
                     <div class="lg:col-span-3"><label class="input-label">Müşteri Ad Soyad</label><input type="text" class="input-field inp-name" placeholder="Ad Soyad"></div>
                     <div class="lg:col-span-2"><label class="input-label">Telefon</label><input type="text" class="input-field inp-phone" placeholder="05XX..."></div>
-                    <div class="lg:col-span-3"><label class="input-label">Temsilci</label><select class="input-field select-field inp-agent"><option value="" disabled selected>Seçiniz</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option><option>SİBEL GÜNAYDIN</option><option>EYLEM KARĞI</option><option>YAĞMUR BAYOĞLU</option></select></div>
+                    <div class="lg:col-span-3"><label class="input-label">Temsilci</label><select class="input-field select-field inp-agent"><option value="" disabled selected>Seçiniz</option><option>BURCU KÖSALI</option><option>ELVAN ATAK</option><option>CANSU IŞIK</option><option>RÜYA SÜZER</option><option>ESRA ERDOĞAN</option><option>SİBEL GÜNAYDIN</option><option>EYLEM KARĞI</option><option>YAĞMUR BAYOĞLU</option><option>ELİF ANDAÇ</option></select></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div><label class="input-label">Arama Nedeni</label><select class="input-field select-field inp-reason"></select></div>
